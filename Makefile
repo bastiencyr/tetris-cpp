@@ -25,3 +25,4 @@ func.o: $(SRC)/func.cpp $(HEADERS)/func.hpp
 
 clean:
 	rm -rf *.o
+	rm tetris
