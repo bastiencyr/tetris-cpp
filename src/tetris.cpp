@@ -16,8 +16,7 @@ Tetris::Tetris(int w, int h) {
     this->h=h;
     pWindow = SDL_CreateWindow("Une fenetre SDL" , SDL_WINDOWPOS_CENTERED ,
             SDL_WINDOWPOS_CENTERED , w , h , SDL_WINDOW_SHOWN);
-    renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED |
-            SDL_RENDERER_PRESENTVSYNC);
+    renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_SOFTWARE);
     //renderer2 = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED |
     //        SDL_RENDERER_PRESENTVSYNC);
     timer=0;
@@ -26,15 +25,15 @@ Tetris::Tetris(int w, int h) {
     texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
             SDL_TEXTUREACCESS_TARGET, 200, 200);
 
-    dest.x=50;
-    dest.y=50;
-    dest.w=20;
-    dest.h=20;
+    dest.x=41;
+    dest.y=41;
+    dest.w=38;
+    dest.h=38;
 
-    src.x=50;
-    src.y=50;
-    src.w=20;
-    src.h=20;
+    src.x=0;
+    src.y=41;
+    src.w=38;
+    src.h=38;
 }
 
 void Tetris::init(){
@@ -113,14 +112,16 @@ void Tetris::draw(double dt)
     src.w=dest.w;
     src.h=dest.h;
 
-    dest.x=50;
-    dest.y=200-timer;
-    dest.w=20;
-    dest.h=20;
+    dest.x=41;
+    dest.y=41+timer;
+    dest.w=38;
+    dest.h=38;
     //SDL_RenderFillRect(renderer, dest);
-    timer=timer+100*dt;
+
+    timer=timer+40;
 	printf("%f ",timer);
     //SDL_Rect rect = {40, 40, 80, 80};
+
 	SDL_SetRenderDrawColor(renderer,63,63,63,255);
 	SDL_RenderFillRect(renderer, &src);
 
@@ -145,6 +146,7 @@ void Tetris::loop()
     double delta_t;  // durée frame en ms
 
     bool quit = false;
+	double t=0;
     while (!quit)
     {
         SDL_Event event;
@@ -169,9 +171,15 @@ void Tetris::loop()
         prev = now;
         now = SDL_GetPerformanceCounter();
         delta_t = static_cast<double>((now - prev)/
-        static_cast<float>(SDL_GetPerformanceFrequency()));
+		static_cast<float>(SDL_GetPerformanceFrequency()));
+
+		t+=delta_t;
+		if(floor(t)==1) {
+			draw(delta_t);
+			t=0;
+		}
 		//printf("%f",delta_t);
-        draw(delta_t);
+
         // affiche la surface
 
         //SDL_UpdateWindowSurface(win->pWindow);
