@@ -13,16 +13,16 @@
 class Tetris
 {
 public:
-    
+
     SDL_Window* pWindow;
     SDL_Renderer* renderer;
     SDL_Renderer* renderer2;
     SDL_Surface* winSurf;
     SDL_Texture *texture;
-    
+
     int w;
     int h;
-    int timer;
+    double timer;
     SDL_Rect src;
     SDL_Rect dest;
 
@@ -32,10 +32,10 @@ public :
     void keyboard(const Uint8* keys);
     void draw(double dt);
     void loop();
-    
+
     ~Tetris(); // destructor
-    
-    
+
+
 };
 
 #endif
