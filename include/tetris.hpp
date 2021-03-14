@@ -13,13 +13,13 @@
 class Tetris
 {
 public:
-
+	
     SDL_Window* pWindow;
     SDL_Renderer* renderer;
     SDL_Renderer* renderer2;
     SDL_Surface* winSurf;
     SDL_Texture *texture;
-
+	
     int w;
     int h;
     double timer;
