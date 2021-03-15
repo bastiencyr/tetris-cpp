@@ -15,14 +15,15 @@
 
 class Piece
 {
-public:
+protected:
 	//une pièce doit donc être deux vecteurs de rectangles. Un vecteur source
 	//et un vecteur destination
-    SDL_Rect src;
-	SDL_Rect dst;
-	//il faudrait aussi quune pièce ait une couleur. 
+    SDL_Rect src[4];
+	SDL_Rect dst[4];
+
+	//il faudrait aussi quune pièce ait une couleur.
 public :
-    Piece();
+    Piece(int w);
     ~Piece(); // destructor
     void down();
 	void up();
@@ -33,7 +34,10 @@ public :
 	void translate(int a, int b);
 	void rotate(double alpha);
 	bool isLegal();
-    
+
 };
 
+class Left_L : public Piece {
+	Left_L(int w);
+};
 #endif
