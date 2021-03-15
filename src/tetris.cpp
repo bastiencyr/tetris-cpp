@@ -137,6 +137,7 @@ void Tetris::loop()
 		
 		t+=delta_t;
 		if(floor(t)>=1) {
+			
 			piece.down();
 			piece.draw(renderer, texture, 40);
 			t=0;

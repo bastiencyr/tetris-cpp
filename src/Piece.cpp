@@ -77,21 +77,6 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
 	SDL_RenderFillRect(renderer, &dst_r);
 	SDL_RenderPresent(renderer);
 	
-	//on efface la pièce source
-	//SDL_SetRenderDrawColor(renderer,63,63,63,255);
-	//SDL_RenderFillRect(renderer, &src_r);
-	
-	//on dessine la pièce cible
-	//SDL_SetRenderDrawColor(renderer, 150, 0, 150, 255);
-	//SDL_RenderFillRect(renderer, &dst_r);
-	
-	//renderer est la cible
-	//SDL_SetRenderTarget(renderer, NULL);
-	
-	//SDL_RenderCopy(renderer, texture, NULL, &dst_r);
-	//SDL_RenderPresent(renderer);
-	
-	
 }
 
 void Piece::translate(int a, int b){

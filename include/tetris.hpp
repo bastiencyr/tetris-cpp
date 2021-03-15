@@ -10,6 +10,7 @@
 #include <SDL.h>
 #include <string>
 #include "Piece.hpp"
+
 class Tetris
 {
 public:
@@ -19,10 +20,13 @@ public:
     SDL_Renderer* renderer2;
     SDL_Surface* winSurf;
     SDL_Texture *texture;
-	
-    int w;
+    
+	int w;
     int h;
     double timer;
+	
+	bool **mat;
+	
 //    SDL_Rect src;
 //    SDL_Rect dest;
 	
