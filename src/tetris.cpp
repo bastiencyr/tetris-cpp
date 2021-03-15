@@ -21,7 +21,7 @@ Tetris::Tetris(int w, int h) {
 	
 	winSurf=SDL_GetWindowSurface(pWindow);
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
-			SDL_TEXTUREACCESS_TARGET, 200, 200);
+			SDL_TEXTUREACCESS_TARGET, 4, 4);
 	
 }
 

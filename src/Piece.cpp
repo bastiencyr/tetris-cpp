@@ -12,13 +12,26 @@
 #include "../include/Piece.hpp"
 
 Piece::Piece() {
-    this->src.x=41;
-	this->src.y=41;
+	//au début la position de la source na pas dimportance, on peut linitialiser à 
+	// des paramètres quelconque
+    this->src.x=0;
+	this->src.y=0;
+	
+	//ici, la largeur et la longeur dun rectangle devront être égales à 1. 
+	// C a la fonction draw de mettre a la bonne échelle
+	//this->src.w=1;
+	//this->src.h=1;
+	
 	this->src.w=38;
 	this->src.h=38;
 	
+	//Le constructeur par défaut de pièce devra faire apparitre une pièce 
+	//au hasard. C'est donc dst.x qui doit être choisi au hasard
 	this->dst.x=41;
 	this->dst.y=0;
+	
+	//this->src.w=1;
+	//this->src.h=1;
 	this->dst.w=38;
 	this->dst.h=38;
     

@@ -32,8 +32,6 @@ public :
     void init();
     Tetris(int w, int h);
     void keyboard(const Uint8* keys);
-    void draw(double dt);
-	void right(double dt);
     void loop();
 
     ~Tetris(); // destructor
