@@ -24,8 +24,6 @@ Piece::Piece() {
     
 }
 
-
-
 Piece::~Piece() { 
 }
 

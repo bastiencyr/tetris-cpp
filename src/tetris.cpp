@@ -109,6 +109,11 @@ void Tetris::loop()
 						piece.down();
 						piece.draw(renderer);
 						break;
+						
+					case SDLK_UP:
+						piece.up();
+						piece.draw(renderer);
+						break;
 				}
 				
 			default: break;
