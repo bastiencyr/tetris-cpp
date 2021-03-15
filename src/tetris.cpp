@@ -22,6 +22,7 @@ Tetris::Tetris(int w, int h) : piece(w) {
 	winSurf=SDL_GetWindowSurface(pWindow);
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
+	piece.draw(renderer,texture, 40);
 }
 
 void Tetris::init(){
@@ -117,7 +118,7 @@ void Tetris::loop()
 						break;
 
 					case SDLK_UP:
-						piece.up();
+						//piece.up();
 						piece.draw(renderer,texture,40);
 						break;
 				}
