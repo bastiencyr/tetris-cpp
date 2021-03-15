@@ -16,24 +16,15 @@ Piece::Piece() {
 	// des paramètres quelconque
     this->src.x=0;
 	this->src.y=0;
-	
-	//ici, la largeur et la longeur dun rectangle devront être égales à 1. 
-	// C a la fonction draw de mettre a la bonne échelle
-	//this->src.w=1;
-	//this->src.h=1;
-	
-	this->src.w=38;
-	this->src.h=38;
+	this->src.w=1;
+	this->src.h=1;
 	
 	//Le constructeur par défaut de pièce devra faire apparitre une pièce 
 	//au hasard. C'est donc dst.x qui doit être choisi au hasard
-	this->dst.x=41;
+	this->dst.x=1;
 	this->dst.y=0;
-	
-	//this->src.w=1;
-	//this->src.h=1;
-	this->dst.w=38;
-	this->dst.h=38;
+	this->dst.w=1;
+	this->dst.h=1;
     
 }
 
@@ -65,17 +56,41 @@ void Piece::draw(SDL_Renderer* renderer){
  Cette fonction est chargée de dessiner une pièce sur le renderer. 
  Elle ne vérifie pas si elle a le droit de dessiner. 
  */
-void Piece::draw(SDL_Renderer* renderer, int factor){
+void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
+	
+	
+	SDL_Rect src_r;
+	SDL_Rect dst_r;
+	
+	src_r.x=this->src.x*factor;
+	src_r.y=this->src.y*factor;
+	src_r.w=this->src.w*factor;
+	src_r.h=this->src.h*factor;
+	
+	dst_r.x=this->dst.x*factor;
+	dst_r.y=this->dst.y*factor;
+	dst_r.w=this->dst.w*factor;
+	dst_r.h=this->dst.h*factor;
+	
+	SDL_RenderCopy(renderer, texture, &src_r, &src_r);
+	SDL_SetRenderDrawColor(renderer, 150, 0, 150, 255); /* On dessine en violet */
+	SDL_RenderFillRect(renderer, &dst_r);
+	SDL_RenderPresent(renderer);
 	
 	//on efface la pièce source
-	SDL_SetRenderDrawColor(renderer,63,63,63,255);
-	SDL_RenderFillRect(renderer, &this->src);
+	//SDL_SetRenderDrawColor(renderer,63,63,63,255);
+	//SDL_RenderFillRect(renderer, &src_r);
 	
 	//on dessine la pièce cible
-	SDL_SetRenderDrawColor(renderer, 150, 0, 150, 255);
-	SDL_RenderFillRect(renderer, &this->dst);
+	//SDL_SetRenderDrawColor(renderer, 150, 0, 150, 255);
+	//SDL_RenderFillRect(renderer, &dst_r);
 	
-	SDL_RenderPresent(renderer);
+	//renderer est la cible
+	//SDL_SetRenderTarget(renderer, NULL);
+	
+	//SDL_RenderCopy(renderer, texture, NULL, &dst_r);
+	//SDL_RenderPresent(renderer);
+	
 	
 }
 
@@ -96,19 +111,15 @@ void Piece::translate(int a, int b){
  */
 void Piece::down(){
 	//normalement c'est 1 (normalisé). Faudra le faire
-	//this->translate(0,1);
-	this->translate(0,40);
+	this->translate(0,1);
 }
 
 void Piece::right(){
-	//this->translate(1,0);
-	this->translate(40,0);
+	this->translate(1,0);
 }
 
-
 void Piece::left(){
-	//this->translate(-1,0);
-	this->translate(-40,0);
+	this->translate(-1,0);
 }
 
 /*
@@ -118,8 +129,7 @@ void Piece::left(){
  * affiche. Si le déplacement n'était pas légal, il faut pouvoir revenir en arrière.
  */
 void Piece::up(){
-	//this->translate(0,-1);
-	this->translate(0,-40);
+	this->translate(0,-1);
 }
 
 /*

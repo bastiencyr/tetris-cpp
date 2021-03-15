@@ -16,10 +16,11 @@
 class Piece
 {
 public:
+	//une pièce doit donc être deux vecteurs de rectangles. Un vecteur source
+	//et un vecteur destination
     SDL_Rect src;
 	SDL_Rect dst;
-    //SPrite 
-
+	//il faudrait aussi quune pièce ait une couleur. 
 public :
     Piece();
     ~Piece(); // destructor
@@ -28,7 +29,7 @@ public :
 	void right();
 	void left();
 	void draw(SDL_Renderer* renderer);
-	void draw(SDL_Renderer* renderer, int factor);
+	void draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor);
 	void translate(int a, int b);
 	void rotate(double alpha);
 	bool isLegal();

@@ -21,7 +21,7 @@ Tetris::Tetris(int w, int h) {
 	
 	winSurf=SDL_GetWindowSurface(pWindow);
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
-			SDL_TEXTUREACCESS_TARGET, 4, 4);
+			SDL_TEXTUREACCESS_TARGET, w, h);
 	
 }
 
@@ -31,6 +31,8 @@ void Tetris::init(){
 	//on colorie le fond. La fonction renderDrawColor permet d'initialiser une
 	//couleur. Ainsi, toute fonction suivante utilisant une couleur utilisera
 	//implicitement cette couleur
+	SDL_SetRenderTarget(renderer, texture);
+	
 	SDL_SetRenderDrawColor(renderer,63,63,63,255);
 	SDL_RenderClear(renderer);
 	//SDL_RenderPresent(renderer);
@@ -65,6 +67,8 @@ void Tetris::init(){
 		SDL_RenderDrawLine(renderer,ligne_depart.x, ligne_depart.y,ligne_arrivee.x,ligne_arrivee.y);
 	}
 	
+	SDL_SetRenderTarget(renderer, NULL);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);
 }
 
 
@@ -100,22 +104,22 @@ void Tetris::loop()
 					//si lutilisateur appuie sur la flèche droite du clavier:
 					case SDLK_RIGHT:
 						piece.right();
-						piece.draw(renderer);
+						piece.draw(renderer,texture,40);
 						break;
 						
 					case SDLK_LEFT:
 						piece.left();
-						piece.draw(renderer);
+						piece.draw(renderer,texture,40);
 						break;
 						
 					case SDLK_DOWN:
 						piece.down();
-						piece.draw(renderer);
+						piece.draw(renderer,texture, 40);
 						break;
 						
 					case SDLK_UP:
 						piece.up();
-						piece.draw(renderer);
+						piece.draw(renderer,texture,40);
 						break;
 				}
 				
@@ -134,12 +138,14 @@ void Tetris::loop()
 		t+=delta_t;
 		if(floor(t)>=1) {
 			piece.down();
-			piece.draw(renderer);
+			piece.draw(renderer, texture, 40);
 			t=0;
 		}
 	}
 	
 }
+
+
 
 int main(int argc, char** argv)
 {
