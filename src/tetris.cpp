@@ -9,7 +9,7 @@
 #include <iostream>
 #include <cassert>
 #include "../include/tetris.hpp"
-Tetris::Tetris(int w, int h) {
+Tetris::Tetris(int w, int h) : piece(w) {
 	this->w=w;
 	this->h=h;
 	pWindow = SDL_CreateWindow("Une fenetre SDL" , SDL_WINDOWPOS_CENTERED ,
@@ -22,8 +22,8 @@ Tetris::Tetris(int w, int h) {
 	winSurf=SDL_GetWindowSurface(pWindow);
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
-	Piece prem_piece(w);
-	piece = prem_piece;
+	//Piece prem_piece(w);
+	//piece = prem_piece;
 }
 
 void Tetris::init(){

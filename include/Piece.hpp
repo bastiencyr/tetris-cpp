@@ -37,7 +37,7 @@ public :
 
 };
 
-class Left_L : public Piece {
-	Left_L(int w);
+class LeftL : public Piece {
+	LeftL(int w);
 };
 #endif

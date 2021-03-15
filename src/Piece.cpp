@@ -148,7 +148,7 @@ bool Piece::isLegal(){
 ########################          LEFT L         #############################
 ############################################################################*/
 
-Left_L::Left_L(int w) : Piece(w) {
+LeftL::LeftL(int w) : Piece(w) {
 	this->src[0].x=floor(w/2);
 	this->src[1].x=floor(w/2)-1;
 	this->src[2].x=floor(w/2)-1;
