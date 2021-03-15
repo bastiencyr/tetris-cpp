@@ -9,7 +9,7 @@
 
 #include <SDL.h>
 #include <string>
-
+#include "Piece.hpp"
 class Tetris
 {
 public:
@@ -23,14 +23,17 @@ public:
     int w;
     int h;
     double timer;
-    SDL_Rect src;
-    SDL_Rect dest;
+//    SDL_Rect src;
+//    SDL_Rect dest;
+	
+	Piece piece;
 
 public :
     void init();
     Tetris(int w, int h);
     void keyboard(const Uint8* keys);
     void draw(double dt);
+	void right(double dt);
     void loop();
 
     ~Tetris(); // destructor

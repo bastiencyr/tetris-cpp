@@ -13,18 +13,19 @@
 
 //class Sprite;
 
-class Func
+class Piece
 {
 public:
-    
-    SDL_Window* pWindow;
+    SDL_Rect src;
+	SDL_Rect dst;
     //SPrite 
 
 public :
-    void createPiece(SDL_Renderer* renderer);
-    Func();
-    ~Func(); // destructor
-    
+    Piece();
+    ~Piece(); // destructor
+    void down(double &timer, SDL_Renderer* renderer);
+	void right(double &timer, SDL_Renderer* renderer);
+	void left(double &timer, SDL_Renderer* renderer);
     
 };
 

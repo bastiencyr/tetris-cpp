@@ -23,15 +23,6 @@ Tetris::Tetris(int w, int h) {
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, 200, 200);
 	
-	dest.x=41;
-	dest.y=41;
-	dest.w=38;
-	dest.h=38;
-	
-	src.x=0;
-	src.y=41;
-	src.w=38;
-	src.h=38;
 }
 
 void Tetris::init(){
@@ -80,65 +71,6 @@ void Tetris::init(){
 Tetris::~Tetris() {
 }
 
-void Tetris::keyboard(const Uint8* keys)
-{
-	int w;
-	if (keys[SDL_SCANCODE_SPACE])
-	{
-		w=3;
-	}
-	
-	if (keys[SDL_SCANCODE_UP])
-		w=4;//ball->vy -= 0.2;
-	
-	if (keys[SDL_SCANCODE_DOWN])
-		w=5;//ball->vy += 0.2;
-	
-	if (keys[SDL_SCANCODE_LEFT])
-		w=6;//ball->vx -= 0.2;
-	
-	if (keys[SDL_SCANCODE_RIGHT] )
-		w=6;//ball->vx += 0.2;
-}
-
-void Tetris::draw(double dt)
-{
-	//SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // the rect color (solid red)
-	//
-	src.x=dest.x;
-	src.y=dest.y;
-	src.w=dest.w;
-	src.h=dest.h;
-	
-	dest.x=41;
-	dest.y=41+timer;
-	dest.w=38;
-	dest.h=38;
-	//SDL_RenderFillRect(renderer, dest);
-	
-	timer=timer+40;
-	
-	printf("%f ",timer);
-	//SDL_Rect rect = {40, 40, 80, 80};
-	
-	SDL_SetRenderDrawColor(renderer,63,63,63,255);
-	SDL_RenderFillRect(renderer, &src);
-	
-	SDL_SetRenderDrawColor(renderer, 150, 0, 150, 255); /* On dessine en violet */
-	
-	//SDL_RenderDrawRect(renderer, &rect);//Pour dessiner un seul rectangle
-	
-	//SDL_SetRenderTarget(renderer, texture); /* On va dessiner sur la texture */
-	SDL_RenderFillRect(renderer, &dest);
-	
-	//SDL_SetRenderTarget(renderer, NULL);
-	//SDL_RenderCopy(renderer, texture, &src, &dest);
-	
-	SDL_RenderPresent(renderer);
-	
-}
-
-
 void Tetris::loop()
 {
 	Uint64 prev, now = SDL_GetPerformanceCounter(); // timers
@@ -149,6 +81,7 @@ void Tetris::loop()
 	while (!quit)
 	{
 		SDL_Event event;
+		
 		while (!quit && SDL_PollEvent(&event))
 		{
 			switch (event.type)
@@ -157,14 +90,29 @@ void Tetris::loop()
 				quit = true;
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				printf("mouse click %d\n", event.button.button);
 				break;
+			
+			case SDL_KEYDOWN:
+               /* Check the SDLKey values and move change the coords */
+				switch( event.key.keysym.sym ){
+					case SDLK_RIGHT:
+						piece.right(timer, renderer);
+						break;
+						
+					case SDLK_LEFT:
+						piece.right(timer, renderer);
+						break;
+						
+					case SDLK_DOWN:
+						piece.down(timer, renderer);
+						break;
+				}
+				
 			default: break;
 			}
 		}
 		
 		const Uint8* state = SDL_GetKeyboardState(NULL);
-		keyboard(state);
 		quit |= (state[SDL_SCANCODE_ESCAPE]!=0);
 		
 		prev = now;
@@ -173,17 +121,10 @@ void Tetris::loop()
 				static_cast<float>(SDL_GetPerformanceFrequency()));
 		
 		t+=delta_t;
-		if(floor(t)==1) {
-			draw(delta_t);
+		if(floor(t)>=1) {
+			piece.down(timer, renderer);
 			t=0;
 		}
-		//printf("%f",delta_t);
-		
-		// affiche la surface
-		
-		//SDL_UpdateWindowSurface(win->pWindow);
-		//
-		//
 	}
 	
 }
