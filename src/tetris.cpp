@@ -96,15 +96,18 @@ void Tetris::loop()
                /* Check the SDLKey values and move change the coords */
 				switch( event.key.keysym.sym ){
 					case SDLK_RIGHT:
-						piece.right(timer, renderer);
+						piece.right();
+						piece.draw(renderer);
 						break;
 						
 					case SDLK_LEFT:
-						piece.right(timer, renderer);
+						piece.left();
+						piece.draw(renderer);
 						break;
 						
 					case SDLK_DOWN:
-						piece.down(timer, renderer);
+						piece.down();
+						piece.draw(renderer);
 						break;
 				}
 				
@@ -122,7 +125,8 @@ void Tetris::loop()
 		
 		t+=delta_t;
 		if(floor(t)>=1) {
-			piece.down(timer, renderer);
+			piece.down();
+			piece.draw(renderer);
 			t=0;
 		}
 	}

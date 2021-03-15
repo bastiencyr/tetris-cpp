@@ -23,9 +23,15 @@ public:
 public :
     Piece();
     ~Piece(); // destructor
-    void down(double &timer, SDL_Renderer* renderer);
-	void right(double &timer, SDL_Renderer* renderer);
-	void left(double &timer, SDL_Renderer* renderer);
+    void down();
+	void up();
+	void right();
+	void left();
+	void draw(SDL_Renderer* renderer);
+	void draw(SDL_Renderer* renderer, int factor);
+	void translate(int a, int b);
+	void rotate(double alpha);
+	bool isLegal();
     
 };
 
