@@ -15,15 +15,15 @@ Piece::Piece(int w) {
 	//au début la position de la source na pas dimportance, on peut linitialiser à
 	// des paramètres quelconque
 	for(int i = 0; i<4; i++) {
-	    this->src[i].x=floor(w/2);
+	    this->src[i].x=floor(w/2/40);
 		this->src[i].y=i;
 		this->src[i].w=1;
 		this->src[i].h=1;
 
 		//Le constructeur par défaut de pièce devra faire apparitre une pièce
 		//au hasard. C'est donc dst.x qui doit être choisi au hasard
-		this->dst[i].x=floor(w/2);
-		this->dst[i].y=0;
+		this->dst[i].x=floor(w/2/40);
+		this->dst[i].y=i;
 		this->dst[i].w=1;
 		this->dst[i].h=1;
 	}
@@ -78,9 +78,12 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
 		dst_r[i].h=this->dst[i].h*factor;
 
 		SDL_RenderCopy(renderer, texture, &src_r[i], &src_r[i]);
-		SDL_RenderFillRect(renderer, &dst_r[i]);
-		SDL_RenderPresent(renderer);
 	}
+
+	for(int i=0; i<4; i++) {
+		SDL_RenderFillRect(renderer, &dst_r[i]);
+	}
+	SDL_RenderPresent(renderer);
 
 }
 

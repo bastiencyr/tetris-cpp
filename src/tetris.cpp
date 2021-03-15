@@ -22,8 +22,6 @@ Tetris::Tetris(int w, int h) : piece(w) {
 	winSurf=SDL_GetWindowSurface(pWindow);
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
-	//Piece prem_piece(w);
-	//piece = prem_piece;
 }
 
 void Tetris::init(){
