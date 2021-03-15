@@ -92,9 +92,12 @@ void Tetris::loop()
 			case SDL_MOUSEBUTTONDOWN:
 				break;
 			
+			// c'est ici quuon prend les événements du clavier. 
+			// Jai pris sur internet, je sais pas trop comment ca fonctionne sinon
 			case SDL_KEYDOWN:
                /* Check the SDLKey values and move change the coords */
 				switch( event.key.keysym.sym ){
+					//si lutilisateur appuie sur la flèche droite du clavier:
 					case SDLK_RIGHT:
 						piece.right();
 						piece.draw(renderer);

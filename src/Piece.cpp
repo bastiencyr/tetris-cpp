@@ -88,11 +88,13 @@ void Piece::down(){
 }
 
 void Piece::right(){
+	//this->translate(1,0);
 	this->translate(40,0);
 }
 
 
 void Piece::left(){
+	//this->translate(-1,0);
 	this->translate(-40,0);
 }
 
@@ -103,6 +105,7 @@ void Piece::left(){
  * affiche. Si le déplacement n'était pas légal, il faut pouvoir revenir en arrière.
  */
 void Piece::up(){
+	//this->translate(0,-1);
 	this->translate(0,-40);
 }
 
