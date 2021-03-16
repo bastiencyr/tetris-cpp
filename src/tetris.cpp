@@ -10,6 +10,8 @@
 #include <cassert>
 #include "../include/tetris.hpp"
 #define SIZE_BLOC 40
+#define BLOCSX 10
+#define BLOCSY 20
 
 
 Tetris::Tetris(int w, int h) : piece(w) {
@@ -25,8 +27,16 @@ Tetris::Tetris(int w, int h) : piece(w) {
 	winSurf=SDL_GetWindowSurface(pWindow);
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
-	piece.affiche_coord();
-	piece.draw(renderer,texture, SIZE_BLOC);
+
+	//mat[BLOCSX][BLOCSY];
+	for(int i = 0; i < BLOCSX; i++) {
+		for(int j = 0; j < BLOCSY; j++) {
+			mat[i][j] = false;
+		}
+	}
+
+	piece.affiche_coord(1,1);
+	//piece.draw(renderer,texture, SIZE_BLOC);
 }
 
 void Tetris::init(){
@@ -107,17 +117,17 @@ void Tetris::loop()
 				switch( event.key.keysym.sym ){
 					//si lutilisateur appuie sur la flèche droite du clavier:
 					case SDLK_RIGHT:
-						piece.right();
+						piece.right(this->mat);
 						piece.draw(renderer,texture,SIZE_BLOC);
 						break;
 
 					case SDLK_LEFT:
-						piece.left();
+						piece.left(this->mat);
 						piece.draw(renderer,texture,SIZE_BLOC);
 						break;
 
 					case SDLK_DOWN:
-						piece.down();
+						piece.down(this->mat);
 						piece.draw(renderer,texture, SIZE_BLOC);
 						break;
 
@@ -142,7 +152,7 @@ void Tetris::loop()
 		t+=delta_t;
 		if(floor(t)>=1) {
 
-			piece.down();
+			piece.down(this->mat);
 			piece.draw(renderer, texture, SIZE_BLOC);
 			t=0;
 		}
@@ -154,8 +164,8 @@ void Tetris::loop()
 
 int main(int argc, char** argv)
 {
-	int h=SIZE_BLOC*20;
-	int w=SIZE_BLOC*10;
+	int h=SIZE_BLOC*BLOCSY;
+	int w=SIZE_BLOC*BLOCSX;
 
 	if(SDL_VideoInit(NULL) < 0) // Initialisation de la SDL
 	{

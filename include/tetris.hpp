@@ -25,7 +25,7 @@ protected:
     int h;
     double timer;
 
-	bool **mat;
+	bool mat[BLOCSX][BLOCSY];
 
 //    SDL_Rect src;
 //    SDL_Rect dest;

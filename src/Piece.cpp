@@ -10,25 +10,24 @@
 #include <cassert>
 
 #include "../include/Piece.hpp"
-#define SIZE_BLOC 40
+
 
 Piece::Piece(int w) {
 	//au début la position de la source na pas dimportance, on peut linitialiser à
 	// des paramètres quelconque
 	for(int i = 0; i<4; i++) {
-	    this->src[i].x=floor(w/2/SIZE_BLOC);
-		this->src[i].y=i-1;
+	    this->src[i].x=floor(BLOCSX/2);
+		this->src[i].y=i;
 		this->src[i].w=1;
 		this->src[i].h=1;
 
 		//Le constructeur par défaut de pièce devra faire apparitre une pièce
 		//au hasard. C'est donc dst.x qui doit être choisi au hasard
-		this->dst[i].x=floor(w/2/SIZE_BLOC);
-		this->dst[i].y=i-1;
+		this->dst[i].x=floor(BLOCSX/2);
+		this->dst[i].y=i;
 		this->dst[i].w=1;
 		this->dst[i].h=1;
 	}
-
 }
 
 Piece::~Piece() {
@@ -68,18 +67,18 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
 	SDL_SetRenderDrawColor(renderer, 150, 0, 150, 255); /* On dessine en violet */
 	for(int i = 0; i < 4; i++) {
 		src_r[i].x=this->src[i].x*factor;
-		src_r[i].y=this->src[i].y*factor;
+		src_r[i].y=((this->src[i].y)-1)*factor;
 		src_r[i].w=this->src[i].w*factor;
 		src_r[i].h=this->src[i].h*factor;
 
 		dst_r[i].x=this->dst[i].x*factor;
-		dst_r[i].y=this->dst[i].y*factor;
+		dst_r[i].y=((this->dst[i].y)-1)*factor;
 		dst_r[i].w=this->dst[i].w*factor;
 		dst_r[i].h=this->dst[i].h*factor;
 
 		SDL_RenderCopy(renderer, texture, &src_r[i], &src_r[i]);
 	}
-	//this->affiche_coord();
+	this->affiche_coord(1,1);
 	for(int i=0; i<4; i++) {
 		SDL_RenderFillRect(renderer, &dst_r[i]);
 	}
@@ -87,9 +86,12 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
 
 }
 
-void Piece::translate(int a, int b){
+void Piece::translate(int a, int b, bool mat[BLOCSX][BLOCSY]){
 	for(int i = 0; i < 4; i++) {
+		std::cout << this->src[i].x <<"," << this->dst[i].x << std::endl;
 		this->src[i].x=this->dst[i].x;
+		std::cout << this->src[i].x <<"," << this->dst[i].x << std::endl;
+
 		this->src[i].y=this->dst[i].y;
 		this->src[i].w=this->dst[i].w;
 		this->src[i].h=this->dst[i].h;
@@ -97,23 +99,32 @@ void Piece::translate(int a, int b){
 		this->dst[i].x+=a;
 		this->dst[i].y+=b;
 	}
+	this->affiche_coord(1,1);
+
+	if(!(this->isLegal(mat))) {
+		std::cout << "mouvement illégal" << std::endl;
+		this->affiche_coord(1,1);
+		this->translate(-a, -b, mat);
+	}
 }
 
 /*
  * Cette fonction déplace une pièce vers le bas sans la dessiner.
  * Il faut appeler la méthode draw pour dessiner la pièce.
  */
-void Piece::down(){
+void Piece::down(bool mat[BLOCSX][BLOCSY]){
 	//normalement c'est 1 (normalisé). Faudra le faire
-	this->translate(0,1);
+	this->affiche_coord(1,1);
+
+	this->translate(0,1,mat);
 }
 
-void Piece::right(){
-	this->translate(1,0);
+void Piece::right(bool mat[BLOCSX][BLOCSY]){
+	this->translate(1,0,mat);
 }
 
-void Piece::left(){
-	this->translate(-1,0);
+void Piece::left(bool mat[BLOCSX][BLOCSY]){
+	this->translate(-1,0,mat);
 }
 
 /*
@@ -122,8 +133,8 @@ void Piece::left(){
  * dabord la position de la pièces SANS lafficher; on vérifie la légalité puis on
  * affiche. Si le déplacement n'était pas légal, il faut pouvoir revenir en arrière.
  */
-void Piece::up(){
-	this->translate(0,-1);
+void Piece::up(bool mat[BLOCSX][BLOCSY]){
+	this->translate(0,-1,mat);
 }
 
 /*
@@ -141,7 +152,26 @@ void Piece::rotate(double alpha){
  * chevauche une autre pièce.
  * Cette fonction doit renvoyer true si le déplacement est légal est faux sinon.
  */
-bool Piece::isLegal(){
+bool Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
+	for(int i = 0; i< 4; i++) {
+		//Verification dépassement horizontal
+		if(this->dst[i].x < 0 || this->dst[i].x > BLOCSX) {
+			std::cout << "mouvement illégal (dh)" << std::endl;
+			return false;
+		}
+		//Verification dépassement verical
+		else if(this->dst[i].y < 0 || this->dst[i].y > BLOCSY) {
+			std::cout << "mouvement illégal (dv)" << std::endl;
+			return false;
+		}
+		//Verification occupation de la case
+		else if(mat[this->dst[i].x][this->dst[i].y]) {
+			std::cout << "mouvement illégal (oc)" << std::endl;
+			return false;
+		}
+
+	}
+	std::cout << "mouvement légal" << std::endl;
 	return true;
 }
 
@@ -150,13 +180,33 @@ bool Piece::isLegal(){
  * Cette méthode affiche les coordonnées d'une pièce
  * Elle a un objectif de débugage
  */
-void Piece::affiche_coord(){
-	for(int i=0; i< 4; i++) {
-		std::cout << "(" <<  this->src[i].x << ", " << this->src[i].y << ")";
-		std::cout << "    (taille : (" << this->src[i].w << ",";
-		std::cout << this->src[i].h << "))" << std::endl;
+void Piece::affiche_coord(bool source, bool dest){
+	if(source) {
+		std::cout << "coordonnées de la source ";
+		for(int i=0; i< 4; i++) {
+			std::cout << "(" <<  this->src[i].x << ", " << this->src[i].y << ")";
+			std::cout << "    (taille : (" << this->src[i].w << ",";
+			std::cout << this->src[i].h << "))" << std::endl;
+		}
+	}
+	if(dest) {
+		std::cout << "coordonnées de la destination";
+		for(int i=0; i< 4; i++) {
+			std::cout << "(" <<  this->dst[i].x << ", " << this->dst[i].y << ")";
+			std::cout << "    (taille : (" << this->dst[i].w << ",";
+			std::cout << this->dst[i].h << "))" << std::endl;
+		}
 	}
 }
+/*
+void Piece::affiche_dst(){
+	for(int i=0; i< 4; i++) {
+		std::cout << "(" <<  this->dst[i].x << ", " << this->dst[i].y << ")";
+		std::cout << "    (taille : (" << this->dst[i].w << ",";
+		std::cout << this->dst[i].h << "))" << std::endl;
+	}
+}*/
+
 
 /*############################################################################
 ########################          LEFT L         #############################

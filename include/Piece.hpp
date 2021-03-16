@@ -10,6 +10,9 @@
 
 #include <SDL.h>
 #include <string>
+#define SIZE_BLOC 40
+#define BLOCSX 10
+#define BLOCSY 20
 
 //class Sprite;
 
@@ -25,16 +28,16 @@ protected:
 public :
     Piece(int w);
     ~Piece(); // destructor
-    void down();
-	void up();
-	void right();
-	void left();
+    void down(bool mat[BLOCSX][BLOCSY]);
+	void up(bool mat[BLOCSX][BLOCSY]);
+	void right(bool mat[BLOCSX][BLOCSY]);
+	void left(bool mat[BLOCSX][BLOCSY]);
 	void draw(SDL_Renderer* renderer);
 	void draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor);
-	void translate(int a, int b);
+	void translate(int a, int b, bool mat[BLOCSX][BLOCSY]);
 	void rotate(double alpha);
-	bool isLegal();
-	void affiche_coord();
+	bool isLegal(bool mat[BLOCSX][BLOCSY]);
+	void affiche_coord(bool source, bool dest);
 
 };
 
