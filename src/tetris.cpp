@@ -9,6 +9,9 @@
 #include <iostream>
 #include <cassert>
 #include "../include/tetris.hpp"
+#define SIZE_BLOC 40
+
+
 Tetris::Tetris(int w, int h) : piece(w) {
 	this->w=w;
 	this->h=h;
@@ -22,7 +25,8 @@ Tetris::Tetris(int w, int h) : piece(w) {
 	winSurf=SDL_GetWindowSurface(pWindow);
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
-	piece.draw(renderer,texture, 40);
+	piece.affiche_coord();
+	piece.draw(renderer,texture, SIZE_BLOC);
 }
 
 void Tetris::init(){
@@ -51,7 +55,7 @@ void Tetris::init(){
 
 	while(ligne_depart.y<h)
 	{
-		ligne_depart.y += 40;
+		ligne_depart.y += SIZE_BLOC;
 		ligne_arrivee.y = ligne_depart.y;
 		SDL_RenderDrawLine(renderer,ligne_depart.x, ligne_depart.y,ligne_arrivee.x,ligne_arrivee.y);
 	}
@@ -62,7 +66,7 @@ void Tetris::init(){
 	ligne_arrivee.y = h;
 
 	while(ligne_depart.x<h){
-		ligne_depart.x += 40;
+		ligne_depart.x += SIZE_BLOC;
 		ligne_arrivee.x = ligne_depart.x;
 		SDL_RenderDrawLine(renderer,ligne_depart.x, ligne_depart.y,ligne_arrivee.x,ligne_arrivee.y);
 	}
@@ -104,22 +108,22 @@ void Tetris::loop()
 					//si lutilisateur appuie sur la flèche droite du clavier:
 					case SDLK_RIGHT:
 						piece.right();
-						piece.draw(renderer,texture,40);
+						piece.draw(renderer,texture,SIZE_BLOC);
 						break;
 
 					case SDLK_LEFT:
 						piece.left();
-						piece.draw(renderer,texture,40);
+						piece.draw(renderer,texture,SIZE_BLOC);
 						break;
 
 					case SDLK_DOWN:
 						piece.down();
-						piece.draw(renderer,texture, 40);
+						piece.draw(renderer,texture, SIZE_BLOC);
 						break;
 
 					case SDLK_UP:
 						//piece.up();
-						piece.draw(renderer,texture,40);
+						piece.draw(renderer,texture,SIZE_BLOC);
 						break;
 				}
 
@@ -139,7 +143,7 @@ void Tetris::loop()
 		if(floor(t)>=1) {
 
 			piece.down();
-			piece.draw(renderer, texture, 40);
+			piece.draw(renderer, texture, SIZE_BLOC);
 			t=0;
 		}
 	}
@@ -150,8 +154,8 @@ void Tetris::loop()
 
 int main(int argc, char** argv)
 {
-	int h=640;
-	int w=400;
+	int h=SIZE_BLOC*20;
+	int w=SIZE_BLOC*10;
 
 	if(SDL_VideoInit(NULL) < 0) // Initialisation de la SDL
 	{

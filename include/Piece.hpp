@@ -34,6 +34,7 @@ public :
 	void translate(int a, int b);
 	void rotate(double alpha);
 	bool isLegal();
+	void affiche_coord();
 
 };
 

@@ -10,20 +10,21 @@
 #include <cassert>
 
 #include "../include/Piece.hpp"
+#define SIZE_BLOC 40
 
 Piece::Piece(int w) {
 	//au début la position de la source na pas dimportance, on peut linitialiser à
 	// des paramètres quelconque
 	for(int i = 0; i<4; i++) {
-	    this->src[i].x=floor(w/2/40);
-		this->src[i].y=i;
+	    this->src[i].x=floor(w/2/SIZE_BLOC);
+		this->src[i].y=i-1;
 		this->src[i].w=1;
 		this->src[i].h=1;
 
 		//Le constructeur par défaut de pièce devra faire apparitre une pièce
 		//au hasard. C'est donc dst.x qui doit être choisi au hasard
-		this->dst[i].x=floor(w/2/40);
-		this->dst[i].y=i;
+		this->dst[i].x=floor(w/2/SIZE_BLOC);
+		this->dst[i].y=i-1;
 		this->dst[i].w=1;
 		this->dst[i].h=1;
 	}
@@ -62,7 +63,6 @@ void Piece::draw(SDL_Renderer* renderer){
  */
 void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
 
-
 	SDL_Rect src_r[4];
 	SDL_Rect dst_r[4];
 	SDL_SetRenderDrawColor(renderer, 150, 0, 150, 255); /* On dessine en violet */
@@ -79,7 +79,7 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
 
 		SDL_RenderCopy(renderer, texture, &src_r[i], &src_r[i]);
 	}
-
+	//this->affiche_coord();
 	for(int i=0; i<4; i++) {
 		SDL_RenderFillRect(renderer, &dst_r[i]);
 	}
@@ -146,6 +146,17 @@ bool Piece::isLegal(){
 }
 
 
+/*
+ * Cette méthode affiche les coordonnées d'une pièce
+ * Elle a un objectif de débugage
+ */
+void Piece::affiche_coord(){
+	for(int i=0; i< 4; i++) {
+		std::cout << "(" <<  this->src[i].x << ", " << this->src[i].y << ")";
+		std::cout << "    (taille : (" << this->src[i].w << ",";
+		std::cout << this->src[i].h << "))" << std::endl;
+	}
+}
 
 /*############################################################################
 ########################          LEFT L         #############################
