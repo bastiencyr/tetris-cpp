@@ -78,7 +78,6 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
 
 		SDL_RenderCopy(renderer, texture, &src_r[i], &src_r[i]);
 	}
-	this->affiche_coord(1,1);
 	for(int i=0; i<4; i++) {
 		SDL_RenderFillRect(renderer, &dst_r[i]);
 	}
@@ -88,10 +87,7 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
 
 bool Piece::translate(int a, int b, bool mat[BLOCSX][BLOCSY]){
 	for(int i = 0; i < 4; i++) {
-		std::cout << this->src[i].x <<"," << this->dst[i].x << std::endl;
 		this->src[i].x=this->dst[i].x;
-		std::cout << this->src[i].x <<"," << this->dst[i].x << std::endl;
-
 		this->src[i].y=this->dst[i].y;
 		this->src[i].w=this->dst[i].w;
 		this->src[i].h=this->dst[i].h;
@@ -99,16 +95,13 @@ bool Piece::translate(int a, int b, bool mat[BLOCSX][BLOCSY]){
 		this->dst[i].x+=a;
 		this->dst[i].y+=b;
 	}
-	this->affiche_coord(1,1);
 
 	if(!(this->depassement(mat))) {
-		std::cout << "mouvement illégal" << std::endl;
-		this->affiche_coord(1,1);
+		std::cout << "mouvement dépassant" << std::endl;
 		this->translate(-a, -b, mat);
 	}
 	if(!(this->isLegal(mat))) {
 		std::cout << "mouvement illégal" << std::endl;
-		this->affiche_coord(1,1);
 		this->translate(-a, -b, mat);
 		return false;
 	}
@@ -121,8 +114,6 @@ bool Piece::translate(int a, int b, bool mat[BLOCSX][BLOCSY]){
  */
 bool Piece::down(bool mat[BLOCSX][BLOCSY]){
 	//normalement c'est 1 (normalisé). Faudra le faire
-	this->affiche_coord(1,1);
-
 	return this->translate(0,1,mat);
 }
 
@@ -161,7 +152,7 @@ void Piece::rotate(double alpha){
 bool Piece::depassement(bool mat[BLOCSX][BLOCSY]){
 	for(int i = 0; i< 4; i++) {
 		//Verification dépassement horizontal
-		if(this->dst[i].x < 0 || this->dst[i].x > BLOCSX) {
+		if(this->dst[i].x < 0 || this->dst[i].x >= BLOCSX) {
 			std::cout << "mouvement illégal (dh)" << std::endl;
 			return false;
 		}
