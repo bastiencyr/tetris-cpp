@@ -159,7 +159,7 @@ bool Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
 			std::cout << "mouvement illégal (dh)" << std::endl;
 			return false;
 		}
-		//Verification dépassement verical
+		//Verification dépassement vertical
 		else if(this->dst[i].y < 0 || this->dst[i].y > BLOCSY) {
 			std::cout << "mouvement illégal (dv)" << std::endl;
 			return false;

@@ -1,4 +1,7 @@
 il faut faire un **tetris**
 
-- gérer les déplacements pour des grandes formes
-- arrêter aux limites et mettre à jour les limites selon ce qui est posé
+- Gérer la détection de l'arrêt de la pièce
+- Ensuite, mettre à jour la matrice
+- Ensuite, générer une nouvelle pièce
+
+- (plus tard) Gérer la détection du game over (une pièce est obligée de s'arrêter et elle dépasse)
