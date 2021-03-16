@@ -95,10 +95,18 @@ void Tetris::loop()
 	double delta_t;  // durée frame en ms
 
 	bool quit = false;
+	bool cont = true;
 	double t=0;
 	while (!quit)
 	{
 		SDL_Event event;
+		if(!cont) {
+			for(int i = 0; i < 4; i++) {
+				mat[piece.getx(i)][piece.gety(i)]=true;
+			}
+			Piece NouvPiece(w);
+			piece = NouvPiece;
+		}
 
 		while (!quit && SDL_PollEvent(&event))
 		{
@@ -117,17 +125,17 @@ void Tetris::loop()
 				switch( event.key.keysym.sym ){
 					//si lutilisateur appuie sur la flèche droite du clavier:
 					case SDLK_RIGHT:
-						piece.right(this->mat);
+						cont = piece.right(this->mat);
 						piece.draw(renderer,texture,SIZE_BLOC);
 						break;
 
 					case SDLK_LEFT:
-						piece.left(this->mat);
+						cont = piece.left(this->mat);
 						piece.draw(renderer,texture,SIZE_BLOC);
 						break;
 
 					case SDLK_DOWN:
-						piece.down(this->mat);
+						cont = piece.down(this->mat);
 						piece.draw(renderer,texture, SIZE_BLOC);
 						break;
 
@@ -151,8 +159,7 @@ void Tetris::loop()
 
 		t+=delta_t;
 		if(floor(t)>=1) {
-
-			piece.down(this->mat);
+			cont = piece.down(this->mat);
 			piece.draw(renderer, texture, SIZE_BLOC);
 			t=0;
 		}

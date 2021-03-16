@@ -86,7 +86,7 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
 
 }
 
-void Piece::translate(int a, int b, bool mat[BLOCSX][BLOCSY]){
+bool Piece::translate(int a, int b, bool mat[BLOCSX][BLOCSY]){
 	for(int i = 0; i < 4; i++) {
 		std::cout << this->src[i].x <<"," << this->dst[i].x << std::endl;
 		this->src[i].x=this->dst[i].x;
@@ -101,30 +101,37 @@ void Piece::translate(int a, int b, bool mat[BLOCSX][BLOCSY]){
 	}
 	this->affiche_coord(1,1);
 
-	if(!(this->isLegal(mat))) {
+	if(!(this->depassement(mat))) {
 		std::cout << "mouvement illégal" << std::endl;
 		this->affiche_coord(1,1);
 		this->translate(-a, -b, mat);
 	}
+	if(!(this->isLegal(mat))) {
+		std::cout << "mouvement illégal" << std::endl;
+		this->affiche_coord(1,1);
+		this->translate(-a, -b, mat);
+		return false;
+	}
+	return true;
 }
 
 /*
  * Cette fonction déplace une pièce vers le bas sans la dessiner.
  * Il faut appeler la méthode draw pour dessiner la pièce.
  */
-void Piece::down(bool mat[BLOCSX][BLOCSY]){
+bool Piece::down(bool mat[BLOCSX][BLOCSY]){
 	//normalement c'est 1 (normalisé). Faudra le faire
 	this->affiche_coord(1,1);
 
-	this->translate(0,1,mat);
+	return this->translate(0,1,mat);
 }
 
-void Piece::right(bool mat[BLOCSX][BLOCSY]){
-	this->translate(1,0,mat);
+bool Piece::right(bool mat[BLOCSX][BLOCSY]){
+	return this->translate(1,0,mat);
 }
 
-void Piece::left(bool mat[BLOCSX][BLOCSY]){
-	this->translate(-1,0,mat);
+bool Piece::left(bool mat[BLOCSX][BLOCSY]){
+	return this->translate(-1,0,mat);
 }
 
 /*
@@ -147,20 +154,31 @@ void Piece::rotate(double alpha){
 }
 
 /*
- * Cette méthode calcule la légalité d'une pièce sur le plateau.
- * Une position pas légale est une pièce en dehors du plateau ou qui
- * chevauche une autre pièce.
- * Cette fonction doit renvoyer true si le déplacement est légal est faux sinon.
+ * Cette méthode sert juste à ce que la pièce ne parte pas sur les côtés
+ * La fonction translate l'appelle et replace correctement la pièce si
+ * cela arrive
  */
-bool Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
+bool Piece::depassement(bool mat[BLOCSX][BLOCSY]){
 	for(int i = 0; i< 4; i++) {
 		//Verification dépassement horizontal
 		if(this->dst[i].x < 0 || this->dst[i].x > BLOCSX) {
 			std::cout << "mouvement illégal (dh)" << std::endl;
 			return false;
 		}
+	}
+	return true;
+}
+
+/*
+ * Cette méthode calcule la légalité d'une pièce sur le plateau.
+ * Une position pas légale est une pièce en dehors du plateau ou qui
+ * chevauche une autre pièce.
+ * Cette fonction doit renvoyer true si le déplacement est légal est faux sinon.
+ */
+bool Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
+		for(int i = 0; i< 4; i++) {
 		//Verification dépassement vertical
-		else if(this->dst[i].y < 0 || this->dst[i].y > BLOCSY) {
+		if(this->dst[i].y < 0 || this->dst[i].y > BLOCSY) {
 			std::cout << "mouvement illégal (dv)" << std::endl;
 			return false;
 		}
@@ -207,6 +225,13 @@ void Piece::affiche_dst(){
 	}
 }*/
 
+int Piece::getx(int i) {
+	return this->src[i].x;
+}
+
+int Piece::gety(int i) {
+	return this->src[i].y;
+}
 
 /*############################################################################
 ########################          LEFT L         #############################

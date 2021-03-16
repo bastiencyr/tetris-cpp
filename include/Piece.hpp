@@ -28,17 +28,19 @@ protected:
 public :
     Piece(int w);
     ~Piece(); // destructor
-    void down(bool mat[BLOCSX][BLOCSY]);
+    bool down(bool mat[BLOCSX][BLOCSY]);
 	void up(bool mat[BLOCSX][BLOCSY]);
-	void right(bool mat[BLOCSX][BLOCSY]);
-	void left(bool mat[BLOCSX][BLOCSY]);
+	bool right(bool mat[BLOCSX][BLOCSY]);
+	bool left(bool mat[BLOCSX][BLOCSY]);
 	void draw(SDL_Renderer* renderer);
 	void draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor);
-	void translate(int a, int b, bool mat[BLOCSX][BLOCSY]);
+	bool translate(int a, int b, bool mat[BLOCSX][BLOCSY]);
 	void rotate(double alpha);
 	bool isLegal(bool mat[BLOCSX][BLOCSY]);
+	bool depassement(bool mat[BLOCSX][BLOCSY]);
 	void affiche_coord(bool source, bool dest);
-
+	int getx(int i);
+	int gety(int i);
 };
 
 class LeftL : public Piece {
