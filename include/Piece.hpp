@@ -38,11 +38,10 @@ public :
 	bool translate(int a, int b, bool mat[BLOCSX][BLOCSY]);
 	void rotate(double alpha);
 	error isLegal(bool mat[BLOCSX][BLOCSY]);
-	bool depassement(bool mat[BLOCSX][BLOCSY]);
+	//bool depassement(bool mat[BLOCSX][BLOCSY]);
 	void affiche_coord(bool source, bool dest);
 	int getx(int i);
 	int gety(int i);
-	error test();
 };
 
 class LeftL : public Piece {

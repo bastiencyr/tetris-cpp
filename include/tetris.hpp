@@ -39,6 +39,7 @@ public :
     void loop();
 	SDL_Renderer* get_renderer() {return renderer;};
 	SDL_Window* get_pWindow() {return pWindow;};
+	void printMatrice();
 
     ~Tetris(); // destructor
 

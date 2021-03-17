@@ -13,10 +13,6 @@
 
 #include "../include/Error.hpp"
 
-error Piece::test(){
-	error e = ERROR;
-	return e;
-}
 
 Piece::Piece(int w) {
 	//au début la position de la source na pas dimportance, on peut linitialiser à
@@ -150,21 +146,21 @@ void Piece::rotate(double alpha){
 
 }
 
-/*
- * Cette méthode sert juste à ce que la pièce ne parte pas sur les côtés
- * La fonction translate l'appelle et replace correctement la pièce si
- * cela arrive
- */
-bool Piece::depassement(bool mat[BLOCSX][BLOCSY]){
-	for(int i = 0; i< 4; i++) {
-		//Verification dépassement horizontal
-		if(this->dst[i].x < 0 || this->dst[i].x >= BLOCSX) {
-			std::cout << "mouvement illégal (dh)" << std::endl;
-			return false;
-		}
-	}
-	return true;
-}
+///*
+// * Cette méthode sert juste à ce que la pièce ne parte pas sur les côtés
+// * La fonction translate l'appelle et replace correctement la pièce si
+// * cela arrive
+// */
+//bool Piece::depassement(bool mat[BLOCSX][BLOCSY]){
+//	for(int i = 0; i< 4; i++) {
+//		//Verification dépassement horizontal
+//		if(this->dst[i].x < 0 || this->dst[i].x >= BLOCSX) {
+//			std::cout << "mouvement illégal (dh)" << std::endl;
+//			return false;
+//		}
+//	}
+//	return true;
+//}
 
 /*
  * Cette méthode calcule la légalité d'une pièce sur le plateau.
@@ -192,6 +188,7 @@ error Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
 			//return false;
 		}
 		
+		//vérification dépassement horizontal
 		else if(this->dst[i].x < 0 || this->dst[i].x >= BLOCSX) {
 			std::cout << "mouvement illégal (dh)" << std::endl;
 			e = OVER_X;
@@ -238,11 +235,11 @@ void Piece::affiche_dst(){
 }*/
 
 int Piece::getx(int i) {
-	return this->src[i].x;
+	return this->dst[i].x;
 }
 
 int Piece::gety(int i) {
-	return this->src[i].y;
+	return this->dst[i].y;
 }
 
 /*############################################################################

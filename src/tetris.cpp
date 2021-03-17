@@ -108,7 +108,7 @@ void Tetris::loop()
 		
 		piece.draw(renderer,texture,SIZE_BLOC);
 		SDL_Event event;
-		while (!quit && SDL_PollEvent(&event))
+		while (!quit && SDL_PollEvent(&event) && cont == true)
 		{
 			switch (event.type)
 			{
@@ -150,6 +150,10 @@ void Tetris::loop()
 							or piece.isLegal(mat)==COLLISION_PIECE) {
 						cont = false;
 						piece.up(this->mat);
+						
+						for(int i = 0; i < 4; i++)
+							mat[piece.getx(i)][piece.gety(i)]=true;
+						this->printMatrice();
 					}
 					else if(piece.isLegal(mat)==NO_ERROR) {
 						piece.draw(renderer,texture, SIZE_BLOC);
@@ -181,11 +185,14 @@ void Tetris::loop()
 			if (piece.isLegal(mat)==NO_ERROR){
 				piece.draw(renderer, texture, SIZE_BLOC);
 			}
-			else{
+			else if (piece.isLegal(mat)== COLLISION_PIECE 
+					or piece.isLegal(mat)== OVER_Y){
 				cont = false;
 				piece.up(this->mat);
 				for(int i = 0; i < 4; i++)
 					mat[piece.getx(i)][piece.gety(i)]=true;
+				
+				this->printMatrice();
 			}
 			t=0;
 		}
@@ -193,6 +200,15 @@ void Tetris::loop()
 
 }
 
+void Tetris::printMatrice(){
+	std::cout << "L'état de la matrice est : " << std::endl;
+	for(int i = 0; i< BLOCSY; i++) {
+		for(int j = 0; j< BLOCSX; j++) {
+			std::cout << "--"<<mat[i][j] << "--" ;
+		}
+		std::cout << std::endl;
+	}
+}
 
 
 int main(int argc, char** argv)
