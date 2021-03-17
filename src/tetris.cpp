@@ -36,8 +36,8 @@ Tetris::Tetris(int w, int h) : piece(w) {
 	}
 	
 	std::cout << "L'état initial de la matrice est : " << std::endl;
-	for(int i = 0; i< BLOCSY; i++) {
-		for(int j = 0; j< BLOCSX; j++) {
+	for(int j = 0; j< BLOCSY; j++) {
+		for(int i = 0; i< BLOCSX; i++) {
 			if (mat[i][j]==true)
 				std::cout << "--0--" ;
 			else
