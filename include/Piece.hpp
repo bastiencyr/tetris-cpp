@@ -10,6 +10,7 @@
 
 #include <SDL.h>
 #include <string>
+#include "Error.hpp"
 #define SIZE_BLOC 40
 #define BLOCSX 10
 #define BLOCSY 20
@@ -36,11 +37,12 @@ public :
 	void draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor);
 	bool translate(int a, int b, bool mat[BLOCSX][BLOCSY]);
 	void rotate(double alpha);
-	bool isLegal(bool mat[BLOCSX][BLOCSY]);
+	error isLegal(bool mat[BLOCSX][BLOCSY]);
 	bool depassement(bool mat[BLOCSX][BLOCSY]);
 	void affiche_coord(bool source, bool dest);
 	int getx(int i);
 	int gety(int i);
+	error test();
 };
 
 class LeftL : public Piece {

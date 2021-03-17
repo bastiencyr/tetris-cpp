@@ -11,6 +11,12 @@
 
 #include "../include/Piece.hpp"
 
+#include "../include/Error.hpp"
+
+error Piece::test(){
+	error e = ERROR;
+	return e;
+}
 
 Piece::Piece(int w) {
 	//au début la position de la source na pas dimportance, on peut linitialiser à
@@ -96,15 +102,15 @@ bool Piece::translate(int a, int b, bool mat[BLOCSX][BLOCSY]){
 		this->dst[i].y+=b;
 	}
 
-	if(!(this->depassement(mat))) {
-		std::cout << "mouvement dépassant" << std::endl;
-		this->translate(-a, -b, mat);
-	}
-	if(!(this->isLegal(mat))) {
-		std::cout << "mouvement illégal" << std::endl;
-		this->translate(-a, -b, mat);
-		return false;
-	}
+//	if(this->isLegal(mat)==OVER_X) {
+//		std::cout << "mouvement dépassant" << std::endl;
+//		this->translate(-a, -b, mat);
+//	}
+//	if(this->isLegal(mat)!=NO_ERROR) {
+//		std::cout << "mouvement illégal" << std::endl;
+//		this->translate(-a, -b, mat);
+//		return false;
+//	}
 	return true;
 }
 
@@ -166,22 +172,37 @@ bool Piece::depassement(bool mat[BLOCSX][BLOCSY]){
  * chevauche une autre pièce.
  * Cette fonction doit renvoyer true si le déplacement est légal est faux sinon.
  */
-bool Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
-		for(int i = 0; i< 4; i++) {
+error Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
+	
+	error e = ERROR;
+	
+	for(int i = 0; i< 4; i++) {
 		//Verification dépassement vertical
 		if(this->dst[i].y < 0 || this->dst[i].y > BLOCSY) {
 			std::cout << "mouvement illégal (dv)" << std::endl;
-			return false;
+			e = OVER_Y;
+			return e;
+			//return false;
 		}
 		//Verification occupation de la case
 		else if(mat[this->dst[i].x][this->dst[i].y]) {
 			std::cout << "mouvement illégal (oc)" << std::endl;
-			return false;
+			e = COLLISION_PIECE;
+			return e;
+			//return false;
 		}
-
+		
+		else if(this->dst[i].x < 0 || this->dst[i].x >= BLOCSX) {
+			std::cout << "mouvement illégal (dh)" << std::endl;
+			e = OVER_X;
+			return e;
+		}
+		
 	}
 	std::cout << "mouvement légal" << std::endl;
-	return true;
+	e = NO_ERROR;
+	return e;
+	//return true;
 }
 
 

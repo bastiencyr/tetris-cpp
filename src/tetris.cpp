@@ -99,15 +99,15 @@ void Tetris::loop()
 	double t=0;
 	while (!quit)
 	{
-		SDL_Event event;
 		if(!cont) {
-			for(int i = 0; i < 4; i++) {
-				mat[piece.getx(i)][piece.gety(i)]=true;
-			}
+			std::cout << "Nouvelle pièce en haut" << std::endl;
 			Piece NouvPiece(w);
 			piece = NouvPiece;
+			cont = true;
 		}
-
+		
+		piece.draw(renderer,texture,SIZE_BLOC);
+		SDL_Event event;
 		while (!quit && SDL_PollEvent(&event))
 		{
 			switch (event.type)
@@ -117,38 +117,56 @@ void Tetris::loop()
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 				break;
-
-			// c'est ici quuon prend les événements du clavier.
-			// Jai pris sur internet, je sais pas trop comment ca fonctionne sinon
+				
+				// c'est ici quuon prend les événements du clavier.
+				// Jai pris sur internet, je sais pas trop comment ca fonctionne sinon
 			case SDL_KEYDOWN:
-               /* Check the SDLKey values and move change the coords */
+				/* Check the SDLKey values and move change the coords */
 				switch( event.key.keysym.sym ){
 					//si lutilisateur appuie sur la flèche droite du clavier:
-					case SDLK_RIGHT:
-						cont = piece.right(this->mat);
+					
+				case SDLK_RIGHT:
+					piece.right(this->mat);
+					if(piece.isLegal(mat)==NO_ERROR) {
 						piece.draw(renderer,texture,SIZE_BLOC);
-						break;
-
-					case SDLK_LEFT:
-						cont = piece.left(this->mat);
+					}
+					else
+						piece.left(this->mat);
+					
+					break;
+					
+				case SDLK_LEFT:
+					piece.left(this->mat);
+					if(piece.isLegal(mat)==NO_ERROR) {
 						piece.draw(renderer,texture,SIZE_BLOC);
-						break;
-
-					case SDLK_DOWN:
-						cont = piece.down(this->mat);
+					}
+					else
+						piece.right(this->mat);
+					break;
+					
+				case SDLK_DOWN:
+					piece.down(this->mat);
+					if(piece.isLegal(mat)==OVER_Y 
+							or piece.isLegal(mat)==COLLISION_PIECE) {
+						cont = false;
+						piece.up(this->mat);
+					}
+					else if(piece.isLegal(mat)==NO_ERROR) {
 						piece.draw(renderer,texture, SIZE_BLOC);
-						break;
-
-					case SDLK_UP:
-						//piece.up();
-						piece.draw(renderer,texture,SIZE_BLOC);
-						break;
+					}
+					
+					break;
+					
+				case SDLK_UP:
+					//piece.up();
+					//piece.draw(renderer,texture,SIZE_BLOC);
+					break;
 				}
-
+				
 			default: break;
 			}
 		}
-
+		
 		const Uint8* state = SDL_GetKeyboardState(NULL);
 		quit |= (state[SDL_SCANCODE_ESCAPE]!=0);
 
@@ -159,8 +177,16 @@ void Tetris::loop()
 
 		t+=delta_t;
 		if(floor(t)>=1) {
-			cont = piece.down(this->mat);
-			piece.draw(renderer, texture, SIZE_BLOC);
+			piece.down(this->mat);
+			if (piece.isLegal(mat)==NO_ERROR){
+				piece.draw(renderer, texture, SIZE_BLOC);
+			}
+			else{
+				cont = false;
+				piece.up(this->mat);
+				for(int i = 0; i < 4; i++)
+					mat[piece.getx(i)][piece.gety(i)]=true;
+			}
 			t=0;
 		}
 	}
