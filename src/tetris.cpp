@@ -34,6 +34,17 @@ Tetris::Tetris(int w, int h) : piece(w) {
 			mat[i][j] = false;
 		}
 	}
+	
+	std::cout << "L'état initial de la matrice est : " << std::endl;
+	for(int i = 0; i< BLOCSY; i++) {
+		for(int j = 0; j< BLOCSX; j++) {
+			if (mat[i][j])
+				std::cout << "--0--" ;
+			else
+				std::cout << "--1--" ;
+		}
+		std::cout << std::endl;
+	}
 
 	piece.affiche_coord(1,1);
 	//piece.draw(renderer,texture, SIZE_BLOC);
@@ -204,7 +215,10 @@ void Tetris::printMatrice(){
 	std::cout << "L'état de la matrice est : " << std::endl;
 	for(int i = 0; i< BLOCSY; i++) {
 		for(int j = 0; j< BLOCSX; j++) {
-			std::cout << "--"<<mat[i][j] << "--" ;
+			if (mat[i][j])
+				std::cout << "--0--" ;
+			else
+				std::cout << "--1--" ;
 		}
 		std::cout << std::endl;
 	}
