@@ -11,7 +11,7 @@
 #include <SDL.h>
 #include <string>
 #include "Error.hpp"
-#define SIZE_BLOC 40
+#define SIZE_BLOC 35
 #define BLOCSX 10
 #define BLOCSY 20
 

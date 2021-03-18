@@ -9,7 +9,7 @@
 #include <iostream>
 #include <cassert>
 #include "../include/tetris.hpp"
-#define SIZE_BLOC 40
+#define SIZE_BLOC 35
 #define BLOCSX 10
 #define BLOCSY 20
 
