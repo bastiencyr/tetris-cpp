@@ -115,9 +115,9 @@ void Tetris::loop()
 			Piece NouvPiece(w);
 			piece = NouvPiece;
 			cont = true;
+			piece.draw(renderer,texture,SIZE_BLOC);
 		}
 		
-		piece.draw(renderer,texture,SIZE_BLOC);
 		SDL_Event event;
 		while (!quit && SDL_PollEvent(&event) && cont == true)
 		{
