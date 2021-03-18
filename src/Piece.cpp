@@ -137,13 +137,49 @@ void Piece::up(bool mat[BLOCSX][BLOCSY]){
 	this->translate(0,-1,mat);
 }
 
+
 /*
  *Cette fonction effectue la rotation de la pièce.
  * Le centre de rotation est donné par l'entier contenu dans la structure
  * de la pièce.
  */
-void Piece::rotate(double alpha){
+void Piece::rotateLeft(){
+	
+	for(int i = 0; i<4; i++) {
+		
+		this->src[i].x=this->dst[i].x;
+		this->src[i].y=this->dst[i].y;
+		this->src[i].w=this->dst[i].w;
+		this->src[i].h=this->dst[i].h;
+	}
+	
+	//ATTENTION, il faut bien séparer les deux boucles !!
+	for(int i = 0; i<4; i++) {
+		this->dst[i].x = this->src[i].y - this->src[1].y + this->src[1].x;
+		this->dst[i].y= this->src[1].x - this->src[i].x + this->src[1].y;
+	}
+}
 
+/*
+ *Cette fonction effectue la rotation de la pièce.
+ * Le centre de rotation est donné par l'entier contenu dans la structure
+ * de la pièce.
+ */
+void Piece::rotateRight(){
+	
+	for(int i = 0; i<4; i++) {
+		
+		this->src[i].x=this->dst[i].x;
+		this->src[i].y=this->dst[i].y;
+		this->src[i].w=this->dst[i].w;
+		this->src[i].h=this->dst[i].h;
+	}
+	
+	//ATTENTION, il faut bien séparer les deux boucles !!
+	for(int i = 0; i<4; i++) {
+		this->dst[i].x = this->src[1].y - this->src[i].y + this->src[1].x;
+		this->dst[i].y= this->src[i].x - this->src[1].x + this->src[1].y;
+	}
 }
 
 ///*

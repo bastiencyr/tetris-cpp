@@ -173,6 +173,16 @@ void Tetris::loop()
 					break;
 					
 				case SDLK_UP:
+					
+					piece.rotateRight();
+					if(piece.isLegal(mat)==NO_ERROR) {
+						piece.draw(renderer,texture,SIZE_BLOC);
+					}
+					else
+						piece.rotateLeft();
+					
+					piece.draw(renderer,texture, SIZE_BLOC);
+
 					//piece.up();
 					//piece.draw(renderer,texture,SIZE_BLOC);
 					break;

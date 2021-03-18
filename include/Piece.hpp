@@ -36,7 +36,8 @@ public :
 	void draw(SDL_Renderer* renderer);
 	void draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor);
 	bool translate(int a, int b, bool mat[BLOCSX][BLOCSY]);
-	void rotate(double alpha);
+	void rotateLeft();
+	void rotateRight();
 	error isLegal(bool mat[BLOCSX][BLOCSY]);
 	//bool depassement(bool mat[BLOCSX][BLOCSY]);
 	void affiche_coord(bool source, bool dest);
