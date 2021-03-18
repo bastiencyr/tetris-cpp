@@ -13,8 +13,7 @@
 
 #include "../include/Error.hpp"
 
-
-Piece::Piece(int w) {
+Piece::Piece(int id) {
 	//au début la position de la source na pas dimportance, on peut linitialiser à
 	// des paramètres quelconque
 	for(int i = 0; i<4; i++) {
@@ -69,12 +68,12 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
 	SDL_SetRenderDrawColor(renderer, 150, 0, 150, 255); /* On dessine en violet */
 	for(int i = 0; i < 4; i++) {
 		src_r[i].x=this->src[i].x*factor;
-		src_r[i].y=((this->src[i].y)-1)*factor;
+		src_r[i].y=((this->src[i].y))*factor;
 		src_r[i].w=this->src[i].w*factor;
 		src_r[i].h=this->src[i].h*factor;
 
 		dst_r[i].x=this->dst[i].x*factor;
-		dst_r[i].y=((this->dst[i].y)-1)*factor;
+		dst_r[i].y=((this->dst[i].y))*factor;
 		dst_r[i].w=this->dst[i].w*factor;
 		dst_r[i].h=this->dst[i].h*factor;
 
@@ -210,7 +209,7 @@ error Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
 	
 	for(int i = 0; i< 4; i++) {
 		//Verification dépassement vertical
-		if(this->dst[i].y < 0 || this->dst[i].y > BLOCSY) {
+		if(this->dst[i].y < 0 || this->dst[i].y == BLOCSY) {
 			std::cout << "mouvement illégal (dv)" << std::endl;
 			e = OVER_Y;
 			return e;
@@ -225,7 +224,7 @@ error Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
 		}
 		
 		//vérification dépassement horizontal
-		else if(this->dst[i].x < 0 || this->dst[i].x >= BLOCSX) {
+		else if(this->dst[i].x < 0 || this->dst[i].x == BLOCSX) {
 			std::cout << "mouvement illégal (dh)" << std::endl;
 			e = OVER_X;
 			return e;

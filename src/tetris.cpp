@@ -160,10 +160,11 @@ void Tetris::loop()
 					if(piece.isLegal(mat)==OVER_Y 
 							or piece.isLegal(mat)==COLLISION_PIECE) {
 						cont = false;
-						piece.up(this->mat);
 						
+						piece.up(this->mat);
 						for(int i = 0; i < 4; i++)
 							mat[piece.getx(i)][piece.gety(i)]=true;
+						
 						this->printMatrice();
 					}
 					else if(piece.isLegal(mat)==NO_ERROR) {
@@ -190,6 +191,8 @@ void Tetris::loop()
 				
 			default: break;
 			}
+			//this->printMatrice();
+			
 		}
 		
 		const Uint8* state = SDL_GetKeyboardState(NULL);
@@ -215,6 +218,7 @@ void Tetris::loop()
 				
 				this->printMatrice();
 			}
+			//this->printMatrice();
 			t=0;
 		}
 	}

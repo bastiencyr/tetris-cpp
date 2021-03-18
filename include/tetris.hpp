@@ -17,7 +17,7 @@ protected:
 
     SDL_Window* pWindow;
     SDL_Renderer* renderer;
-    SDL_Renderer* renderer2;
+    SDL_Renderer* welcome_screen;
     SDL_Surface* winSurf;
     SDL_Texture *texture;
 
