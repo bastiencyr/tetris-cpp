@@ -20,6 +20,8 @@ protected:
     SDL_Renderer* welcome_screen;
     SDL_Surface* winSurf;
     SDL_Texture *texture;
+	
+	//Piece *piece;
 
 	int w;
     int h;
@@ -29,8 +31,6 @@ protected:
 
 //    SDL_Rect src;
 //    SDL_Rect dest;
-
-	Piece piece;
 
 public :
     void init();

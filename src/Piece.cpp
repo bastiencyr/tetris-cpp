@@ -34,25 +34,6 @@ Piece::Piece(int id) {
 Piece::~Piece() {
 }
 
-/*
- Cette fonction est chargée de dessiner une pièce sur le renderer.
- Elle ne vérifie pas si elle a le droit de dessiner.
- */
-void Piece::draw(SDL_Renderer* renderer){
-
-	for(int i = 0; i < 4; i++) {
-	//on efface la pièce source
-		SDL_SetRenderDrawColor(renderer,63,63,63,255);
-		SDL_RenderFillRect(renderer, &this->src[i]);
-
-		//on dessine la pièce cible
-		SDL_SetRenderDrawColor(renderer, 150, 0, 150, 255);
-		SDL_RenderFillRect(renderer, &this->dst[i]);
-
-		SDL_RenderPresent(renderer);
-	}
-
-}
 
 /*
  * Fait la même chose que a fonction en haut mais avec un facteur déchelle
@@ -181,21 +162,6 @@ void Piece::rotateRight(){
 	}
 }
 
-///*
-// * Cette méthode sert juste à ce que la pièce ne parte pas sur les côtés
-// * La fonction translate l'appelle et replace correctement la pièce si
-// * cela arrive
-// */
-//bool Piece::depassement(bool mat[BLOCSX][BLOCSY]){
-//	for(int i = 0; i< 4; i++) {
-//		//Verification dépassement horizontal
-//		if(this->dst[i].x < 0 || this->dst[i].x >= BLOCSX) {
-//			std::cout << "mouvement illégal (dh)" << std::endl;
-//			return false;
-//		}
-//	}
-//	return true;
-//}
 
 /*
  * Cette méthode calcule la légalité d'une pièce sur le plateau.
@@ -276,94 +242,121 @@ int Piece::getx(int i) {
 int Piece::gety(int i) {
 	return this->dst[i].y;
 }
+ void Piece::update(){
+	 puts("update de la classe mère!!!");
+ }
 
 /*############################################################################
 ########################          LEFT L         #############################
 ############################################################################*/
 
-JTetri::JTetri(int w) : Piece(w) {
-	this->src[0].x=floor(w/2);
-	this->src[1].x=floor(w/2)-1;
-	this->src[2].x=floor(w/2)-1;
-	this->src[3].x=floor(w/2)-1;
+//JTetri::JTetri(int w) : Piece(w){
+//	this->src[0].x=floor(w/2);
+//	this->src[1].x=floor(w/2)-1;
+//	this->src[2].x=floor(w/2)-1;
+//	this->src[3].x=floor(w/2)-1;
+//
+//	this->dst[0].y=0;
+//	this->dst[1].y=0;
+//	this->dst[2].y=1;
+//	this->dst[3].y=2;
+//}
 
-	this->src[0].y=0;
-	this->src[1].y=0;
-	this->src[2].y=1;
-	this->src[3].y=2;
+LTetri::LTetri(int w) : Piece(w){
+
+	for(int i = 0; i<4; i++) {
+	    this->src[i].x=floor(BLOCSX/2);
+		this->src[i].y=i;
+		this->src[i].w=1;
+		this->src[i].h=1;
+		
+		//Le constructeur par défaut de pièce devra faire apparitre une pièce
+		//au hasard. C'est donc dst.x qui doit être choisi au hasard
+		this->dst[i].x=floor(BLOCSX/2);
+		this->dst[i].y=i;
+		this->dst[i].w=1;
+		this->dst[i].h=1;
+	}
+	
+	this->dst[3].x=floor(BLOCSX/2)+1;
+	this->dst[3].y= 2;
 }
 
-LTetri::LTetri(int w) : Piece(w) {
-	this->src[0].x=floor(w/2);
-	this->src[1].x=floor(w/2)+1;
-	this->src[2].x=floor(w/2)+1;
-	this->src[3].x=floor(w/2)+1;
+void LTetri::update(){
+	
+	for(int i = 0; i<4; i++) {
+	    this->src[i].x=floor(BLOCSX/2);
+		this->src[i].y=i;
+		
+		this->dst[i].x=floor(BLOCSX/2);
+		this->dst[i].y=i;
 
-	this->src[0].y=0;
-	this->src[1].y=0;
-	this->src[2].y=1;
-	this->src[3].y=2;
+	}
+	
+	this->dst[3].x=floor(BLOCSX/2)+1;
+	this->dst[3].y= 2;
+	
 }
 
+//ITetri::ITetri(int w) : Piece(w){
+//	this->src[0].x=floor(w/2);
+//	this->src[1].x=floor(w/2);
+//	this->src[2].x=floor(w/2);
+//	this->src[3].x=floor(w/2);
+//
+//	this->src[0].y=0;
+//	this->src[1].y=1;
+//	this->src[2].y=2;
+//	this->src[3].y=3;
+//}
+//
+//OTetri::OTetri(int w) : Piece(w) {
+//	this->src[0].x=floor(w/2);
+//	this->src[1].x=floor(w/2);
+//	this->src[2].x=floor(w/2)+1;
+//	this->src[3].x=floor(w/2)+1;
+//
+//	this->src[0].y=0;
+//	this->src[1].y=1;
+//	this->src[2].y=0;
+//	this->src[3].y=1;
+//}
+//
+//TTetri::TTetri(int w) : Piece(w) {
+//	this->src[0].x=floor(w/2);
+//	this->src[1].x=floor(w/2)+1;
+//	this->src[2].x=floor(w/2)+2;
+//	this->src[3].x=floor(w/2)+1;
+//
+//	this->src[0].y=0;
+//	this->src[1].y=0;
+//	this->src[2].y=0;
+//	this->src[3].y=1;
+//}
+//
+//
+//ZTetri::ZTetri(int w) : Piece(w) {
+//	this->src[0].x=floor(w/2);
+//	this->src[1].x=floor(w/2)+1;
+//	this->src[2].x=floor(w/2)+1;
+//	this->src[3].x=floor(w/2)+2;
+//
+//	this->src[0].y=0;
+//	this->src[1].y=0;
+//	this->src[2].y=1;
+//	this->src[3].y=1;
+//}
+//
+//
+//STetri::STetri(int w) : Piece(w) {
+//	this->src[0].x=floor(w/2)+1;
+//	this->src[1].x=floor(w/2)+1;
+//	this->src[2].x=floor(w/2);
+//	this->src[3].x=floor(w/2);
+//
+//	this->src[0].y=1;
+//	this->src[1].y=1;
+//	this->src[2].y=0;
+//	this->src[3].y=0;
+//}
 
-ITetri::ITetri(int w) : Piece(w) {
-	this->src[0].x=floor(w/2);
-	this->src[1].x=floor(w/2);
-	this->src[2].x=floor(w/2);
-	this->src[3].x=floor(w/2);
-
-	this->src[0].y=0;
-	this->src[1].y=1;
-	this->src[2].y=2;
-	this->src[3].y=3;
-}
-
-OTetri::OTetri(int w) : Piece(w) {
-	this->src[0].x=floor(w/2);
-	this->src[1].x=floor(w/2);
-	this->src[2].x=floor(w/2)+1;
-	this->src[3].x=floor(w/2)+1;
-
-	this->src[0].y=0;
-	this->src[1].y=1;
-	this->src[2].y=0;
-	this->src[3].y=1;
-}
-
-TTetri::TTetri(int w) : Piece(w) {
-	this->src[0].x=floor(w/2);
-	this->src[1].x=floor(w/2)+1;
-	this->src[2].x=floor(w/2)+2;
-	this->src[3].x=floor(w/2)+1;
-
-	this->src[0].y=0;
-	this->src[1].y=0;
-	this->src[2].y=0;
-	this->src[3].y=1;
-}
-
-
-ZTetri::ZTetri(int w) : Piece(w) {
-	this->src[0].x=floor(w/2);
-	this->src[1].x=floor(w/2)+1;
-	this->src[2].x=floor(w/2)+1;
-	this->src[3].x=floor(w/2)+2;
-
-	this->src[0].y=0;
-	this->src[1].y=0;
-	this->src[2].y=1;
-	this->src[3].y=1;
-}
-
-
-STetri::STetri(int w) : Piece(w) {
-	this->src[0].x=floor(w/2)+1;
-	this->src[1].x=floor(w/2)+1;
-	this->src[2].x=floor(w/2);
-	this->src[3].x=floor(w/2);
-
-	this->src[0].y=1;
-	this->src[1].y=1;
-	this->src[2].y=0;
-	this->src[3].y=0;
-}

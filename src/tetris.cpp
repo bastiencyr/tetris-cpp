@@ -14,7 +14,7 @@
 #define BLOCSY 20
 
 
-Tetris::Tetris(int w, int h) : piece(w) {
+Tetris::Tetris(int w, int h){
 	this->w=w;
 	this->h=h;
 	pWindow = SDL_CreateWindow("Une fenetre SDL" , SDL_WINDOWPOS_CENTERED ,
@@ -46,7 +46,7 @@ Tetris::Tetris(int w, int h) : piece(w) {
 		std::cout << std::endl;
 	}
 
-	piece.affiche_coord(1,1);
+	//piece->affiche_coord(1,1);
 	//piece.draw(renderer,texture, SIZE_BLOC);
 }
 
@@ -105,6 +105,13 @@ void Tetris::loop()
 	Uint64 prev, now = SDL_GetPerformanceCounter(); // timers
 	double delta_t;  // durée frame en ms
 
+	
+	LTetri ltetri(w);
+	
+	ltetri.update();
+	
+	Piece *piece = new Piece(w);
+	
 	bool quit = false;
 	bool cont = true;
 	double t=0;
@@ -112,10 +119,10 @@ void Tetris::loop()
 	{
 		if(!cont) {
 			std::cout << "Nouvelle pièce en haut" << std::endl;
-			Piece NouvPiece(w);
-			piece = NouvPiece;
+			ltetri.update();
+			piece = &ltetri;
 			cont = true;
-			piece.draw(renderer,texture,SIZE_BLOC);
+			piece->draw(renderer,texture,SIZE_BLOC);
 		}
 		
 		SDL_Event event;
@@ -137,55 +144,53 @@ void Tetris::loop()
 					//si lutilisateur appuie sur la flèche droite du clavier:
 					
 				case SDLK_RIGHT:
-					piece.right(this->mat);
-					if(piece.isLegal(mat)==NO_ERROR) {
-						piece.draw(renderer,texture,SIZE_BLOC);
+					piece->right(this->mat);
+					if(piece->isLegal(mat)==NO_ERROR) {
+						piece->draw(renderer,texture,SIZE_BLOC);
 					}
 					else
-						piece.left(this->mat);
+						piece->left(this->mat);
 					
 					break;
 					
 				case SDLK_LEFT:
-					piece.left(this->mat);
-					if(piece.isLegal(mat)==NO_ERROR) {
-						piece.draw(renderer,texture,SIZE_BLOC);
+					piece->left(this->mat);
+					if(piece->isLegal(mat)==NO_ERROR) {
+						piece->draw(renderer,texture,SIZE_BLOC);
 					}
 					else
-						piece.right(this->mat);
+						piece->right(this->mat);
 					break;
 					
 				case SDLK_DOWN:
-					piece.down(this->mat);
-					if(piece.isLegal(mat)==OVER_Y 
-							or piece.isLegal(mat)==COLLISION_PIECE) {
+					piece->down(this->mat);
+					if(piece->isLegal(this->mat)==OVER_Y 
+							or piece->isLegal(this->mat)==COLLISION_PIECE) {
 						cont = false;
 						
-						piece.up(this->mat);
+						piece->up(this->mat);
 						for(int i = 0; i < 4; i++)
-							mat[piece.getx(i)][piece.gety(i)]=true;
+							mat[piece->getx(i)][piece->gety(i)]=true;
 						
 						this->printMatrice();
 					}
-					else if(piece.isLegal(mat)==NO_ERROR) {
-						piece.draw(renderer,texture, SIZE_BLOC);
+					else if(piece->isLegal(mat)==NO_ERROR) {
+						piece->draw(renderer,texture, SIZE_BLOC);
 					}
 					
 					break;
 					
 				case SDLK_UP:
 					
-					piece.rotateRight();
-					if(piece.isLegal(mat)==NO_ERROR) {
-						piece.draw(renderer,texture,SIZE_BLOC);
+					piece->rotateRight();
+					if(piece->isLegal(mat)==NO_ERROR) {
+						piece->draw(renderer,texture,SIZE_BLOC);
 					}
 					else
-						piece.rotateLeft();
-					
-					piece.draw(renderer,texture, SIZE_BLOC);
+						piece->rotateLeft();
 
-					//piece.up();
-					//piece.draw(renderer,texture,SIZE_BLOC);
+					//piece->up();
+					//piece->draw(renderer,texture,SIZE_BLOC);
 					break;
 				}
 				
@@ -205,16 +210,16 @@ void Tetris::loop()
 
 		t+=delta_t;
 		if(floor(t)>=1) {
-			piece.down(this->mat);
-			if (piece.isLegal(mat)==NO_ERROR){
-				piece.draw(renderer, texture, SIZE_BLOC);
+			piece->down(this->mat);
+			if (piece->isLegal(mat)==NO_ERROR){
+				piece->draw(renderer, texture, SIZE_BLOC);
 			}
-			else if (piece.isLegal(mat)== COLLISION_PIECE 
-					or piece.isLegal(mat)== OVER_Y){
+			else if (piece->isLegal(mat)== COLLISION_PIECE
+					or piece->isLegal(mat)== OVER_Y){
 				cont = false;
-				piece.up(this->mat);
+				piece->up(this->mat);
 				for(int i = 0; i < 4; i++)
-					mat[piece.getx(i)][piece.gety(i)]=true;
+					mat[piece->getx(i)][piece->gety(i)]=true;
 				
 				this->printMatrice();
 			}

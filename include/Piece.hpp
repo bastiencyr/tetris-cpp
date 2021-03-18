@@ -28,7 +28,7 @@ protected:
 	//il faudrait aussi quune pièce ait une couleur.
 public :
     Piece(int w);
-    ~Piece(); // destructor
+    virtual ~Piece(); // destructor
     bool down(bool mat[BLOCSX][BLOCSY]);
 	void up(bool mat[BLOCSX][BLOCSY]);
 	bool right(bool mat[BLOCSX][BLOCSY]);
@@ -43,33 +43,37 @@ public :
 	void affiche_coord(bool source, bool dest);
 	int getx(int i);
 	int gety(int i);
+	virtual void update();
 };
 
-class JTetri : public Piece {
-	JTetri(int w);
-};
+//class JTetri : public Piece {
+//public:
+//	JTetri(int w);
+//};
 
 class LTetri : public Piece {
+public:
 	LTetri(int w);
+	void update();
 };
 
-class ITetri : public Piece {
-	ITetri(int w);
-};
-
-class OTetri : public Piece {
-	OTetri(int w);
-};
-
-class TTetri : public Piece {
-	TTetri(int w);
-};
-
-class ZTetri : public Piece {
-	ZTetri(int w);
-};
-
-class STetri : public Piece {
-	STetri(int w);
-};
+//class ITetri : public Piece {
+//	ITetri(int w);
+//};
+//
+//class OTetri : public Piece {
+//	OTetri(int w);
+//};
+//
+//class TTetri : public Piece {
+//	TTetri(int w);
+//};
+//
+//class ZTetri : public Piece {
+//	ZTetri(int w);
+//};
+//
+//class STetri : public Piece {
+//	STetri(int w);
+//};
 #endif
