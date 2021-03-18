@@ -169,9 +169,9 @@ void Piece::rotate(double alpha){
  * Cette fonction doit renvoyer true si le déplacement est légal est faux sinon.
  */
 error Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
-	
+
 	error e = ERROR;
-	
+
 	for(int i = 0; i< 4; i++) {
 		//Verification dépassement vertical
 		if(this->dst[i].y < 0 || this->dst[i].y > BLOCSY) {
@@ -187,14 +187,14 @@ error Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
 			return e;
 			//return false;
 		}
-		
+
 		//vérification dépassement horizontal
 		else if(this->dst[i].x < 0 || this->dst[i].x >= BLOCSX) {
 			std::cout << "mouvement illégal (dh)" << std::endl;
 			e = OVER_X;
 			return e;
 		}
-		
+
 	}
 	std::cout << "mouvement légal" << std::endl;
 	e = NO_ERROR;
@@ -246,7 +246,7 @@ int Piece::gety(int i) {
 ########################          LEFT L         #############################
 ############################################################################*/
 
-LeftL::LeftL(int w) : Piece(w) {
+JTetri::JTetri(int w) : Piece(w) {
 	this->src[0].x=floor(w/2);
 	this->src[1].x=floor(w/2)-1;
 	this->src[2].x=floor(w/2)-1;
@@ -256,4 +256,79 @@ LeftL::LeftL(int w) : Piece(w) {
 	this->src[1].y=0;
 	this->src[2].y=1;
 	this->src[3].y=2;
+}
+
+LTetri::LTetri(int w) : Piece(w) {
+	this->src[0].x=floor(w/2);
+	this->src[1].x=floor(w/2)+1;
+	this->src[2].x=floor(w/2)+1;
+	this->src[3].x=floor(w/2)+1;
+
+	this->src[0].y=0;
+	this->src[1].y=0;
+	this->src[2].y=1;
+	this->src[3].y=2;
+}
+
+
+ITetri::ITetri(int w) : Piece(w) {
+	this->src[0].x=floor(w/2);
+	this->src[1].x=floor(w/2);
+	this->src[2].x=floor(w/2);
+	this->src[3].x=floor(w/2);
+
+	this->src[0].y=0;
+	this->src[1].y=1;
+	this->src[2].y=2;
+	this->src[3].y=3;
+}
+
+OTetri::OTetri(int w) : Piece(w) {
+	this->src[0].x=floor(w/2);
+	this->src[1].x=floor(w/2);
+	this->src[2].x=floor(w/2)+1;
+	this->src[3].x=floor(w/2)+1;
+
+	this->src[0].y=0;
+	this->src[1].y=1;
+	this->src[2].y=0;
+	this->src[3].y=1;
+}
+
+TTetri::TTetri(int w) : Piece(w) {
+	this->src[0].x=floor(w/2);
+	this->src[1].x=floor(w/2)+1;
+	this->src[2].x=floor(w/2)+2;
+	this->src[3].x=floor(w/2)+1;
+
+	this->src[0].y=0;
+	this->src[1].y=0;
+	this->src[2].y=0;
+	this->src[3].y=1;
+}
+
+
+ZTetri::ZTetri(int w) : Piece(w) {
+	this->src[0].x=floor(w/2);
+	this->src[1].x=floor(w/2)+1;
+	this->src[2].x=floor(w/2)+1;
+	this->src[3].x=floor(w/2)+2;
+
+	this->src[0].y=0;
+	this->src[1].y=0;
+	this->src[2].y=1;
+	this->src[3].y=1;
+}
+
+
+STetri::STetri(int w) : Piece(w) {
+	this->src[0].x=floor(w/2)+1;
+	this->src[1].x=floor(w/2)+1;
+	this->src[2].x=floor(w/2);
+	this->src[3].x=floor(w/2);
+
+	this->src[0].y=1;
+	this->src[1].y=1;
+	this->src[2].y=0;
+	this->src[3].y=0;
 }

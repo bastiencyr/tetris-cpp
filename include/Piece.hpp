@@ -44,7 +44,31 @@ public :
 	int gety(int i);
 };
 
-class LeftL : public Piece {
-	LeftL(int w);
+class JTetri : public Piece {
+	JTetri(int w);
+};
+
+class LTetri : public Piece {
+	LTetri(int w);
+};
+
+class ITetri : public Piece {
+	ITetri(int w);
+};
+
+class OTetri : public Piece {
+	OTetri(int w);
+};
+
+class TTetri : public Piece {
+	TTetri(int w);
+};
+
+class ZTetri : public Piece {
+	ZTetri(int w);
+};
+
+class STetri : public Piece {
+	STetri(int w);
 };
 #endif
