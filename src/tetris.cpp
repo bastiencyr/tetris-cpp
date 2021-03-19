@@ -217,16 +217,15 @@ void Tetris::loop()
 					}
 					else
 						piece->rotateLeft();
-
+					
 					break;
 				}
-
+				
 			default: break;
 			}
-			//this->printMatrice();
-
+			this->printMatrice();
 		}
-
+		
 		const Uint8* state = SDL_GetKeyboardState(NULL);
 		quit |= (state[SDL_SCANCODE_ESCAPE]!=0);
 
@@ -238,8 +237,10 @@ void Tetris::loop()
 		t+=delta_t;
 		if(floor(t)>=1) {
 			cont = piece->onDown(mat, cont, renderer, texture);
+			this->printMatrice();
 			t=0;
 		}
+		
 	}
 
 }

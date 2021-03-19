@@ -259,7 +259,7 @@ int Piece::getcol(int i) {
 JTetri::JTetri() : Piece(){
 	this->color[0]=0;
 	this->color[1]=0;
-	this->color[0]=255;
+	this->color[2]=255;
 }
 
 void JTetri::update() {
@@ -268,10 +268,10 @@ void JTetri::update() {
 	this->src[2].x=floor(BLOCSX/2)-1;
 	this->src[3].x=floor(BLOCSX/2)-1;
 
-	this->dst[0].y=0;
-	this->dst[1].y=0;
-	this->dst[2].y=1;
-	this->dst[3].y=2;
+	this->src[0].y=0;
+	this->src[1].y=0;
+	this->src[2].y=1;
+	this->src[3].y=2;
 
 	this->dst[0].x=floor(BLOCSX/2);
 	this->dst[1].x=floor(BLOCSX/2)-1;
