@@ -27,7 +27,7 @@ protected:
 
 	//il faudrait aussi quune pièce ait une couleur.
 public :
-    Piece(int w);
+    Piece();
     virtual ~Piece(); // destructor
 
 	virtual void update();
@@ -61,7 +61,7 @@ public :
 
 class LTetri : public Piece {
 public:
-	LTetri(int w);
+	LTetri();
 	void update();
 };
 
@@ -71,7 +71,7 @@ public:
 //
 class OTetri : public Piece {
 public:
-	OTetri(int w);
+	OTetri();
 	void update();
 };
 //

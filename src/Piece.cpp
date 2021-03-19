@@ -13,7 +13,7 @@
 
 #include "../include/Error.hpp"
 
-Piece::Piece(int id) {
+Piece::Piece() {
 	//au début la position de la source na pas dimportance, on peut linitialiser à
 	// des paramètres quelconque
 	for(int i = 0; i<4; i++) {
@@ -261,7 +261,7 @@ int Piece::gety(int i) {
 //	this->dst[3].y=2;
 //}
 
-LTetri::LTetri(int w) : Piece(w){
+LTetri::LTetri() : Piece(){
 
 	for(int i = 0; i<4; i++) {
 	    this->src[i].x=floor(BLOCSX/2);
@@ -295,7 +295,7 @@ void LTetri::update(){
 
 }
 
-OTetri::OTetri(int w) : Piece(w) {
+OTetri::OTetri() : Piece() {
 }
 
 void OTetri::update() {

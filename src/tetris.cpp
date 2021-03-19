@@ -105,15 +105,21 @@ void Tetris::loop()
 	double delta_t;  // durée frame en ms
 
 
-	LTetri ltetri(w);
-	OTetri otetri(w);
+	//LTetri ltetri();
+	//OTetri otetri();
 
-	otetri.update();
-	ltetri.update();
+	//otetri.update();
+	//ltetri.update();
 
+	//Piece PiecList[2] = [&otetri, &ltetri];
+	Piece * PiecList[2];
+	PiecList[0] = new LTetri();
+	PiecList[1] = new OTetri();
+	PiecList[0]->update();
+	PiecList[1]->update();
 	int randn=0;
 
-	Piece *piece = new Piece(w);
+	Piece *piece = new Piece();
 
 	bool quit = false;
 	bool cont = true;
@@ -124,17 +130,19 @@ void Tetris::loop()
 			std::cout << "Nouvelle pièce en haut" << std::endl;
 			randn = rand()%2;
 			std::cout<<randn<<std::endl;
-			if(randn) {
-				std::cout<<"ltetri"<<std::endl;
-				ltetri.update();
-				piece = &ltetri;
-			}
-			else {
-				std::cout<<"otetri"<<std::endl;
-
-				otetri.update();
-				piece = &otetri;
-			}
+			PiecList[randn]->update();
+			piece = PiecList[randn];
+			//if(randn) {
+			//	std::cout<<"ltetri"<<std::endl;
+			//	ltetri.update();
+			//	piece = &ltetri;
+			//}
+			//else {
+			//	std::cout<<"otetri"<<std::endl;
+			//
+			//	otetri.update();
+			//	piece = &otetri;
+			//}
 
 			cont = true;
 			piece->draw(renderer,texture,SIZE_BLOC);
