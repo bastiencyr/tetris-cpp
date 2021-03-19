@@ -24,6 +24,7 @@ protected:
 	//et un vecteur destination
     SDL_Rect src[4];
 	SDL_Rect dst[4];
+	int color[3];
 
 	//il faudrait aussi quune pièce ait une couleur.
 public :
@@ -34,6 +35,8 @@ public :
 
 	int getx(int i);
 	int gety(int i);
+
+	int getcol(int i);
 
 	bool translate(int a, int b);
     bool down();

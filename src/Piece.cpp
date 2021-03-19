@@ -14,6 +14,9 @@
 #include "../include/Error.hpp"
 
 Piece::Piece() {
+	this->color[0]=0;
+	this->color[1]=255;
+	this->color[2]=255;
 	//au début la position de la source na pas dimportance, on peut linitialiser à
 	// des paramètres quelconque
 	for(int i = 0; i<4; i++) {
@@ -46,7 +49,7 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
 
 	SDL_Rect src_r[4];
 	SDL_Rect dst_r[4];
-	SDL_SetRenderDrawColor(renderer, 150, 0, 150, 255); /* On dessine en violet */
+	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1], this->color[2], 255); /* On dessine en violet */
 	for(int i = 0; i < 4; i++) {
 		src_r[i].x=this->src[i].x*factor;
 		src_r[i].y=((this->src[i].y))*factor;
@@ -241,6 +244,10 @@ int Piece::getx(int i) {
 int Piece::gety(int i) {
 	return this->dst[i].y;
 }
+
+int Piece::getcol(int i) {
+	return this->color[i];
+}
  void Piece::update(){
 	 puts("update de la classe mère!!!");
  }
@@ -249,7 +256,11 @@ int Piece::gety(int i) {
 ########################          LEFT L         #############################
 ############################################################################*/
 
-JTetri::JTetri() : Piece(){}
+JTetri::JTetri() : Piece(){
+	this->color[0]=0;
+	this->color[1]=0;
+	this->color[0]=255;
+}
 
 void JTetri::update() {
 	this->src[0].x=floor(BLOCSX/2);
@@ -274,7 +285,9 @@ void JTetri::update() {
 }
 
 LTetri::LTetri() : Piece(){
-
+	this->color[0]=255;
+	this->color[1]=140;
+	this->color[2]=0;
 	for(int i = 0; i<4; i++) {
 	    this->src[i].x=floor(BLOCSX/2);
 		this->src[i].y=i;
@@ -308,6 +321,9 @@ void LTetri::update(){
 }
 
 OTetri::OTetri() : Piece() {
+	this->color[0]=255;
+	this->color[1]=255;
+	this->color[2]=0;
 }
 
 void OTetri::update() {
@@ -333,6 +349,9 @@ void OTetri::update() {
 }
 
 ITetri::ITetri() : Piece() {
+	this->color[0]=0;
+	this->color[1]=255;
+	this->color[2]=255;
 }
 
 void ITetri::update() {
@@ -359,6 +378,9 @@ void ITetri::update() {
 
 
 TTetri::TTetri() : Piece() {
+	this->color[0]=160;
+	this->color[1]=0;
+	this->color[2]=160;
 }
 
 void TTetri::update() {
@@ -383,7 +405,11 @@ void TTetri::update() {
 	this->dst[3].y=1;
 }
 
-ZTetri::ZTetri() : Piece() {}
+ZTetri::ZTetri() : Piece() {
+	this->color[0]=255;
+	this->color[1]=0;
+	this->color[2]=0;
+}
 
 void ZTetri::update() {
 	this->src[0].x=floor(BLOCSX/2);
@@ -408,7 +434,11 @@ void ZTetri::update() {
 }
 
 
-STetri::STetri() : Piece() {}
+STetri::STetri() : Piece() {
+	this->color[0]=0;
+	this->color[1]=255;
+	this->color[2]=0;
+}
 
 
 void STetri::update() {
