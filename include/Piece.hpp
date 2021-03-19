@@ -29,12 +29,12 @@ protected:
 public :
     Piece(int w);
     virtual ~Piece(); // destructor
-	
+
 	virtual void update();
-	
+
 	int getx(int i);
 	int gety(int i);
-	
+
 	bool translate(int a, int b);
     bool down();
 	void up();
@@ -42,16 +42,16 @@ public :
 	bool left();
 	void rotateLeft();
 	void rotateRight();
-	
+
 	bool onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,
 	SDL_Texture* texture);
-	
+
 	error isLegal(bool mat[BLOCSX][BLOCSY]);
 	void draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor);
 
 	void affiche_coord(bool source, bool dest);
-	
-	
+
+
 };
 
 //class JTetri : public Piece {
@@ -69,9 +69,11 @@ public:
 //	ITetri(int w);
 //};
 //
-//class OTetri : public Piece {
-//	OTetri(int w);
-//};
+class OTetri : public Piece {
+public:
+	OTetri(int w);
+	void update();
+};
 //
 //class TTetri : public Piece {
 //	TTetri(int w);

@@ -111,12 +111,12 @@ void Piece::up(){
  * de la pièce.
  */
 void Piece::rotateLeft(){
-	
-	for(int i = 0; i<4; i++) {	
+
+	for(int i = 0; i<4; i++) {
 		this->src[i].x=this->dst[i].x;
 		this->src[i].y=this->dst[i].y;
 	}
-	
+
 	//ATTENTION, il faut bien séparer les deux boucles !!
 	for(int i = 0; i<4; i++) {
 		this->dst[i].x = this->src[i].y - this->src[1].y + this->src[1].x;
@@ -130,12 +130,12 @@ void Piece::rotateLeft(){
  * de la pièce.
  */
 void Piece::rotateRight(){
-	
-	for(int i = 0; i<4; i++) {	
+
+	for(int i = 0; i<4; i++) {
 		this->src[i].x=this->dst[i].x;
 		this->src[i].y=this->dst[i].y;
 	}
-	
+
 	//ATTENTION, il faut bien séparer les deux boucles !!
 	for(int i = 0; i<4; i++) {
 		this->dst[i].x = this->src[1].y - this->src[i].y + this->src[1].x;
@@ -145,12 +145,12 @@ void Piece::rotateRight(){
 
 bool Piece::onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,
 	SDL_Texture* texture){
-	
+
 	this->down();
-	if(this->isLegal(mat)==OVER_Y 
+	if(this->isLegal(mat)==OVER_Y
 			or this->isLegal(mat)==COLLISION_PIECE) {
 		cont = false;
-		
+
 		this->up();
 		for(int i = 0; i < 4; i++)
 			mat[this->getx(i)][this->gety(i)]=true;
@@ -266,36 +266,74 @@ LTetri::LTetri(int w) : Piece(w){
 	for(int i = 0; i<4; i++) {
 	    this->src[i].x=floor(BLOCSX/2);
 		this->src[i].y=i;
-		this->src[i].w=1;
-		this->src[i].h=1;
-		
+
+
 		//Le constructeur par défaut de pièce devra faire apparitre une pièce
 		//au hasard. C'est donc dst.x qui doit être choisi au hasard
 		this->dst[i].x=floor(BLOCSX/2);
 		this->dst[i].y=i;
-		this->dst[i].w=1;
-		this->dst[i].h=1;
+
 	}
-	
+
 	this->dst[3].x=floor(BLOCSX/2)+1;
 	this->dst[3].y= 2;
 }
 
 void LTetri::update(){
-	
+
 	for(int i = 0; i<4; i++) {
 	    this->src[i].x=floor(BLOCSX/2);
 		this->src[i].y=i;
-		
+
 		this->dst[i].x=floor(BLOCSX/2);
 		this->dst[i].y=i;
 
 	}
-	
+
 	this->dst[3].x=floor(BLOCSX/2)+1;
 	this->dst[3].y= 2;
-	
+
 }
+
+OTetri::OTetri(int w) : Piece(w) {
+}
+
+void OTetri::update() {
+	this->src[0].x=floor(BLOCSX/2);
+	this->src[1].x=floor(BLOCSX/2);
+	this->src[2].x=floor(BLOCSX/2)+1;
+	this->src[3].x=floor(BLOCSX/2)+1;
+
+	this->src[0].y=0;
+	this->src[1].y=1;
+	this->src[2].y=0;
+	this->src[3].y=1;
+
+	this->dst[0].x=floor(BLOCSX/2);
+	this->dst[1].x=floor(BLOCSX/2);
+	this->dst[2].x=floor(BLOCSX/2)+1;
+	this->dst[3].x=floor(BLOCSX/2)+1;
+
+	this->dst[0].y=0;
+	this->dst[1].y=1;
+	this->dst[2].y=0;
+	this->dst[3].y=1;
+}
+//ITetri::ITetri(int w) : Piece(w) {
+//
+//}
+
+//void ITetri::update() {
+//	his->src[0].x=floor(w/2);
+//	this->src[1].x=floor(w/2);
+//	this->src[2].x=floor(w/2);
+//	this->src[3].x=floor(w/2);
+//
+//	this->src[0].y=0;
+//	this->src[1].y=1;
+//	this->src[2].y=2;
+//	this->src[3].y=3;
+//}
 
 //ITetri::ITetri(int w) : Piece(w){
 //	this->src[0].x=floor(w/2);
@@ -358,4 +396,3 @@ void LTetri::update(){
 //	this->src[2].y=0;
 //	this->src[3].y=0;
 //}
-

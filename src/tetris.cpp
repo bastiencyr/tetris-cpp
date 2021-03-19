@@ -5,6 +5,8 @@
  */
 
 #include <SDL.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string>
 #include <iostream>
 #include <cassert>
@@ -33,7 +35,7 @@ Tetris::Tetris(int w, int h){
 			mat[i][j] = false;
 		}
 	}
-	
+
 	std::cout << "L'état initial de la matrice est : " << std::endl;
 	for(int j = 0; j< BLOCSY; j++) {
 		for(int i = 0; i< BLOCSX; i++) {
@@ -102,14 +104,17 @@ void Tetris::loop()
 	Uint64 prev, now = SDL_GetPerformanceCounter(); // timers
 	double delta_t;  // durée frame en ms
 
-	
+
 	LTetri ltetri(w);
-	
+	OTetri otetri(w);
+
+	otetri.update();
 	ltetri.update();
-	
-	
+
+	int randn=0;
+
 	Piece *piece = new Piece(w);
-	
+
 	bool quit = false;
 	bool cont = true;
 	double t=0;
@@ -117,12 +122,24 @@ void Tetris::loop()
 	{
 		if(!cont) {
 			std::cout << "Nouvelle pièce en haut" << std::endl;
-			ltetri.update();
-			piece = &ltetri;
+			randn = rand()%2;
+			std::cout<<randn<<std::endl;
+			if(randn) {
+				std::cout<<"ltetri"<<std::endl;
+				ltetri.update();
+				piece = &ltetri;
+			}
+			else {
+				std::cout<<"otetri"<<std::endl;
+
+				otetri.update();
+				piece = &otetri;
+			}
+
 			cont = true;
 			piece->draw(renderer,texture,SIZE_BLOC);
 		}
-		
+
 		SDL_Event event;
 		while (!quit && SDL_PollEvent(&event) && cont == true)
 		{
@@ -133,14 +150,14 @@ void Tetris::loop()
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 				break;
-				
+
 				// c'est ici quuon prend les événements du clavier.
 				// Jai pris sur internet, je sais pas trop comment ca fonctionne sinon
 			case SDL_KEYDOWN:
 				/* Check the SDLKey values and move change the coords */
 				switch( event.key.keysym.sym ){
 					//si lutilisateur appuie sur la flèche droite du clavier:
-					
+
 				case SDLK_RIGHT:
 					piece->right();
 					if(piece->isLegal(mat)==NO_ERROR) {
@@ -148,9 +165,9 @@ void Tetris::loop()
 					}
 					else
 						piece->left();
-					
+
 					break;
-					
+
 				case SDLK_LEFT:
 					piece->left();
 					if(piece->isLegal(mat)==NO_ERROR) {
@@ -159,14 +176,14 @@ void Tetris::loop()
 					else
 						piece->right();
 					break;
-					
+
 				case SDLK_DOWN:
 					cont = piece->onDown(mat, cont, renderer, texture);
-					
+
 					break;
-					
+
 				case SDLK_UP:
-					
+
 					piece->rotateRight();
 					if(piece->isLegal(mat)==NO_ERROR) {
 						piece->draw(renderer,texture,SIZE_BLOC);
@@ -176,13 +193,13 @@ void Tetris::loop()
 
 					break;
 				}
-				
+
 			default: break;
 			}
 			//this->printMatrice();
-			
+
 		}
-		
+
 		const Uint8* state = SDL_GetKeyboardState(NULL);
 		quit |= (state[SDL_SCANCODE_ESCAPE]!=0);
 
@@ -229,6 +246,6 @@ int main(int argc, char** argv)
 	tetris.init();
 	SDL_RenderPresent(tetris.get_renderer());
 	tetris.loop();
-	
+
 	SDL_Quit();
 }
