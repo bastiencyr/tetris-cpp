@@ -24,7 +24,6 @@ Tetris::Tetris(int w, int h){
 	//SDL_RENDERER_PRESENTVSYNC);
 	timer=0;
 
-	winSurf=SDL_GetWindowSurface(pWindow);
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
 
@@ -45,6 +44,12 @@ Tetris::Tetris(int w, int h){
 		}
 		std::cout << std::endl;
 	}
+}
+
+Tetris::~Tetris(){
+	SDL_DestroyTexture(texture);
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(pWindow);
 }
 
 void Tetris::init(){
@@ -92,9 +97,6 @@ void Tetris::init(){
 }
 
 
-Tetris::~Tetris() {
-}
-
 void Tetris::loop()
 {
 	Uint64 prev, now = SDL_GetPerformanceCounter(); // timers
@@ -104,6 +106,7 @@ void Tetris::loop()
 	LTetri ltetri(w);
 	
 	ltetri.update();
+	
 	
 	Piece *piece = new Piece(w);
 	
@@ -158,20 +161,7 @@ void Tetris::loop()
 					break;
 					
 				case SDLK_DOWN:
-					piece->down();
-					if(piece->isLegal(mat)==OVER_Y 
-							or piece->isLegal(mat)==COLLISION_PIECE) {
-						cont = false;
-						
-						piece->up();
-						for(int i = 0; i < 4; i++)
-							mat[piece->getx(i)][piece->gety(i)]=true;
-						
-						this->printMatrice();
-					}
-					else if(piece->isLegal(mat)==NO_ERROR) {
-						piece->draw(renderer,texture, SIZE_BLOC);
-					}
+					cont = piece->onDown(mat, cont, renderer, texture);
 					
 					break;
 					
@@ -184,8 +174,6 @@ void Tetris::loop()
 					else
 						piece->rotateLeft();
 
-					//piece->up();
-					//piece->draw(renderer,texture,SIZE_BLOC);
 					break;
 				}
 				
@@ -205,20 +193,7 @@ void Tetris::loop()
 
 		t+=delta_t;
 		if(floor(t)>=1) {
-			piece->down();
-			if (piece->isLegal(mat)==NO_ERROR){
-				piece->draw(renderer, texture, SIZE_BLOC);
-			}
-			else if (piece->isLegal(mat)== COLLISION_PIECE
-					or piece->isLegal(mat)== OVER_Y){
-				cont = false;
-				piece->up();
-				for(int i = 0; i < 4; i++)
-					mat[piece->getx(i)][piece->gety(i)]=true;
-				
-				this->printMatrice();
-			}
-			//this->printMatrice();
+			cont = piece->onDown(mat, cont, renderer, texture);
 			t=0;
 		}
 	}
@@ -254,8 +229,6 @@ int main(int argc, char** argv)
 	tetris.init();
 	SDL_RenderPresent(tetris.get_renderer());
 	tetris.loop();
-
-	SDL_DestroyRenderer(tetris.get_renderer());
-	SDL_DestroyWindow(tetris.get_pWindow());
+	
 	SDL_Quit();
 }

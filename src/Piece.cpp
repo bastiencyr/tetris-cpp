@@ -143,6 +143,24 @@ void Piece::rotateRight(){
 	}
 }
 
+bool Piece::onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,
+	SDL_Texture* texture){
+	
+	this->down();
+	if(this->isLegal(mat)==OVER_Y 
+			or this->isLegal(mat)==COLLISION_PIECE) {
+		cont = false;
+		
+		this->up();
+		for(int i = 0; i < 4; i++)
+			mat[this->getx(i)][this->gety(i)]=true;
+	}
+	else if(this->isLegal(mat)==NO_ERROR) {
+		this->draw(renderer,texture, SIZE_BLOC);
+	}
+	return cont;
+}
+
 
 /*
  * Cette méthode calcule la légalité d'une pièce sur le plateau.

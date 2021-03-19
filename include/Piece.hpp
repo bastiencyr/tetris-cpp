@@ -29,21 +29,29 @@ protected:
 public :
     Piece(int w);
     virtual ~Piece(); // destructor
+	
+	virtual void update();
+	
+	int getx(int i);
+	int gety(int i);
+	
+	bool translate(int a, int b);
     bool down();
 	void up();
 	bool right();
 	bool left();
-	
-	void draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor);
-	bool translate(int a, int b);
 	void rotateLeft();
 	void rotateRight();
-	error isLegal(bool mat[BLOCSX][BLOCSY]);
 	
+	bool onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,
+	SDL_Texture* texture);
+	
+	error isLegal(bool mat[BLOCSX][BLOCSY]);
+	void draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor);
+
 	void affiche_coord(bool source, bool dest);
-	int getx(int i);
-	int gety(int i);
-	virtual void update();
+	
+	
 };
 
 //class JTetri : public Piece {
