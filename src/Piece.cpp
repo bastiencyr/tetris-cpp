@@ -249,17 +249,29 @@ int Piece::gety(int i) {
 ########################          LEFT L         #############################
 ############################################################################*/
 
-//JTetri::JTetri(int w) : Piece(w){
-//	this->src[0].x=floor(w/2);
-//	this->src[1].x=floor(w/2)-1;
-//	this->src[2].x=floor(w/2)-1;
-//	this->src[3].x=floor(w/2)-1;
-//
-//	this->dst[0].y=0;
-//	this->dst[1].y=0;
-//	this->dst[2].y=1;
-//	this->dst[3].y=2;
-//}
+JTetri::JTetri() : Piece(){}
+
+void JTetri::update() {
+	this->src[0].x=floor(BLOCSX/2);
+	this->src[1].x=floor(BLOCSX/2)-1;
+	this->src[2].x=floor(BLOCSX/2)-1;
+	this->src[3].x=floor(BLOCSX/2)-1;
+
+	this->dst[0].y=0;
+	this->dst[1].y=0;
+	this->dst[2].y=1;
+	this->dst[3].y=2;
+
+	this->dst[0].x=floor(BLOCSX/2);
+	this->dst[1].x=floor(BLOCSX/2)-1;
+	this->dst[2].x=floor(BLOCSX/2)-1;
+	this->dst[3].x=floor(BLOCSX/2)-1;
+
+	this->dst[0].y=0;
+	this->dst[1].y=0;
+	this->dst[2].y=1;
+	this->dst[3].y=2;
+}
 
 LTetri::LTetri() : Piece(){
 
@@ -319,80 +331,104 @@ void OTetri::update() {
 	this->dst[2].y=0;
 	this->dst[3].y=1;
 }
-//ITetri::ITetri(int w) : Piece(w) {
-//
-//}
 
-//void ITetri::update() {
-//	his->src[0].x=floor(w/2);
-//	this->src[1].x=floor(w/2);
-//	this->src[2].x=floor(w/2);
-//	this->src[3].x=floor(w/2);
-//
-//	this->src[0].y=0;
-//	this->src[1].y=1;
-//	this->src[2].y=2;
-//	this->src[3].y=3;
-//}
+ITetri::ITetri() : Piece() {
+}
 
-//ITetri::ITetri(int w) : Piece(w){
-//	this->src[0].x=floor(w/2);
-//	this->src[1].x=floor(w/2);
-//	this->src[2].x=floor(w/2);
-//	this->src[3].x=floor(w/2);
-//
-//	this->src[0].y=0;
-//	this->src[1].y=1;
-//	this->src[2].y=2;
-//	this->src[3].y=3;
-//}
-//
-//OTetri::OTetri(int w) : Piece(w) {
-//	this->src[0].x=floor(w/2);
-//	this->src[1].x=floor(w/2);
-//	this->src[2].x=floor(w/2)+1;
-//	this->src[3].x=floor(w/2)+1;
-//
-//	this->src[0].y=0;
-//	this->src[1].y=1;
-//	this->src[2].y=0;
-//	this->src[3].y=1;
-//}
-//
-//TTetri::TTetri(int w) : Piece(w) {
-//	this->src[0].x=floor(w/2);
-//	this->src[1].x=floor(w/2)+1;
-//	this->src[2].x=floor(w/2)+2;
-//	this->src[3].x=floor(w/2)+1;
-//
-//	this->src[0].y=0;
-//	this->src[1].y=0;
-//	this->src[2].y=0;
-//	this->src[3].y=1;
-//}
-//
-//
-//ZTetri::ZTetri(int w) : Piece(w) {
-//	this->src[0].x=floor(w/2);
-//	this->src[1].x=floor(w/2)+1;
-//	this->src[2].x=floor(w/2)+1;
-//	this->src[3].x=floor(w/2)+2;
-//
-//	this->src[0].y=0;
-//	this->src[1].y=0;
-//	this->src[2].y=1;
-//	this->src[3].y=1;
-//}
-//
-//
-//STetri::STetri(int w) : Piece(w) {
-//	this->src[0].x=floor(w/2)+1;
-//	this->src[1].x=floor(w/2)+1;
-//	this->src[2].x=floor(w/2);
-//	this->src[3].x=floor(w/2);
-//
-//	this->src[0].y=1;
-//	this->src[1].y=1;
-//	this->src[2].y=0;
-//	this->src[3].y=0;
-//}
+void ITetri::update() {
+	this->src[0].x=floor(BLOCSX/2);
+	this->src[1].x=floor(BLOCSX/2);
+	this->src[2].x=floor(BLOCSX/2);
+	this->src[3].x=floor(BLOCSX/2);
+
+	this->src[0].y=0;
+	this->src[1].y=1;
+	this->src[2].y=2;
+	this->src[3].y=3;
+
+	this->dst[0].x=floor(BLOCSX/2);
+	this->dst[1].x=floor(BLOCSX/2);
+	this->dst[2].x=floor(BLOCSX/2);
+	this->dst[3].x=floor(BLOCSX/2);
+
+	this->dst[0].y=0;
+	this->dst[1].y=1;
+	this->dst[2].y=2;
+	this->dst[3].y=3;
+}
+
+
+TTetri::TTetri() : Piece() {
+}
+
+void TTetri::update() {
+	this->src[0].x=floor(BLOCSX/2);
+	this->src[1].x=floor(BLOCSX/2)+1;
+	this->src[2].x=floor(BLOCSX/2)+2;
+	this->src[3].x=floor(BLOCSX/2)+1;
+
+	this->src[0].y=0;
+	this->src[1].y=0;
+	this->src[2].y=0;
+	this->src[3].y=1;
+
+	this->dst[0].x=floor(BLOCSX/2);
+	this->dst[1].x=floor(BLOCSX/2)+1;
+	this->dst[2].x=floor(BLOCSX/2)+2;
+	this->dst[3].x=floor(BLOCSX/2)+1;
+
+	this->dst[0].y=0;
+	this->dst[1].y=0;
+	this->dst[2].y=0;
+	this->dst[3].y=1;
+}
+
+ZTetri::ZTetri() : Piece() {}
+
+void ZTetri::update() {
+	this->src[0].x=floor(BLOCSX/2);
+	this->src[1].x=floor(BLOCSX/2)+1;
+	this->src[2].x=floor(BLOCSX/2)+1;
+	this->src[3].x=floor(BLOCSX/2)+2;
+
+	this->src[0].y=0;
+	this->src[1].y=0;
+	this->src[2].y=1;
+	this->src[3].y=1;
+
+	this->dst[0].x=floor(BLOCSX/2);
+	this->dst[1].x=floor(BLOCSX/2)+1;
+	this->dst[2].x=floor(BLOCSX/2)+1;
+	this->dst[3].x=floor(BLOCSX/2)+2;
+
+	this->dst[0].y=0;
+	this->dst[1].y=0;
+	this->dst[2].y=1;
+	this->dst[3].y=1;
+}
+
+
+STetri::STetri() : Piece() {}
+
+
+void STetri::update() {
+	this->src[0].x=floor(BLOCSX/2);
+	this->src[1].x=floor(BLOCSX/2)+1;
+	this->src[2].x=floor(BLOCSX/2)+1;
+	this->src[3].x=floor(BLOCSX/2)+2;
+
+	this->src[0].y=1;
+	this->src[1].y=1;
+	this->src[2].y=0;
+	this->src[3].y=0;
+
+	this->dst[0].x=floor(BLOCSX/2);
+	this->dst[1].x=floor(BLOCSX/2)+1;
+	this->dst[2].x=floor(BLOCSX/2)+1;
+	this->dst[3].x=floor(BLOCSX/2)+2;
+
+	this->dst[0].y=1;
+	this->dst[1].y=1;
+	this->dst[2].y=0;
+	this->dst[3].y=0;
+}

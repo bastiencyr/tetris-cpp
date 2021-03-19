@@ -105,18 +105,18 @@ void Tetris::loop()
 	double delta_t;  // durée frame en ms
 
 
-	//LTetri ltetri();
-	//OTetri otetri();
-
-	//otetri.update();
-	//ltetri.update();
-
-	//Piece PiecList[2] = [&otetri, &ltetri];
-	Piece * PiecList[2];
+	Piece * PiecList[7];
 	PiecList[0] = new LTetri();
 	PiecList[1] = new OTetri();
-	PiecList[0]->update();
-	PiecList[1]->update();
+	PiecList[2] = new TTetri();
+	PiecList[3] = new ZTetri();
+	PiecList[4] = new JTetri();
+	PiecList[5] = new ITetri();
+	PiecList[6] = new STetri();
+
+	for(int i = 0; i<7; i++)
+		PiecList[i]->update();
+
 	int randn=0;
 
 	Piece *piece = new Piece();
@@ -128,7 +128,7 @@ void Tetris::loop()
 	{
 		if(!cont) {
 			std::cout << "Nouvelle pièce en haut" << std::endl;
-			randn = rand()%2;
+			randn = rand()%7;
 			std::cout<<randn<<std::endl;
 			PiecList[randn]->update();
 			piece = PiecList[randn];

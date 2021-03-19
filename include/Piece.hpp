@@ -54,36 +54,48 @@ public :
 
 };
 
-//class JTetri : public Piece {
-//public:
-//	JTetri(int w);
-//};
+class JTetri : public Piece {
+	public:
+		JTetri();
+		void update();
+};
 
 class LTetri : public Piece {
-public:
-	LTetri();
-	void update();
+	public:
+		LTetri();
+		void update();
 };
 
-//class ITetri : public Piece {
-//	ITetri(int w);
-//};
-//
-class OTetri : public Piece {
-public:
-	OTetri();
-	void update();
+class ITetri : public Piece {
+	public:
+		ITetri();
+		void update();
 };
-//
-//class TTetri : public Piece {
-//	TTetri(int w);
-//};
-//
-//class ZTetri : public Piece {
-//	ZTetri(int w);
-//};
-//
-//class STetri : public Piece {
-//	STetri(int w);
-//};
+
+
+class OTetri : public Piece {
+	public:
+		OTetri();
+		void update();
+};
+
+class TTetri : public Piece {
+	public:
+		TTetri();
+		void update();
+};
+
+
+class ZTetri : public Piece {
+	public:
+		ZTetri();
+		void update();
+};
+
+
+class STetri : public Piece {
+	public:
+		STetri();
+		void update();
+};
 #endif
