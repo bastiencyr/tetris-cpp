@@ -29,17 +29,17 @@ protected:
 public :
     Piece(int w);
     virtual ~Piece(); // destructor
-    bool down(bool mat[BLOCSX][BLOCSY]);
-	void up(bool mat[BLOCSX][BLOCSY]);
-	bool right(bool mat[BLOCSX][BLOCSY]);
-	bool left(bool mat[BLOCSX][BLOCSY]);
-	void draw(SDL_Renderer* renderer);
+    bool down();
+	void up();
+	bool right();
+	bool left();
+	
 	void draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor);
-	bool translate(int a, int b, bool mat[BLOCSX][BLOCSY]);
+	bool translate(int a, int b);
 	void rotateLeft();
 	void rotateRight();
 	error isLegal(bool mat[BLOCSX][BLOCSY]);
-	//bool depassement(bool mat[BLOCSX][BLOCSY]);
+	
 	void affiche_coord(bool source, bool dest);
 	int getx(int i);
 	int gety(int i);

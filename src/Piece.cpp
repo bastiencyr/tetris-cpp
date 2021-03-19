@@ -67,26 +67,13 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
 
 }
 
-bool Piece::translate(int a, int b, bool mat[BLOCSX][BLOCSY]){
+bool Piece::translate(int a, int b){
 	for(int i = 0; i < 4; i++) {
 		this->src[i].x=this->dst[i].x;
 		this->src[i].y=this->dst[i].y;
-		this->src[i].w=this->dst[i].w;
-		this->src[i].h=this->dst[i].h;
-
 		this->dst[i].x+=a;
 		this->dst[i].y+=b;
 	}
-
-//	if(this->isLegal(mat)==OVER_X) {
-//		std::cout << "mouvement dépassant" << std::endl;
-//		this->translate(-a, -b, mat);
-//	}
-//	if(this->isLegal(mat)!=NO_ERROR) {
-//		std::cout << "mouvement illégal" << std::endl;
-//		this->translate(-a, -b, mat);
-//		return false;
-//	}
 	return true;
 }
 
@@ -94,17 +81,17 @@ bool Piece::translate(int a, int b, bool mat[BLOCSX][BLOCSY]){
  * Cette fonction déplace une pièce vers le bas sans la dessiner.
  * Il faut appeler la méthode draw pour dessiner la pièce.
  */
-bool Piece::down(bool mat[BLOCSX][BLOCSY]){
+bool Piece::down(){
 	//normalement c'est 1 (normalisé). Faudra le faire
-	return this->translate(0,1,mat);
+	return this->translate(0, 1);
 }
 
-bool Piece::right(bool mat[BLOCSX][BLOCSY]){
-	return this->translate(1,0,mat);
+bool Piece::right(){
+	return this->translate(1, 0);
 }
 
-bool Piece::left(bool mat[BLOCSX][BLOCSY]){
-	return this->translate(-1,0,mat);
+bool Piece::left(){
+	return this->translate(-1, 0);
 }
 
 /*
@@ -113,8 +100,8 @@ bool Piece::left(bool mat[BLOCSX][BLOCSY]){
  * dabord la position de la pièces SANS lafficher; on vérifie la légalité puis on
  * affiche. Si le déplacement n'était pas légal, il faut pouvoir revenir en arrière.
  */
-void Piece::up(bool mat[BLOCSX][BLOCSY]){
-	this->translate(0,-1,mat);
+void Piece::up(){
+	this->translate(0,-1);
 }
 
 
@@ -125,12 +112,9 @@ void Piece::up(bool mat[BLOCSX][BLOCSY]){
  */
 void Piece::rotateLeft(){
 	
-	for(int i = 0; i<4; i++) {
-		
+	for(int i = 0; i<4; i++) {	
 		this->src[i].x=this->dst[i].x;
 		this->src[i].y=this->dst[i].y;
-		this->src[i].w=this->dst[i].w;
-		this->src[i].h=this->dst[i].h;
 	}
 	
 	//ATTENTION, il faut bien séparer les deux boucles !!
@@ -147,12 +131,9 @@ void Piece::rotateLeft(){
  */
 void Piece::rotateRight(){
 	
-	for(int i = 0; i<4; i++) {
-		
+	for(int i = 0; i<4; i++) {	
 		this->src[i].x=this->dst[i].x;
 		this->src[i].y=this->dst[i].y;
-		this->src[i].w=this->dst[i].w;
-		this->src[i].h=this->dst[i].h;
 	}
 	
 	//ATTENTION, il faut bien séparer les deux boucles !!

@@ -45,9 +45,6 @@ Tetris::Tetris(int w, int h){
 		}
 		std::cout << std::endl;
 	}
-
-	//piece->affiche_coord(1,1);
-	//piece.draw(renderer,texture, SIZE_BLOC);
 }
 
 void Tetris::init(){
@@ -60,8 +57,6 @@ void Tetris::init(){
 
 	SDL_SetRenderDrawColor(renderer,63,63,63,255);
 	SDL_RenderClear(renderer);
-	//SDL_RenderPresent(renderer);
-	//Le fond est maintenant gris
 
 	// À présent, occupons nous des lignes
 	// On ne peut pas utiliser la fonction SDL_RenderDrawLines
@@ -144,31 +139,31 @@ void Tetris::loop()
 					//si lutilisateur appuie sur la flèche droite du clavier:
 					
 				case SDLK_RIGHT:
-					piece->right(this->mat);
+					piece->right();
 					if(piece->isLegal(mat)==NO_ERROR) {
 						piece->draw(renderer,texture,SIZE_BLOC);
 					}
 					else
-						piece->left(this->mat);
+						piece->left();
 					
 					break;
 					
 				case SDLK_LEFT:
-					piece->left(this->mat);
+					piece->left();
 					if(piece->isLegal(mat)==NO_ERROR) {
 						piece->draw(renderer,texture,SIZE_BLOC);
 					}
 					else
-						piece->right(this->mat);
+						piece->right();
 					break;
 					
 				case SDLK_DOWN:
-					piece->down(this->mat);
-					if(piece->isLegal(this->mat)==OVER_Y 
-							or piece->isLegal(this->mat)==COLLISION_PIECE) {
+					piece->down();
+					if(piece->isLegal(mat)==OVER_Y 
+							or piece->isLegal(mat)==COLLISION_PIECE) {
 						cont = false;
 						
-						piece->up(this->mat);
+						piece->up();
 						for(int i = 0; i < 4; i++)
 							mat[piece->getx(i)][piece->gety(i)]=true;
 						
@@ -210,14 +205,14 @@ void Tetris::loop()
 
 		t+=delta_t;
 		if(floor(t)>=1) {
-			piece->down(this->mat);
+			piece->down();
 			if (piece->isLegal(mat)==NO_ERROR){
 				piece->draw(renderer, texture, SIZE_BLOC);
 			}
 			else if (piece->isLegal(mat)== COLLISION_PIECE
 					or piece->isLegal(mat)== OVER_Y){
 				cont = false;
-				piece->up(this->mat);
+				piece->up();
 				for(int i = 0; i < 4; i++)
 					mat[piece->getx(i)][piece->gety(i)]=true;
 				
