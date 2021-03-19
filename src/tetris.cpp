@@ -21,13 +21,32 @@ Tetris::Tetris(int w, int h){
 	this->h=h;
 	pWindow = SDL_CreateWindow("Une fenetre SDL" , SDL_WINDOWPOS_CENTERED ,
 			SDL_WINDOWPOS_CENTERED , w , h , SDL_WINDOW_SHOWN);
+
+//	if (pWindow == NULL)  //gestion des erreurs
+//	{
+//		printf("Erreur lors de la creation d'une fenetre : %s", SDL_GetError());
+//		return EXIT_FAILURE;
+//	}
+
 	renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_SOFTWARE);
+//	if (renderer == NULL)  //gestion des erreurs
+//	{
+//		printf("Erreur lors de la creation de la renderer : %s", SDL_GetError());
+//		return EXIT_FAILURE;
+//	}
+
+
 	//renderer2 = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED |
 	//SDL_RENDERER_PRESENTVSYNC);
 	timer=0;
 
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
+//	if (fenetre == NULL)  //gestion des erreurs
+//	{
+//		printf("Erreur lors de la creation d'une texture : %s", SDL_GetError());
+//		return EXIT_FAILURE;
+//	}
 
 	//mat[BLOCSX][BLOCSY];
 	for(int i = 0; i < BLOCSX; i++) {

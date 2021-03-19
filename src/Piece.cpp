@@ -402,7 +402,7 @@ void ZTetri::update() {
 	this->dst[3].x=floor(BLOCSX/2)+2;
 
 	this->dst[0].y=0;
-	this->dst[1].y=0;
+	this->dst[1].y=0;4
 	this->dst[2].y=1;
 	this->dst[3].y=1;
 }
