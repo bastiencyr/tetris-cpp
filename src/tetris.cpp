@@ -164,7 +164,10 @@ void Tetris::loop()
 			//}
 
 			cont = true;
-			piece->draw(renderer,texture,SIZE_BLOC);
+			if(piece->isLegal(mat)!=NO_ERROR) {
+				piece->draw(renderer,texture,SIZE_BLOC);
+				quit=true;
+			}
 		}
 
 		SDL_Event event;
