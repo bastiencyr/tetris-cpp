@@ -164,7 +164,7 @@ void Tetris::loop()
 			//}
 
 			cont = true;
-			if(piece->isLegal(mat)!=NO_ERROR) {
+			if(!piece->isLegal(mat).NO_ERROR) {
 				piece->draw(renderer,texture,SIZE_BLOC);
 				quit=true;
 			}
@@ -190,7 +190,7 @@ void Tetris::loop()
 
 				case SDLK_RIGHT:
 					piece->right();
-					if(piece->isLegal(mat)==NO_ERROR) {
+					if(piece->isLegal(mat).NO_ERROR) {
 						piece->draw(renderer,texture,SIZE_BLOC);
 					}
 					else
@@ -200,7 +200,7 @@ void Tetris::loop()
 
 				case SDLK_LEFT:
 					piece->left();
-					if(piece->isLegal(mat)==NO_ERROR) {
+					if(piece->isLegal(mat).NO_ERROR) {
 						piece->draw(renderer,texture,SIZE_BLOC);
 					}
 					else
@@ -215,8 +215,20 @@ void Tetris::loop()
 				case SDLK_UP:
 
 					piece->rotateRight();
-					if(piece->isLegal(mat)==NO_ERROR) {
+					piece->affiche_coord(true,true);
+					if(piece->isLegal(mat).NO_ERROR) {
 						piece->draw(renderer,texture,SIZE_BLOC);
+					}
+					else if (piece->isLegal(mat).OVER_X){
+						int shift = piece->isLegal(mat).OVER_NUMBER_X;
+						std::cout << "Le décalage est"<< shift<<std::endl;
+						piece->translate(-shift, 0, false); 
+						
+						if(piece->isLegal(mat).NO_ERROR) {
+							piece->draw(renderer,texture,SIZE_BLOC);
+						}
+						else 
+							piece->translate(shift, 0, false);
 					}
 					else
 						piece->rotateLeft();
@@ -226,7 +238,7 @@ void Tetris::loop()
 				
 			default: break;
 			}
-			this->printMatrice();
+			//this->printMatrice();
 		}
 		
 		const Uint8* state = SDL_GetKeyboardState(NULL);
@@ -240,7 +252,7 @@ void Tetris::loop()
 		t+=delta_t;
 		if(floor(t)>=1) {
 			cont = piece->onDown(mat, cont, renderer, texture);
-			this->printMatrice();
+			//this->printMatrice();
 			t=0;
 		}
 		
