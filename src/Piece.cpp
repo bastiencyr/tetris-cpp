@@ -34,6 +34,7 @@ Piece::Piece() {
 	}
 }
 
+
 Piece::~Piece() {
 }
 
@@ -70,10 +71,15 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
 
 }
 
-bool Piece::translate(int a, int b){
+bool Piece::translate(int a, int b, bool moveSource){
+	if (moveSource){
+		for(int i = 0; i < 4; i++) {
+			this->src[i].x=this->dst[i].x;
+			this->src[i].y=this->dst[i].y;
+		}
+		
+	}
 	for(int i = 0; i < 4; i++) {
-		this->src[i].x=this->dst[i].x;
-		this->src[i].y=this->dst[i].y;
 		this->dst[i].x+=a;
 		this->dst[i].y+=b;
 	}
@@ -84,17 +90,17 @@ bool Piece::translate(int a, int b){
  * Cette fonction déplace une pièce vers le bas sans la dessiner.
  * Il faut appeler la méthode draw pour dessiner la pièce.
  */
-bool Piece::down(){
+bool Piece::down(bool moveSource){
 	//normalement c'est 1 (normalisé). Faudra le faire
-	return this->translate(0, 1);
+	return this->translate(0, 1, moveSource);
 }
 
-bool Piece::right(){
-	return this->translate(1, 0);
+bool Piece::right(bool moveSource){
+	return this->translate(1, 0, moveSource);
 }
 
-bool Piece::left(){
-	return this->translate(-1, 0);
+bool Piece::left(bool moveSource){
+	return this->translate(-1, 0, moveSource);
 }
 
 /*
@@ -103,8 +109,8 @@ bool Piece::left(){
  * dabord la position de la pièces SANS lafficher; on vérifie la légalité puis on
  * affiche. Si le déplacement n'était pas légal, il faut pouvoir revenir en arrière.
  */
-void Piece::up(){
-	this->translate(0,-1);
+void Piece::up(bool moveSource){
+	this->translate(0, -1, moveSource);
 }
 
 
@@ -113,11 +119,13 @@ void Piece::up(){
  * Le centre de rotation est donné par l'entier contenu dans la structure
  * de la pièce.
  */
-void Piece::rotateLeft(){
-
-	for(int i = 0; i<4; i++) {
-		this->src[i].x=this->dst[i].x;
-		this->src[i].y=this->dst[i].y;
+void Piece::rotateLeft(bool moveSource){
+	
+	if(moveSource){
+		for(int i = 0; i<4; i++) {
+			this->src[i].x=this->dst[i].x;
+			this->src[i].y=this->dst[i].y;
+		}
 	}
 
 	//ATTENTION, il faut bien séparer les deux boucles !!
@@ -132,11 +140,13 @@ void Piece::rotateLeft(){
  * Le centre de rotation est donné par l'entier contenu dans la structure
  * de la pièce.
  */
-void Piece::rotateRight(){
-
-	for(int i = 0; i<4; i++) {
-		this->src[i].x=this->dst[i].x;
-		this->src[i].y=this->dst[i].y;
+void Piece::rotateRight(bool moveSource){
+	
+	if(moveSource){
+		for(int i = 0; i<4; i++) {
+			this->src[i].x=this->dst[i].x;
+			this->src[i].y=this->dst[i].y;
+		}
 	}
 
 	//ATTENTION, il faut bien séparer les deux boucles !!
@@ -150,15 +160,15 @@ bool Piece::onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,
 	SDL_Texture* texture){
 
 	this->down();
-	if(this->isLegal(mat)==OVER_Y
-			or this->isLegal(mat)==COLLISION_PIECE) {
+	if(this->isLegal(mat).OVER_Y
+			or this->isLegal(mat).COLLISION_PIECE) {
 		cont = false;
 
 		this->up();
 		for(int i = 0; i < 4; i++)
 			mat[this->getx(i)][this->gety(i)]=true;
 	}
-	else if(this->isLegal(mat)==NO_ERROR) {
+	else if(this->isLegal(mat).NO_ERROR) {
 		this->draw(renderer,texture, SIZE_BLOC);
 	}
 	return cont;
@@ -171,36 +181,54 @@ bool Piece::onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,
  * chevauche une autre pièce.
  * Cette fonction doit renvoyer true si le déplacement est légal est faux sinon.
  */
-error Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
+Error Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
 
-	error e = ERROR;
-
+	Error e;
+	
+	e.ERROR = false;
+	e.COLLISION_PIECE = false;
+	e.OVER_X = false;
+	e.OVER_Y = false;
+	e.NO_ERROR = true;
+	e.OVER_RIGHT_X = 0;
+	e.OVER_LEFT_X = 0;
+	e.OVER_UP_y = 0;
+	e.OVER_DOWN_y = 0;
+	e.OVER_NUMBER_X = 0;
+	
+	
+	for(int i = 0; i< 4; i++) {
+		if(this->dst[i].x < 0 and this->dst[i].x < e.OVER_NUMBER_X)
+			e.OVER_NUMBER_X = this->dst[i].x;
+		
+		else if (this->dst[i].x >= BLOCSX
+				and this->dst[i].x - BLOCSX +1 > e.OVER_NUMBER_X)
+			e.OVER_NUMBER_X = this->dst[i].x - BLOCSX +1;
+	}
+	
 	for(int i = 0; i< 4; i++) {
 		//Verification dépassement vertical
 		if(this->dst[i].y < 0 || this->dst[i].y == BLOCSY) {
 			std::cout << "mouvement illégal (dv)" << std::endl;
-			e = OVER_Y;
-			return e;
+			e.OVER_Y=true;
+			e.NO_ERROR=false;
 			//return false;
 		}
 		//Verification occupation de la case
 		else if(mat[this->dst[i].x][this->dst[i].y]) {
 			std::cout << "mouvement illégal (oc)" << std::endl;
-			e = COLLISION_PIECE;
-			return e;
+			e.COLLISION_PIECE=true;
+			e.NO_ERROR=false;
 			//return false;
 		}
-
-		//vérification dépassement horizontal
-		else if(this->dst[i].x < 0 || this->dst[i].x == BLOCSX) {
+		
+		else if(this->dst[i].x < 0 || this->dst[i].x >= BLOCSX) {
 			std::cout << "mouvement illégal (dh)" << std::endl;
-			e = OVER_X;
-			return e;
+			e.OVER_X=true;
+			e.NO_ERROR=false;
 		}
-
 	}
-	std::cout << "mouvement légal" << std::endl;
-	e = NO_ERROR;
+	
 	return e;
 	//return true;
 }
@@ -347,7 +375,7 @@ void OTetri::update() {
 	this->dst[2].y=0;
 	this->dst[3].y=1;
 }
-
+		
 ITetri::ITetri() : Piece() {
 	this->color[0]=0;
 	this->color[1]=255;

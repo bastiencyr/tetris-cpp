@@ -19,7 +19,7 @@
 
 class Piece
 {
-protected:
+public:
 	//une pièce doit donc être deux vecteurs de rectangles. Un vecteur source
 	//et un vecteur destination
     SDL_Rect src[4];
@@ -38,18 +38,18 @@ public :
 
 	int getcol(int i);
 
-	bool translate(int a, int b);
-    bool down();
-	void up();
-	bool right();
-	bool left();
-	void rotateLeft();
-	void rotateRight();
+	bool translate(int a, int b, bool moveSource=true);
+    bool down(bool moveSource=true);
+	void up(bool moveSource=true);
+	bool right(bool moveSource=true);
+	bool left(bool moveSource=true);
+	void rotateLeft(bool moveSource=true);
+	void rotateRight(bool moveSource=true);
 
 	bool onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,
 	SDL_Texture* texture);
 
-	error isLegal(bool mat[BLOCSX][BLOCSY]);
+	Error isLegal(bool mat[BLOCSX][BLOCSY]);
 	void draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor);
 
 	void affiche_coord(bool source, bool dest);
@@ -73,6 +73,8 @@ class ITetri : public Piece {
 	public:
 		ITetri();
 		void update();
+		void rotateLeft();
+		void rotateRight();
 };
 
 
@@ -80,6 +82,8 @@ class OTetri : public Piece {
 	public:
 		OTetri();
 		void update();
+		void rotateLeft();
+		void rotateRight();
 };
 
 class TTetri : public Piece {
