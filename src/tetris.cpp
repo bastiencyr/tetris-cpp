@@ -222,10 +222,13 @@ void Tetris::loop()
 						std::cout << "shift is " << shift << std::endl;
 						temp.rotateRight();
 						if (temp.isLegalTranslate(shift, 0, mat).NO_ERROR){
+							std::cout << "rotation a doite" << std::endl;
 							piece->rotateRight();
 							piece->translate(shift, 0, false);
 							piece->draw(renderer,texture,SIZE_BLOC);
 						}
+						else 
+							std::cout << "une autre erreur" << std::endl;
 					}
 					
 					break;
