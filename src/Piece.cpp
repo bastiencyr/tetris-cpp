@@ -121,17 +121,23 @@ void Piece::up(bool moveSource){
  */
 void Piece::rotateLeft(bool moveSource){
 	
+	Piece temp;
+	for(int i = 0; i<4; i++) {
+		temp.src[i].x=this->dst[i].x;
+		temp.src[i].y=this->dst[i].y;
+	}
+	
 	if(moveSource){
 		for(int i = 0; i<4; i++) {
 			this->src[i].x=this->dst[i].x;
 			this->src[i].y=this->dst[i].y;
 		}
 	}
-
+	
 	//ATTENTION, il faut bien séparer les deux boucles !!
 	for(int i = 0; i<4; i++) {
-		this->dst[i].x = this->src[i].y - this->src[1].y + this->src[1].x;
-		this->dst[i].y= this->src[1].x - this->src[i].x + this->src[1].y;
+		this->dst[i].x = temp.src[i].y - temp.src[1].y + temp.src[1].x;
+		this->dst[i].y= temp.src[1].x - temp.src[i].x + temp.src[1].y;
 	}
 }
 
@@ -142,6 +148,12 @@ void Piece::rotateLeft(bool moveSource){
  */
 void Piece::rotateRight(bool moveSource){
 	
+	Piece temp;
+	for(int i = 0; i<4; i++) {
+		temp.src[i].x=this->dst[i].x;
+		temp.src[i].y=this->dst[i].y;
+	}
+	
 	if(moveSource){
 		for(int i = 0; i<4; i++) {
 			this->src[i].x=this->dst[i].x;
@@ -151,38 +163,39 @@ void Piece::rotateRight(bool moveSource){
 
 	//ATTENTION, il faut bien séparer les deux boucles !!
 	for(int i = 0; i<4; i++) {
-		this->dst[i].x = this->src[1].y - this->src[i].y + this->src[1].x;
-		this->dst[i].y= this->src[i].x - this->src[1].x + this->src[1].y;
+		this->dst[i].x = temp.src[1].y - temp.src[i].y + temp.src[1].x;
+		this->dst[i].y= temp.src[i].x - temp.src[1].x + temp.src[1].y;
 	}
 }
 
 bool Piece::onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,
-	SDL_Texture* texture){
-
-	this->down();
-	if(this->isLegal(mat).OVER_Y
-			or this->isLegal(mat).COLLISION_PIECE) {
+		SDL_Texture* texture){
+	
+	if(this->isLegalDown(mat).OVER_Y
+			or this->isLegalDown(mat).COLLISION_PIECE) {
 		cont = false;
 
-		this->up();
 		for(int i = 0; i < 4; i++)
 			mat[this->getx(i)][this->gety(i)]=true;
 	}
-	else if(this->isLegal(mat).NO_ERROR) {
+	else if(this->isLegalDown(mat).NO_ERROR) {
+		this->down();
 		this->draw(renderer,texture, SIZE_BLOC);
 	}
 	return cont;
 }
 
+Error Piece::isLegalTranslate(int a, int b, bool mat[BLOCSX][BLOCSY]){
+	Piece temp;
+	for (int i=0; i< 4; i++){
+		temp.dst[i].x=this->dst[i].x + a;
+		temp.dst[i].y=this->dst[i].y + b;
+	}
+	return isLegalPosition(&temp, mat);
+}
 
-/*
- * Cette méthode calcule la légalité d'une pièce sur le plateau.
- * Une position pas légale est une pièce en dehors du plateau ou qui
- * chevauche une autre pièce.
- * Cette fonction doit renvoyer true si le déplacement est légal est faux sinon.
- */
-Error Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
-
+Error Piece::isLegalPosition(Piece *temp, bool mat[BLOCSX][BLOCSY]){
+	
 	Error e;
 	
 	e.ERROR = false;
@@ -196,33 +209,32 @@ Error Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
 	e.OVER_DOWN_y = 0;
 	e.OVER_NUMBER_X = 0;
 	
-	
 	for(int i = 0; i< 4; i++) {
-		if(this->dst[i].x < 0 and this->dst[i].x < e.OVER_NUMBER_X)
-			e.OVER_NUMBER_X = this->dst[i].x;
+		if(temp->dst[i].x < 0 and temp->dst[i].x < e.OVER_NUMBER_X)
+			e.OVER_NUMBER_X = temp->dst[i].x;
 		
-		else if (this->dst[i].x >= BLOCSX
-				and this->dst[i].x - BLOCSX +1 > e.OVER_NUMBER_X)
-			e.OVER_NUMBER_X = this->dst[i].x - BLOCSX +1;
+		else if (temp->dst[i].x >= BLOCSX
+				and temp->dst[i].x - BLOCSX +1 > e.OVER_NUMBER_X)
+			e.OVER_NUMBER_X = temp->dst[i].x - BLOCSX +1;
 	}
 	
 	for(int i = 0; i< 4; i++) {
 		//Verification dépassement vertical
-		if(this->dst[i].y < 0 || this->dst[i].y == BLOCSY) {
+		if(temp->dst[i].y < 0 || temp->dst[i].y == BLOCSY) {
 			std::cout << "mouvement illégal (dv)" << std::endl;
 			e.OVER_Y=true;
 			e.NO_ERROR=false;
 			//return false;
 		}
 		//Verification occupation de la case
-		else if(mat[this->dst[i].x][this->dst[i].y]) {
+		else if(mat[temp->dst[i].x][temp->dst[i].y]) {
 			std::cout << "mouvement illégal (oc)" << std::endl;
 			e.COLLISION_PIECE=true;
 			e.NO_ERROR=false;
 			//return false;
 		}
 		
-		else if(this->dst[i].x < 0 || this->dst[i].x >= BLOCSX) {
+		else if(temp->dst[i].x < 0 || temp->dst[i].x >= BLOCSX) {
 			std::cout << "mouvement illégal (dh)" << std::endl;
 			e.OVER_X=true;
 			e.NO_ERROR=false;
@@ -230,9 +242,58 @@ Error Piece::isLegal(bool mat[BLOCSX][BLOCSY]){
 	}
 	
 	return e;
-	//return true;
+	
 }
 
+Error Piece::isLegalRight(bool mat[BLOCSX][BLOCSY]){
+	return isLegalTranslate(1, 0, mat);
+}
+
+Error Piece::isLegalLeft(bool mat[BLOCSX][BLOCSY]){
+	return isLegalTranslate(-1, 0, mat);
+}
+
+Error Piece::isLegalDown(bool mat[BLOCSX][BLOCSY]){
+	return isLegalTranslate(0, 1, mat);
+}
+
+Error Piece::isLegalUp(bool mat[BLOCSX][BLOCSY]){
+	return isLegalTranslate(0, -1, mat);
+}
+
+/*
+ *Cette fonction effectue la rotation de la pièce.
+ * Le centre de rotation est donné par l'entier contenu dans la structure
+ * de la pièce.
+ */
+Error Piece::isLegalRotateLeft(bool mat[BLOCSX][BLOCSY]){
+	
+	Piece temp;
+
+	//ATTENTION, il faut bien séparer les deux boucles !!
+	for(int i = 0; i<4; i++) {
+		temp.dst[i].x = this->dst[i].y - this->dst[1].y + this->dst[1].x;
+		temp.dst[i].y= this->dst[1].x - this->dst[i].x + this->dst[1].y;
+	}
+	return isLegalPosition(&temp, mat);
+}
+
+/*
+ *Cette fonction effectue la rotation de la pièce.
+ * Le centre de rotation est donné par l'entier contenu dans la structure
+ * de la pièce.
+ */
+Error Piece::isLegalRotateRight(bool mat[BLOCSX][BLOCSY]){
+	
+	Piece temp;
+	
+	//ATTENTION, il faut bien séparer les deux boucles !!
+	for(int i = 0; i<4; i++) {
+		temp.dst[i].x = this->dst[1].y - this->dst[i].y + this->dst[1].x;
+		temp.dst[i].y= this->dst[i].x - this->dst[1].x + this->dst[1].y;
+	}
+	return isLegalPosition(&temp, mat);
+}
 
 /*
  * Cette méthode affiche les coordonnées d'une pièce

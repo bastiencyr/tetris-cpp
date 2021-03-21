@@ -164,7 +164,7 @@ void Tetris::loop()
 			//}
 
 			cont = true;
-			if(!piece->isLegal(mat).NO_ERROR) {
+			if(!piece->isLegalPosition(piece, mat).NO_ERROR) {
 				piece->draw(renderer,texture,SIZE_BLOC);
 				quit=true;
 			}
@@ -189,49 +189,44 @@ void Tetris::loop()
 					//si lutilisateur appuie sur la flèche droite du clavier:
 
 				case SDLK_RIGHT:
-					piece->right();
-					if(piece->isLegal(mat).NO_ERROR) {
-						piece->draw(renderer,texture,SIZE_BLOC);
+					if (piece->isLegalRight(mat).NO_ERROR){
+						piece->right();
+						piece->draw(renderer,texture,SIZE_BLOC);	
 					}
-					else
-						piece->left();
-
 					break;
 
 				case SDLK_LEFT:
-					piece->left();
-					if(piece->isLegal(mat).NO_ERROR) {
-						piece->draw(renderer,texture,SIZE_BLOC);
+					if (piece->isLegalLeft(mat).NO_ERROR){
+						piece->left();
+						piece->draw(renderer,texture,SIZE_BLOC);	
 					}
-					else
-						piece->right();
 					break;
 
 				case SDLK_DOWN:
 					cont = piece->onDown(mat, cont, renderer, texture);
-
 					break;
-
+					
 				case SDLK_UP:
-
-					piece->rotateRight();
-					piece->affiche_coord(true,true);
-					if(piece->isLegal(mat).NO_ERROR) {
+					if (piece->isLegalRotateRight(mat).NO_ERROR){
+						piece->rotateRight();
 						piece->draw(renderer,texture,SIZE_BLOC);
-					}
-					else if (piece->isLegal(mat).OVER_X){
-						int shift = piece->isLegal(mat).OVER_NUMBER_X;
-						std::cout << "Le décalage est"<< shift<<std::endl;
-						piece->translate(-shift, 0, false); 
 						
-						if(piece->isLegal(mat).NO_ERROR) {
+					}
+					else if (piece->isLegalRotateRight(mat).OVER_X){
+						Piece temp;
+						for (int i=0 ; i<4 ; i++){
+							temp.dst[i].x=piece->dst[i].x;
+							temp.dst[i].y=piece->dst[i].y;
+						}
+						int shift = -piece->isLegalRotateRight(mat).OVER_NUMBER_X;
+						std::cout << "shift is " << shift << std::endl;
+						temp.rotateRight();
+						if (temp.isLegalTranslate(shift, 0, mat).NO_ERROR){
+							piece->rotateRight();
+							piece->translate(shift, 0, false);
 							piece->draw(renderer,texture,SIZE_BLOC);
 						}
-						else 
-							piece->translate(shift, 0, false);
 					}
-					else
-						piece->rotateLeft();
 					
 					break;
 				}

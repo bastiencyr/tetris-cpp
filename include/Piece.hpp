@@ -45,11 +45,19 @@ public :
 	bool left(bool moveSource=true);
 	void rotateLeft(bool moveSource=true);
 	void rotateRight(bool moveSource=true);
-
+	
+	Error isLegalPosition(Piece *temp, bool mat[BLOCSX][BLOCSY]);
+	Error isLegalTranslate(int a, int b, bool mat[BLOCSX][BLOCSY]);
+	Error isLegalRight(bool mat[BLOCSX][BLOCSY]);
+	Error isLegalLeft(bool mat[BLOCSX][BLOCSY]);
+	Error isLegalDown(bool mat[BLOCSX][BLOCSY]);
+	Error isLegalUp(bool mat[BLOCSX][BLOCSY]);
+	Error isLegalRotateLeft(bool mat[BLOCSX][BLOCSY]);
+	Error isLegalRotateRight(bool mat[BLOCSX][BLOCSY]);
+	
 	bool onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,
 	SDL_Texture* texture);
 
-	Error isLegal(bool mat[BLOCSX][BLOCSY]);
 	void draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor);
 
 	void affiche_coord(bool source, bool dest);
