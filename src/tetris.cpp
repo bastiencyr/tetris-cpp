@@ -26,7 +26,7 @@ Tetris::Tetris(int w, int h){
 	renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_SOFTWARE);
 
 	//renderer2 = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED |
-	//SDL_RENDERER_PRESENTVSYNC);
+	//SDL_RENDERER_PRESENTVSYNC);k
 	timer=0;
 
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
