@@ -19,9 +19,10 @@
 Tetris::Tetris(int w, int h){
 	this->w=w;
 	this->h=h;
+	
 	pWindow = SDL_CreateWindow("Une fenetre SDL" , SDL_WINDOWPOS_CENTERED ,
 			SDL_WINDOWPOS_CENTERED , w , h , SDL_WINDOW_SHOWN);
-
+	
 	renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_SOFTWARE);
 
 	//renderer2 = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED |

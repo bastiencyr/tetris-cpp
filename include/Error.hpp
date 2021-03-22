@@ -35,6 +35,7 @@ public:
 		OVER_LEFT_X = 0;
 		OVER_UP_y = 0;
 		OVER_DOWN_y = 0;
+		OVER_NUMBER_X = 0;
 	}
 };
 

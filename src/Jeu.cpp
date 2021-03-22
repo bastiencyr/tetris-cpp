@@ -11,19 +11,17 @@
 #include <iostream>
 #include <cassert>
 #include "../include/tetris.hpp"
+#include "../include/Jeu.hpp"
 #define SIZE_BLOC 35
 #define BLOCSX 10
 #define BLOCSY 20
 
-int main(int argc, char** argv)
-{	
-	int h=SIZE_BLOC*BLOCSY;
-	int w=SIZE_BLOC*BLOCSX;
+void Jeu::startTetris(int h,int w){
 
 	if(SDL_VideoInit(NULL) < 0) // Initialisation de la SDL
 	{
 		printf("Erreur d'initialisation de la SDL : %s",SDL_GetError());
-		return EXIT_FAILURE;
+		exit(EXIT_FAILURE);
 	}
 
 	Tetris tetris(w,h);
@@ -32,4 +30,13 @@ int main(int argc, char** argv)
 	tetris.loop();
 
 	SDL_Quit();
+}
+
+int main(int argc, char** argv)
+{	
+	int h=SIZE_BLOC*BLOCSY;
+	int w=SIZE_BLOC*BLOCSX;
+	
+	Jeu jeu;
+	jeu.startTetris(h,w);
 }

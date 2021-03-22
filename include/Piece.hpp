@@ -11,9 +11,9 @@
 #include <SDL.h>
 #include <string>
 #include "Error.hpp"
-#define SIZE_BLOC 35
 #define BLOCSX 10
 #define BLOCSY 20
+#define SIZE_BLOC 35
 
 //class Sprite;
 
@@ -44,7 +44,7 @@ public :
 	bool right(bool moveSource=true);
 	bool left(bool moveSource=true);
 	void rotateLeft(bool moveSource=true);
-	void rotateRight(bool moveSource=true);
+	virtual void rotateRight(bool moveSource=true);
 	
 	Error isLegalPosition(Piece *temp, bool mat[BLOCSX][BLOCSY]);
 	Error isLegalTranslate(int a, int b, bool mat[BLOCSX][BLOCSY]);
@@ -53,7 +53,7 @@ public :
 	Error isLegalDown(bool mat[BLOCSX][BLOCSY]);
 	Error isLegalUp(bool mat[BLOCSX][BLOCSY]);
 	Error isLegalRotateLeft(bool mat[BLOCSX][BLOCSY]);
-	Error isLegalRotateRight(bool mat[BLOCSX][BLOCSY]);
+	virtual Error isLegalRotateRight(bool mat[BLOCSX][BLOCSY]);
 	
 	bool onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,
 	SDL_Texture* texture);
@@ -81,8 +81,6 @@ class ITetri : public Piece {
 	public:
 		ITetri();
 		void update();
-		void rotateLeft();
-		void rotateRight();
 };
 
 
@@ -90,8 +88,9 @@ class OTetri : public Piece {
 	public:
 		OTetri();
 		void update();
-		void rotateLeft();
-		void rotateRight();
+		void rotateRight(bool moveSource=true);
+		Error isLegalRotateRight(bool mat[BLOCSX][BLOCSY]);
+
 };
 
 class TTetri : public Piece {
