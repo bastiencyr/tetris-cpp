@@ -22,19 +22,7 @@ Tetris::Tetris(int w, int h){
 	pWindow = SDL_CreateWindow("Une fenetre SDL" , SDL_WINDOWPOS_CENTERED ,
 			SDL_WINDOWPOS_CENTERED , w , h , SDL_WINDOW_SHOWN);
 
-//	if (pWindow == NULL)  //gestion des erreurs
-//	{
-//		printf("Erreur lors de la creation d'une fenetre : %s", SDL_GetError());
-//		return EXIT_FAILURE;
-//	}
-
 	renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_SOFTWARE);
-//	if (renderer == NULL)  //gestion des erreurs
-//	{
-//		printf("Erreur lors de la creation de la renderer : %s", SDL_GetError());
-//		return EXIT_FAILURE;
-//	}
-
 
 	//renderer2 = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED |
 	//SDL_RENDERER_PRESENTVSYNC);
@@ -42,11 +30,6 @@ Tetris::Tetris(int w, int h){
 
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
-//	if (fenetre == NULL)  //gestion des erreurs
-//	{
-//		printf("Erreur lors de la creation d'une texture : %s", SDL_GetError());
-//		return EXIT_FAILURE;
-//	}
 
 	//mat[BLOCSX][BLOCSY];
 	for(int i = 0; i < BLOCSX; i++) {
@@ -147,7 +130,7 @@ void Tetris::loop()
 	{
 		if(!cont) {
 			std::cout << "Nouvelle pièce en haut" << std::endl;
-			randn = rand()%7;
+			randn = rand() % 7;
 			std::cout<<randn<<std::endl;
 			PiecList[randn]->update();
 			piece = PiecList[randn];
@@ -271,22 +254,3 @@ void Tetris::printMatrice(){
 	}
 }
 
-
-int main(int argc, char** argv)
-{
-	int h=SIZE_BLOC*BLOCSY;
-	int w=SIZE_BLOC*BLOCSX;
-
-	if(SDL_VideoInit(NULL) < 0) // Initialisation de la SDL
-	{
-		printf("Erreur d'initialisation de la SDL : %s",SDL_GetError());
-		return EXIT_FAILURE;
-	}
-
-	Tetris tetris(w,h);
-	tetris.init();
-	SDL_RenderPresent(tetris.get_renderer());
-	tetris.loop();
-
-	SDL_Quit();
-}
