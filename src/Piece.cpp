@@ -198,17 +198,6 @@ Error Piece::isLegalPosition(Piece *temp, bool mat[BLOCSX][BLOCSY]){
 	
 	Error e;
 	
-	e.ERROR = false;
-	e.COLLISION_PIECE = false;
-	e.OVER_X = false;
-	e.OVER_Y = false;
-	e.NO_ERROR = true;
-	e.OVER_RIGHT_X = 0;
-	e.OVER_LEFT_X = 0;
-	e.OVER_UP_y = 0;
-	e.OVER_DOWN_y = 0;
-	e.OVER_NUMBER_X = 0;
-	
 	for(int i = 0; i< 4; i++) {
 		if(temp->dst[i].x < 0 and temp->dst[i].x < e.OVER_NUMBER_X)
 			e.OVER_NUMBER_X = temp->dst[i].x;
@@ -412,7 +401,6 @@ OTetri::OTetri() : Piece() {
 }
 
 void OTetri::update() {
-	puts("création carré");
 	this->src[0].x=floor(BLOCSX/2);
 	this->src[1].x=floor(BLOCSX/2);
 	this->src[2].x=floor(BLOCSX/2)+1;
