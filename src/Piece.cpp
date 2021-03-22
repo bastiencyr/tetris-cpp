@@ -224,17 +224,15 @@ Error Piece::isLegalPosition(Piece *temp, bool mat[BLOCSX][BLOCSY]){
 			std::cout << "mouvement illégal (dv)" << std::endl;
 			e.OVER_Y=true;
 			e.NO_ERROR=false;
-			//return false;
 		}
 		//Verification occupation de la case
-		else if(mat[temp->dst[i].x][temp->dst[i].y]) {
+		if(mat[temp->dst[i].x][temp->dst[i].y]) {
 			std::cout << "mouvement illégal (oc)" << std::endl;
 			e.COLLISION_PIECE=true;
 			e.NO_ERROR=false;
-			//return false;
 		}
 		
-		else if(temp->dst[i].x < 0 || temp->dst[i].x >= BLOCSX) {
+		if(temp->dst[i].x < 0 || temp->dst[i].x >= BLOCSX) {
 			std::cout << "mouvement illégal (dh)" << std::endl;
 			e.OVER_X=true;
 			e.NO_ERROR=false;
@@ -270,7 +268,6 @@ Error Piece::isLegalRotateLeft(bool mat[BLOCSX][BLOCSY]){
 	
 	Piece temp;
 
-	//ATTENTION, il faut bien séparer les deux boucles !!
 	for(int i = 0; i<4; i++) {
 		temp.dst[i].x = this->dst[i].y - this->dst[1].y + this->dst[1].x;
 		temp.dst[i].y= this->dst[1].x - this->dst[i].x + this->dst[1].y;
@@ -286,8 +283,7 @@ Error Piece::isLegalRotateLeft(bool mat[BLOCSX][BLOCSY]){
 Error Piece::isLegalRotateRight(bool mat[BLOCSX][BLOCSY]){
 	
 	Piece temp;
-	
-	//ATTENTION, il faut bien séparer les deux boucles !!
+
 	for(int i = 0; i<4; i++) {
 		temp.dst[i].x = this->dst[1].y - this->dst[i].y + this->dst[1].x;
 		temp.dst[i].y= this->dst[i].x - this->dst[1].x + this->dst[1].y;
@@ -416,6 +412,7 @@ OTetri::OTetri() : Piece() {
 }
 
 void OTetri::update() {
+	puts("création carré");
 	this->src[0].x=floor(BLOCSX/2);
 	this->src[1].x=floor(BLOCSX/2);
 	this->src[2].x=floor(BLOCSX/2)+1;
@@ -436,7 +433,17 @@ void OTetri::update() {
 	this->dst[2].y=0;
 	this->dst[3].y=1;
 }
-		
+
+Error OTetri::isLegalRotateRight(bool mat[BLOCSX][BLOCSY]){
+	puts("ooooooook");
+	Error e;
+	e.NO_ERROR = true;
+	return e;
+}
+
+void OTetri::rotateRight(bool moveSource){
+}
+
 ITetri::ITetri() : Piece() {
 	this->color[0]=0;
 	this->color[1]=255;
