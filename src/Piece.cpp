@@ -423,7 +423,6 @@ void OTetri::update() {
 }
 
 Error OTetri::isLegalRotateRight(bool mat[BLOCSX][BLOCSY]){
-	puts("ooooooook");
 	Error e;
 	e.NO_ERROR = true;
 	return e;
