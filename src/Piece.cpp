@@ -46,10 +46,11 @@ Piece::~Piece() {
  Cette fonction est chargée de dessiner une pièce sur le renderer.
  Elle ne vérifie pas si elle a le droit de dessiner.
  */
-void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
+void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  texture, int factor){
 
 	SDL_Rect src_r[4];
 	SDL_Rect dst_r[4];
+	SDL_SetRenderTarget(renderer, texture);
 	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1], this->color[2], 255); /* On dessine en violet */
 	for(int i = 0; i < 4; i++) {
 		src_r[i].x=this->src[i].x*factor;
@@ -62,11 +63,13 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor){
 		dst_r[i].w=this->dst[i].w*factor;
 		dst_r[i].h=this->dst[i].h*factor;
 
-		SDL_RenderCopy(renderer, texture, &src_r[i], &src_r[i]);
+		SDL_RenderCopy(renderer, blank, &src_r[i], &src_r[i]);
 	}
 	for(int i=0; i<4; i++) {
 		SDL_RenderFillRect(renderer, &dst_r[i]);
 	}
+	SDL_SetRenderTarget(renderer, NULL);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderPresent(renderer);
 
 }
@@ -77,7 +80,7 @@ bool Piece::translate(int a, int b, bool moveSource){
 			this->src[i].x=this->dst[i].x;
 			this->src[i].y=this->dst[i].y;
 		}
-		
+
 	}
 	for(int i = 0; i < 4; i++) {
 		this->dst[i].x+=a;
@@ -120,20 +123,20 @@ void Piece::up(bool moveSource){
  * de la pièce.
  */
 void Piece::rotateLeft(bool moveSource){
-	
+
 	Piece temp;
 	for(int i = 0; i<4; i++) {
 		temp.src[i].x=this->dst[i].x;
 		temp.src[i].y=this->dst[i].y;
 	}
-	
+
 	if(moveSource){
 		for(int i = 0; i<4; i++) {
 			this->src[i].x=this->dst[i].x;
 			this->src[i].y=this->dst[i].y;
 		}
 	}
-	
+
 	//ATTENTION, il faut bien séparer les deux boucles !!
 	for(int i = 0; i<4; i++) {
 		this->dst[i].x = temp.src[i].y - temp.src[1].y + temp.src[1].x;
@@ -147,13 +150,13 @@ void Piece::rotateLeft(bool moveSource){
  * de la pièce.
  */
 void Piece::rotateRight(bool moveSource){
-	
+
 	Piece temp;
 	for(int i = 0; i<4; i++) {
 		temp.src[i].x=this->dst[i].x;
 		temp.src[i].y=this->dst[i].y;
 	}
-	
+
 	if(moveSource){
 		for(int i = 0; i<4; i++) {
 			this->src[i].x=this->dst[i].x;
@@ -169,8 +172,8 @@ void Piece::rotateRight(bool moveSource){
 }
 
 bool Piece::onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,
-		SDL_Texture* texture){
-	
+	SDL_Texture*  blank, SDL_Texture* texture){
+
 	if(this->isLegalDown(mat).OVER_Y
 			or this->isLegalDown(mat).COLLISION_PIECE) {
 		cont = false;
@@ -180,7 +183,7 @@ bool Piece::onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,
 	}
 	else if(this->isLegalDown(mat).NO_ERROR) {
 		this->down();
-		this->draw(renderer,texture, SIZE_BLOC);
+		this->draw(renderer,blank,texture, SIZE_BLOC);
 	}
 	return cont;
 }
@@ -195,18 +198,18 @@ Error Piece::isLegalTranslate(int a, int b, bool mat[BLOCSX][BLOCSY]){
 }
 
 Error Piece::isLegalPosition(Piece *temp, bool mat[BLOCSX][BLOCSY]){
-	
+
 	Error e;
-	
+
 	for(int i = 0; i< 4; i++) {
 		if(temp->dst[i].x < 0 and temp->dst[i].x < e.OVER_NUMBER_X)
 			e.OVER_NUMBER_X = temp->dst[i].x;
-		
+
 		else if (temp->dst[i].x >= BLOCSX
 				and temp->dst[i].x - BLOCSX +1 > e.OVER_NUMBER_X)
 			e.OVER_NUMBER_X = temp->dst[i].x - BLOCSX +1;
 	}
-	
+
 	for(int i = 0; i< 4; i++) {
 		//Verification dépassement vertical
 		if(temp->dst[i].y < 0 || temp->dst[i].y == BLOCSY) {
@@ -220,16 +223,16 @@ Error Piece::isLegalPosition(Piece *temp, bool mat[BLOCSX][BLOCSY]){
 			e.COLLISION_PIECE=true;
 			e.NO_ERROR=false;
 		}
-		
+
 		if(temp->dst[i].x < 0 || temp->dst[i].x >= BLOCSX) {
 			std::cout << "mouvement illégal (dh)" << std::endl;
 			e.OVER_X=true;
 			e.NO_ERROR=false;
 		}
 	}
-	
+
 	return e;
-	
+
 }
 
 Error Piece::isLegalRight(bool mat[BLOCSX][BLOCSY]){
@@ -254,7 +257,7 @@ Error Piece::isLegalUp(bool mat[BLOCSX][BLOCSY]){
  * de la pièce.
  */
 Error Piece::isLegalRotateLeft(bool mat[BLOCSX][BLOCSY]){
-	
+
 	Piece temp;
 
 	for(int i = 0; i<4; i++) {
@@ -270,7 +273,7 @@ Error Piece::isLegalRotateLeft(bool mat[BLOCSX][BLOCSY]){
  * de la pièce.
  */
 Error Piece::isLegalRotateRight(bool mat[BLOCSX][BLOCSY]){
-	
+
 	Piece temp;
 
 	for(int i = 0; i<4; i++) {

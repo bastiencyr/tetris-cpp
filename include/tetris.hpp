@@ -18,8 +18,9 @@ protected:
     SDL_Window* pWindow;
     SDL_Renderer* renderer;
     //SDL_Renderer* welcome_screen;
+	SDL_Texture *blank;
     SDL_Texture *texture;
-	
+
 	//Piece *piece;
 
 	int w;
@@ -39,6 +40,10 @@ public :
 	SDL_Renderer* get_renderer() {return renderer;};
 	SDL_Window* get_pWindow() {return pWindow;};
 	void printMatrice();
+
+	void TetrisLinesUpdate();
+	void FillEmpty(int i, int factor);
+	void CopyLine(int i, int decalage, int factor);
 
     ~Tetris(); // destructor
 

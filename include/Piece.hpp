@@ -45,7 +45,7 @@ public :
 	bool left(bool moveSource=true);
 	void rotateLeft(bool moveSource=true);
 	virtual void rotateRight(bool moveSource=true);
-	
+
 	Error isLegalPosition(Piece *temp, bool mat[BLOCSX][BLOCSY]);
 	Error isLegalTranslate(int a, int b, bool mat[BLOCSX][BLOCSY]);
 	Error isLegalRight(bool mat[BLOCSX][BLOCSY]);
@@ -54,11 +54,11 @@ public :
 	Error isLegalUp(bool mat[BLOCSX][BLOCSY]);
 	Error isLegalRotateLeft(bool mat[BLOCSX][BLOCSY]);
 	virtual Error isLegalRotateRight(bool mat[BLOCSX][BLOCSY]);
-	
-	bool onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,
+
+	bool onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,SDL_Texture*  blank,
 	SDL_Texture* texture);
 
-	void draw(SDL_Renderer* renderer,SDL_Texture*  texture, int factor);
+	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture, int factor);
 
 	void affiche_coord(bool source, bool dest);
 
