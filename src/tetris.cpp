@@ -258,8 +258,8 @@ void Tetris::TetrisLinesUpdate() {
 	for(int i = BLOCSY-1; i>=0; i--) {
 		int compt = 0;
 		for(int j = 0; j<BLOCSX; j++) {
-			std::cout << "mat : "<< mat[i][j]<< std::endl;
-			if(mat[i][j]) compt++;
+			std::cout << "mat : "<< mat[j][i]<< std::endl;
+			if(mat[j][i]) compt++;
 		}
 		std::cout << "Compteur : "<< compt << ", ligne :" << i << std::endl;
 		if(compt==BLOCSX) //ligne pleine
@@ -269,14 +269,14 @@ void Tetris::TetrisLinesUpdate() {
 			FillEmpty(i,SIZE_BLOC);
 		}
 
-		else if(compt < BLOCSX && compt != 0)
+		else if(compt < BLOCSX && compt != 0 && decalage!=0)
 		{
 			std::cout<<"pas une ligne"<<std::endl;
 			CopyLine(i, decalage, SIZE_BLOC);
 			FillEmpty(i,SIZE_BLOC);
 		}
-		else
-			break;
+		//else
+		//	break;
 	}
 }
 
@@ -287,11 +287,11 @@ void Tetris::FillEmpty(int i,int factor) {
 	line.h= 1*factor;
 	line.w= BLOCSX*factor;
 	SDL_SetRenderTarget(renderer, texture);
-	SDL_RenderCopy(renderer, texture, &line, &line);
+	SDL_RenderCopy(renderer, blank, &line, &line);
 	SDL_SetRenderTarget(renderer, NULL);
 
 	for(int j = 0; j<BLOCSX; j++) {
-		mat[i][j]=false;
+		mat[j][i]=false;
 	}
 	SDL_RenderPresent(renderer);
 }
@@ -308,20 +308,20 @@ void Tetris::CopyLine(int i, int decalage, int factor) {
 
 	copyline.h= factor;
 	copyline.w= factor*BLOCSX;
-	copyline.y=(i+decalage)*factor;
-	copyline.x=0;
+	copyline.y= (i+decalage)*factor;
+	copyline.x= 0;
 
 	copytext.h= factor;
 	copytext.w= factor;
-	copytext.y=i*factor;
-	copytext.x=0;
+	copytext.y= i*factor;
+	copytext.x= 0;
 
 	for(int j = 0; j < BLOCSX; j++) {
-		if(mat[i][j]) {
+		if(mat[j][i]) {
 			copytext.x=j*factor;
 			SDL_RenderCopy(renderer, texture, &copytext, &copytext);
-			mat[i+decalage][j]=mat[i][j];
-			mat[i][j]=0;
+			mat[j][i+decalage]=mat[j][i];
+			mat[j][i]=0;
 		}
 	}
 
@@ -331,7 +331,8 @@ void Tetris::CopyLine(int i, int decalage, int factor) {
 		//srcrect rect dans la texture
 
 	copytext.w= factor*BLOCSX;
-	SDL_RenderCopy(renderer, texture, &copytext, &copyline);
+	copytext.x=0;
+	SDL_RenderCopy(renderer, temp, &copytext, &copyline);
 
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
