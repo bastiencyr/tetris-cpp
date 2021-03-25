@@ -10,8 +10,8 @@
 #include <cassert>
 
 #include "../include/Piece.hpp"
-
 #include "../include/Error.hpp"
+#include "../include/tetris.hpp"
 
 Piece::Piece() {
 	this->color[0]=0;
@@ -32,6 +32,10 @@ Piece::Piece() {
 		this->dst[i].w=1;
 		this->dst[i].h=1;
 	}
+	locTetris.w = 250;
+	locTetris.h = locTetris.w*2;
+	locTetris.x = 50;
+	locTetris.y = 50;
 }
 
 
@@ -46,20 +50,22 @@ Piece::~Piece() {
  Cette fonction est chargée de dessiner une pièce sur le renderer.
  Elle ne vérifie pas si elle a le droit de dessiner.
  */
-void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  texture, int factor){
+void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  texture){
 
+	int factor = locTetris.w/BLOCSX;
+	
 	SDL_Rect src_r[4];
 	SDL_Rect dst_r[4];
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1], this->color[2], 255); /* On dessine en violet */
 	for(int i = 0; i < 4; i++) {
-		src_r[i].x=this->src[i].x*factor;
-		src_r[i].y=((this->src[i].y))*factor;
+		src_r[i].x=this->src[i].x*factor + locTetris.x;
+		src_r[i].y=((this->src[i].y))*factor + locTetris.y;
 		src_r[i].w=this->src[i].w*factor;
 		src_r[i].h=this->src[i].h*factor;
 
-		dst_r[i].x=this->dst[i].x*factor;
-		dst_r[i].y=((this->dst[i].y))*factor;
+		dst_r[i].x=this->dst[i].x*factor + locTetris.x;
+		dst_r[i].y=((this->dst[i].y))*factor + locTetris.y;
 		dst_r[i].w=this->dst[i].w*factor;
 		dst_r[i].h=this->dst[i].h*factor;
 
@@ -183,7 +189,7 @@ bool Piece::onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,
 	}
 	else if(this->isLegalDown(mat).NO_ERROR) {
 		this->down();
-		this->draw(renderer,blank,texture, SIZE_BLOC);
+		this->draw(renderer,blank,texture);
 	}
 	return cont;
 }

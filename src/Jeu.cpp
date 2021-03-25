@@ -27,6 +27,7 @@ void Jeu::startTetris(int h,int w){
 	Tetris tetris(w,h);
 	tetris.init();
 	SDL_RenderPresent(tetris.get_renderer());
+	//SDL_Delay(10000);
 	tetris.loop();
 
 	SDL_Quit();

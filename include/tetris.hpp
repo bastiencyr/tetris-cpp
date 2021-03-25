@@ -11,6 +11,10 @@
 #include <string>
 #include "Piece.hpp"
 
+#define SIZE_BLOC 35
+#define BLOCSX 10
+#define BLOCSY 20
+
 class Tetris
 {
 protected:
@@ -22,7 +26,8 @@ protected:
     SDL_Texture *texture;
 
 	//Piece *piece;
-
+	
+	SDL_Rect sizeTetris;
 	int w;
     int h;
     double timer;
