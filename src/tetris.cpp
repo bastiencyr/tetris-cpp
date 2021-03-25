@@ -178,6 +178,7 @@ void Tetris::loop()
 			if(!piece->isLegalPosition(piece, mat).NO_ERROR) {
 				piece->draw(renderer,blank,texture);
 				quit=true;
+				std::cout<< "Game Over" << std::endl << "Score : " << score << std::endl;
 			}
 		}
 
@@ -187,7 +188,8 @@ void Tetris::loop()
 		//while(ghost->isLegalPosition(ghost,mat).NO_ERROR) {
 		//	ghost->down(1);
 		//}
-		//ghost->draw(renderer,blank,texture,20);
+		//if(ghost->isLegalPosition(ghost,mat).NO_ERROR)
+		//	ghost->draw(renderer,blank,texture,20);
 
 		SDL_Event event;
 		while (!quit && SDL_PollEvent(&event) && cont == true)
@@ -290,8 +292,6 @@ void Tetris::loop()
 		SDL_RenderPresent(renderer);
 
 	}
-	std::cout<< "Game Over" << std::endl << "Score : " << score << std::endl;
-
 }
 
 int Tetris::TetrisLinesUpdate(int *score) {
