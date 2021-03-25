@@ -341,15 +341,11 @@ int Piece::getcol(int i) {
 ########################          LEFT L         #############################
 ############################################################################*/
 
-JTetri::JTetri(SDL_Rect sizeTetris) : Piece(locTetris){
+JTetri::JTetri(SDL_Rect sizeTetris) : Piece(sizeTetris){
 	this->color[0]=0;
 	this->color[1]=0;
 	this->color[2]=255;
 	
-	locTetris.w = sizeTetris.w;
-	locTetris.h = locTetris.w*2;
-	locTetris.x = sizeTetris.x;
-	locTetris.y = sizeTetris.y;
 }
 
 void JTetri::update() {
@@ -374,7 +370,7 @@ void JTetri::update() {
 	this->dst[3].y=2;
 }
 
-LTetri::LTetri(SDL_Rect sizeTetris) : Piece(locTetris){
+LTetri::LTetri(SDL_Rect sizeTetris) : Piece(sizeTetris){
 	this->color[0]=255;
 	this->color[1]=140;
 	this->color[2]=0;
@@ -392,11 +388,6 @@ LTetri::LTetri(SDL_Rect sizeTetris) : Piece(locTetris){
 
 	this->dst[3].x=floor(BLOCSX/2)+1;
 	this->dst[3].y= 2;
-	
-	locTetris.w = sizeTetris.w;
-	locTetris.h = locTetris.w*2;
-	locTetris.x = sizeTetris.x;
-	locTetris.y = sizeTetris.y;
 }
 
 void LTetri::update(){
@@ -415,15 +406,10 @@ void LTetri::update(){
 
 }
 
-OTetri::OTetri(SDL_Rect sizeTetris) : Piece(locTetris) {
+OTetri::OTetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
 	this->color[0]=255;
 	this->color[1]=255;
 	this->color[2]=0;
-	
-	locTetris.w = sizeTetris.w;
-	locTetris.h = locTetris.w*2;
-	locTetris.x = sizeTetris.x;
-	locTetris.y = sizeTetris.y;
 }
 
 void OTetri::update() {
@@ -457,15 +443,10 @@ Error OTetri::isLegalRotateRight(bool mat[BLOCSX][BLOCSY]){
 void OTetri::rotateRight(bool moveSource){
 }
 
-ITetri::ITetri(SDL_Rect sizeTetris) : Piece(locTetris) {
+ITetri::ITetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
 	this->color[0]=0;
 	this->color[1]=255;
 	this->color[2]=255;
-	
-	locTetris.w = sizeTetris.w;
-	locTetris.h = locTetris.w*2;
-	locTetris.x = sizeTetris.x;
-	locTetris.y = sizeTetris.y;
 }
 
 void ITetri::update() {
@@ -491,15 +472,10 @@ void ITetri::update() {
 }
 
 
-TTetri::TTetri(SDL_Rect sizeTetris) : Piece(locTetris) {
+TTetri::TTetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
 	this->color[0]=160;
 	this->color[1]=0;
 	this->color[2]=160;
-	
-	locTetris.w = sizeTetris.w;
-	locTetris.h = locTetris.w*2;
-	locTetris.x = sizeTetris.x;
-	locTetris.y = sizeTetris.y;
 }
 
 void TTetri::update() {
@@ -524,15 +500,10 @@ void TTetri::update() {
 	this->dst[3].y=1;
 }
 
-ZTetri::ZTetri(SDL_Rect sizeTetris) : Piece(locTetris) {
+ZTetri::ZTetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
 	this->color[0]=255;
 	this->color[1]=0;
 	this->color[2]=0;
-	
-	locTetris.w = sizeTetris.w;
-	locTetris.h = locTetris.w*2;
-	locTetris.x = sizeTetris.x;
-	locTetris.y = sizeTetris.y;
 }
 
 void ZTetri::update() {
@@ -558,15 +529,10 @@ void ZTetri::update() {
 }
 
 
-STetri::STetri(SDL_Rect sizeTetris) : Piece(locTetris) {
+STetri::STetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
 	this->color[0]=0;
 	this->color[1]=255;
 	this->color[2]=0;
-	
-	locTetris.w = sizeTetris.w;
-	locTetris.h = locTetris.w*2;
-	locTetris.x = sizeTetris.x;
-	locTetris.y = sizeTetris.y;
 }
 
 
