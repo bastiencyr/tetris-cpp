@@ -487,6 +487,7 @@ TTetri::TTetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
 	this->color[0]=160;
 	this->color[1]=0;
 	this->color[2]=160;
+
 }
 
 void TTetri::update() {
