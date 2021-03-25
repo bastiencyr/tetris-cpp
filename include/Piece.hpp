@@ -55,10 +55,10 @@ public :
 	Error isLegalRotateLeft(bool mat[BLOCSX][BLOCSY]);
 	virtual Error isLegalRotateRight(bool mat[BLOCSX][BLOCSY]);
 
-	bool onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,SDL_Texture*  blank,
+	bool onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,SDL_Texture* blank,
 	SDL_Texture* texture);
 
-	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture, int factor,int alpha);
+	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture, int factor,int alpha=255);
 
 	void affiche_coord(bool source, bool dest);
 

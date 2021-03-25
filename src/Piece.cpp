@@ -46,7 +46,7 @@ Piece::~Piece() {
  Cette fonction est chargée de dessiner une pièce sur le renderer.
  Elle ne vérifie pas si elle a le droit de dessiner.
  */
-void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  texture, int factor,int alpha=255){
+void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  texture, int factor,int alpha){
 
 	SDL_Rect src_r[4];
 	SDL_Rect dst_r[4];

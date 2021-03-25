@@ -133,6 +133,7 @@ void Tetris::loop()
 	bool quit = false;
 	bool cont = true;
 	double t=0;
+	int score = 0;
 	while (!quit)
 	{
 		if(!cont) {
@@ -246,14 +247,30 @@ void Tetris::loop()
 			t=0;
 		}
 
-		TetrisLinesUpdate();
+		switch(TetrisLinesUpdate()) {
+			case 1:
+				score+=100;
+				break;
+			case 2:
+				score+=300;
+				break;
+			case 3:
+				score+=500;
+				break;
+			case 4:
+				score+=800;
+				break;
+			default:
+				break;
+			}
 		SDL_RenderPresent(renderer);
 
 	}
+	std::cout<< "Game Over" << std::endl << "Score : " << score << std::endl;
 
 }
 
-void Tetris::TetrisLinesUpdate() {
+int Tetris::TetrisLinesUpdate() {
 	int decalage = 0;
 	for(int i = BLOCSY-1; i>=0; i--) {
 		int compt = 0;
@@ -274,6 +291,7 @@ void Tetris::TetrisLinesUpdate() {
 		//else
 		//	break;
 	}
+	return decalage;
 }
 
 void Tetris::FillEmpty(int i,int factor) {
