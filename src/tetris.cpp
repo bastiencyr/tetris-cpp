@@ -139,6 +139,7 @@ void Tetris::loop()
 
 	Piece *piece = new Piece(sizeTetris);
 	piece = PiecList[randn];
+	piece->draw(renderer,blank,texture);
 
 	Piece * PiecGhosts[7];
 	PiecGhosts[0] = new LTetri(sizeTetris);
@@ -153,6 +154,7 @@ void Tetris::loop()
 
 	Piece *ghost = new Piece(sizeTetris);
 	ghost=PiecGhosts[randn];
+
 
 
 	bool quit = false;
@@ -171,7 +173,7 @@ void Tetris::loop()
 			PiecList[randn]->update();
 			//piece->affiche_coord(1,1);
 			piece = PiecList[randn];
-			
+
 			cont = true;
 			if(!piece->isLegalPosition(piece, mat).NO_ERROR) {
 				quit=true;
@@ -182,14 +184,15 @@ void Tetris::loop()
 			}
 		}
 
-		//ghost->draw(renderer,blank,texture,255,1);
-		//PiecGhosts[randn]->adjust(PiecList[randn]);
-		//ghost=PiecGhosts[randn];
-		//while(ghost->isLegalPosition(ghost,mat).NO_ERROR) {
-		//	ghost->down(1);
-		//}
-		//if(ghost->isLegalPosition(ghost,mat).NO_ERROR)
-		//	ghost->draw(renderer,blank,texture,20);
+		/*
+		ghost->draw(renderer,blank,texture,255,1);
+		PiecGhosts[randn]->adjust(PiecList[randn]);
+		ghost=PiecGhosts[randn];
+		while(ghost->isLegalPosition(ghost,mat).NO_ERROR) {
+			ghost->down(1);
+		}
+		ghost->draw(renderer,blank,texture,20);
+		*/
 
 		SDL_Event event;
 		while (!quit && SDL_PollEvent(&event) && cont == true)

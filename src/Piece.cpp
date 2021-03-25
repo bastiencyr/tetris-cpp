@@ -54,11 +54,14 @@ Piece::~Piece() {
 
 void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  texture,
 		int alpha, bool erase){
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
 
 	int factor = locTetris.w/BLOCSX;
 
 	SDL_Rect src_r[4];
 	SDL_Rect dst_r[4];
+	SDL_Rect blanc[4];
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1], this->color[2], alpha); /* On dessine en violet */
 	for(int i = 0; i < 4; i++) {
@@ -72,11 +75,19 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 		dst_r[i].w=this->dst[i].w*factor;
 		dst_r[i].h=this->dst[i].h*factor;
 
+		blanc[i].x=this->dst[i].x*factor + locTetris.x + 0.2*factor;
+		blanc[i].y=((this->dst[i].y))*factor + locTetris.y + 0.2*factor;
+		blanc[i].w=this->dst[i].w*factor - 0.4*factor;
+		blanc[i].h=this->dst[i].h*factor - 0.4*factor;
+
 		SDL_RenderCopy(renderer, blank, &src_r[i], &src_r[i]);
 	}
 	if(!erase) {
 		for(int i=0; i<4; i++) {
+			SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1], this->color[2], alpha);
 			SDL_RenderFillRect(renderer, &dst_r[i]);
+			SDL_SetRenderDrawColor(renderer, 255, 255,255, alpha*0.5);
+			SDL_RenderFillRect(renderer, &blanc[i]);
 		}
 	}
 	SDL_SetRenderTarget(renderer, NULL);
