@@ -58,7 +58,7 @@ public :
 	bool onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,SDL_Texture*  blank,
 	SDL_Texture* texture);
 
-	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture, int factor);
+	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture, int factor,int alpha);
 
 	void affiche_coord(bool source, bool dest);
 
