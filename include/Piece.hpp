@@ -33,6 +33,7 @@ public :
     virtual ~Piece(); // destructor
 
 	virtual void update();
+	void adjust(Piece *piece);
 
 	int getx(int i);
 	int gety(int i);
@@ -59,7 +60,7 @@ public :
 	bool onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,SDL_Texture* blank,
 	SDL_Texture* texture);
 
-	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture, int alpha = 255);
+	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture, int alpha = 255, bool erase=false);
 
 
 	void affiche_coord(bool source, bool dest);
