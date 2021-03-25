@@ -48,7 +48,7 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris){
 		}
 		std::cout << std::endl;
 	}
-	
+
 	sizeTetris.w = locTetris.w;
 	sizeTetris.h = sizeTetris.w*2;
 	sizeTetris.x = locTetris.x;
@@ -63,7 +63,7 @@ Tetris::~Tetris(){
 }
 
 void Tetris::init(){
-	//la largeur du tetris doit donc etre un multiple de BLOCSX 
+	//la largeur du tetris doit donc etre un multiple de BLOCSX
 	//la hauteur doit être deux fois plus grande -> respect de lechelle
 	int size_bloc = sizeTetris.w/BLOCSX;
 	SDL_Point ligne_depart,ligne_arrivee; // Déclaration du point de départ et du point d'arrivée d'une ligne
@@ -104,7 +104,7 @@ void Tetris::init(){
 		ligne_arrivee.x = ligne_depart.x;
 		SDL_RenderDrawLine(renderer,ligne_depart.x, ligne_depart.y,ligne_arrivee.x,ligne_arrivee.y);
 	}
-	
+
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_RenderCopy(renderer, blank, &sizeTetris, &sizeTetris);
 
@@ -115,8 +115,11 @@ void Tetris::init(){
 
 void Tetris::loop()
 {
+	//INITIALISATION
 	Uint64 prev, now = SDL_GetPerformanceCounter(); // timers
 	double delta_t;  // durée frame en ms
+	double difficulte[8]={1.,0.9,0.8,0.7,0.6,0.5,0.4,0.3};
+	int sc=0;
 
 
 	Piece * PiecList[7];
@@ -132,33 +135,44 @@ void Tetris::loop()
 		PiecList[i]->update();
 
 	int randn=0;
+	randn = rand() % 7;
 
 	Piece *piece = new Piece(sizeTetris);
+	piece = PiecList[randn];
+
+	Piece * PiecGhosts[7];
+	PiecGhosts[0] = new LTetri(sizeTetris);
+	PiecGhosts[1] = new OTetri(sizeTetris);
+	PiecGhosts[2] = new TTetri(sizeTetris);
+	PiecGhosts[3] = new ZTetri(sizeTetris);
+	PiecGhosts[4] = new JTetri(sizeTetris);
+	PiecGhosts[5] = new ITetri(sizeTetris);
+	PiecGhosts[6] = new STetri(sizeTetris);
+	for(int i = 0; i<7; i++)
+		PiecGhosts[i]->adjust(PiecList[i]);
+
+	Piece *ghost = new Piece(sizeTetris);
+	ghost=PiecGhosts[randn];
+
 
 	bool quit = false;
 	bool cont = true;
 	double t=0;
 	int score = 0;
+	int ScoreOld=0;
+
+	//BOUCLE
 	while (!quit)
 	{
 		if(!cont) {
-			std::cout << "Nouvelle pièce en haut" << std::endl;
+			//std::cout << "Nouvelle pièce en haut" << std::endl;
 			randn = rand() % 7;
-			std::cout<<randn<<std::endl;
+			//std::cout<<randn<<std::endl;
 			PiecList[randn]->update();
-			piece->affiche_coord(1,1);
+			//piece->affiche_coord(1,1);
 			piece = PiecList[randn];
-			//if(randn) {
-			//	std::cout<<"ltetri"<<std::endl;
-			//	ltetri.update();
-			//	piece = &ltetri;
-			//}
-			//else {
-			//	std::cout<<"otetri"<<std::endl;
-			//
-			//	otetri.update();
-			//	piece = &otetri;
-			//}
+
+
 
 			cont = true;
 			if(!piece->isLegalPosition(piece, mat).NO_ERROR) {
@@ -166,6 +180,14 @@ void Tetris::loop()
 				quit=true;
 			}
 		}
+
+		//ghost->draw(renderer,blank,texture,255,1);
+		//PiecGhosts[randn]->adjust(PiecList[randn]);
+		//ghost=PiecGhosts[randn];
+		//while(ghost->isLegalPosition(ghost,mat).NO_ERROR) {
+		//	ghost->down(1);
+		//}
+		//ghost->draw(renderer,blank,texture,20);
 
 		SDL_Event event;
 		while (!quit && SDL_PollEvent(&event) && cont == true)
@@ -247,29 +269,24 @@ void Tetris::loop()
 				static_cast<float>(SDL_GetPerformanceFrequency()));
 
 		t+=delta_t;
-		if(floor(t)>=1) {
-			cont = piece->onDown(mat, cont, renderer, 
+		if(t>=difficulte[sc]) {
+
+			cont = piece->onDown(mat, cont, renderer,
 					blank,texture);
 			//this->printMatrice();
 			t=0;
 		}
+		TetrisLinesUpdate(&score);
 
-		switch(TetrisLinesUpdate()) {
-			case 1:
-				score+=100;
-				break;
-			case 2:
-				score+=300;
-				break;
-			case 3:
-				score+=500;
-				break;
-			case 4:
-				score+=800;
-				break;
-			default:
-				break;
-			}
+
+		if(score-ScoreOld>500) {
+			ScoreOld=score;
+			if(sc!=9) sc++;
+			std::cout << "Niveau supérieur !" << std::endl;
+			std::cout << "		Niveau :" << sc << std::endl;
+			//std::cout << "		Score :" << score << std::endl << std::endl;
+		}
+
 		SDL_RenderPresent(renderer);
 
 	}
@@ -277,7 +294,8 @@ void Tetris::loop()
 
 }
 
-int Tetris::TetrisLinesUpdate() {
+int Tetris::TetrisLinesUpdate(int *score) {
+
 	int decalage = 0;
 	for(int i = BLOCSY-1; i>=0; i--) {
 		int compt = 0;
@@ -297,6 +315,26 @@ int Tetris::TetrisLinesUpdate() {
 		}
 		//else
 		//	break;
+	}
+	switch(decalage) {
+		case 1:
+			*score+=100;
+			break;
+		case 2:
+			*score+=300;
+			break;
+		case 3:
+			*score+=500;
+			break;
+		case 4:
+			*score+=800;
+			break;
+		default:
+			break;
+		}
+	if(decalage!=0) {
+		std::cout << "Bravo !" << std::endl;
+		std::cout << "Score : " << *score << std::endl;
 	}
 	return decalage;
 }

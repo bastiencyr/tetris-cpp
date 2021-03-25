@@ -26,7 +26,7 @@ protected:
     SDL_Texture *texture;
 
 	//Piece *piece;
-	
+
 	SDL_Rect sizeTetris;
 	int w;
     int h;
@@ -46,7 +46,7 @@ public :
 	SDL_Window* get_pWindow() {return pWindow;};
 	void printMatrice();
 
-	int TetrisLinesUpdate();
+	int TetrisLinesUpdate(int* score);
 	void FillEmpty(int i, int factor);
 	void CopyLine(int i, int decalage, int factor);
 

@@ -52,10 +52,11 @@ Piece::~Piece() {
  Elle ne vérifie pas si elle a le droit de dessiner.
  */
 
-void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  texture, int alpha){
+void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  texture,
+		int alpha, bool erase){
 
 	int factor = locTetris.w/BLOCSX;
-	
+
 	SDL_Rect src_r[4];
 	SDL_Rect dst_r[4];
 	SDL_SetRenderTarget(renderer, texture);
@@ -73,8 +74,10 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 
 		SDL_RenderCopy(renderer, blank, &src_r[i], &src_r[i]);
 	}
-	for(int i=0; i<4; i++) {
-		SDL_RenderFillRect(renderer, &dst_r[i]);
+	if(!erase) {
+		for(int i=0; i<4; i++) {
+			SDL_RenderFillRect(renderer, &dst_r[i]);
+		}
 	}
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -221,19 +224,19 @@ Error Piece::isLegalPosition(Piece *temp, bool mat[BLOCSX][BLOCSY]){
 	for(int i = 0; i< 4; i++) {
 		//Verification dépassement vertical
 		if(temp->dst[i].y < 0 || temp->dst[i].y == BLOCSY) {
-			std::cout << "mouvement illégal (dv)" << std::endl;
+			//std::cout << "mouvement illégal (dv)" << std::endl;
 			e.OVER_Y=true;
 			e.NO_ERROR=false;
 		}
 		//Verification occupation de la case
 		if(mat[temp->dst[i].x][temp->dst[i].y]) {
-			std::cout << "mouvement illégal (oc)" << std::endl;
+			//std::cout << "mouvement illégal (oc)" << std::endl;
 			e.COLLISION_PIECE=true;
 			e.NO_ERROR=false;
 		}
 
 		if(temp->dst[i].x < 0 || temp->dst[i].x >= BLOCSX) {
-			std::cout << "mouvement illégal (dh)" << std::endl;
+			//std::cout << "mouvement illégal (dh)" << std::endl;
 			e.OVER_X=true;
 			e.NO_ERROR=false;
 		}
@@ -337,6 +340,15 @@ int Piece::getcol(int i) {
 	 puts("update de la classe mère!!!");
  }
 
+ void Piece::adjust(Piece *piece) {
+	for(int i = 0; i<4; i++) {
+		this->src[i].x=piece->getx(i);
+		this->dst[i].x=piece->getx(i);
+		this->src[i].y=piece->gety(i);
+		this->dst[i].y=piece->gety(i);
+	}
+ }
+
 /*############################################################################
 ########################          LEFT L         #############################
 ############################################################################*/
@@ -345,7 +357,6 @@ JTetri::JTetri(SDL_Rect sizeTetris) : Piece(sizeTetris){
 	this->color[0]=0;
 	this->color[1]=0;
 	this->color[2]=255;
-	
 }
 
 void JTetri::update() {
