@@ -52,7 +52,8 @@ Piece::~Piece() {
  Elle ne vérifie pas si elle a le droit de dessiner.
  */
 
-void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  texture, int alpha, bool erase){
+void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  texture,
+		int alpha, bool erase){
 
 	int factor = locTetris.w/BLOCSX;
 
@@ -223,19 +224,19 @@ Error Piece::isLegalPosition(Piece *temp, bool mat[BLOCSX][BLOCSY]){
 	for(int i = 0; i< 4; i++) {
 		//Verification dépassement vertical
 		if(temp->dst[i].y < 0 || temp->dst[i].y == BLOCSY) {
-			std::cout << "mouvement illégal (dv)" << std::endl;
+			//std::cout << "mouvement illégal (dv)" << std::endl;
 			e.OVER_Y=true;
 			e.NO_ERROR=false;
 		}
 		//Verification occupation de la case
 		if(mat[temp->dst[i].x][temp->dst[i].y]) {
-			std::cout << "mouvement illégal (oc)" << std::endl;
+			//std::cout << "mouvement illégal (oc)" << std::endl;
 			e.COLLISION_PIECE=true;
 			e.NO_ERROR=false;
 		}
 
 		if(temp->dst[i].x < 0 || temp->dst[i].x >= BLOCSX) {
-			std::cout << "mouvement illégal (dh)" << std::endl;
+			//std::cout << "mouvement illégal (dh)" << std::endl;
 			e.OVER_X=true;
 			e.NO_ERROR=false;
 		}

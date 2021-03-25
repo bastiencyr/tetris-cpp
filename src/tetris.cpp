@@ -118,6 +118,8 @@ void Tetris::loop()
 	//INITIALISATION
 	Uint64 prev, now = SDL_GetPerformanceCounter(); // timers
 	double delta_t;  // durée frame en ms
+	double difficulte[8]={1.,0.9,0.8,0.7,0.6,0.5,0.4,0.3};
+	int sc=0;
 
 
 	Piece * PiecList[7];
@@ -157,16 +159,17 @@ void Tetris::loop()
 	bool cont = true;
 	double t=0;
 	int score = 0;
+	int ScoreOld=0;
 
 	//BOUCLE
 	while (!quit)
 	{
 		if(!cont) {
-			std::cout << "Nouvelle pièce en haut" << std::endl;
+			//std::cout << "Nouvelle pièce en haut" << std::endl;
 			randn = rand() % 7;
-			std::cout<<randn<<std::endl;
+			//std::cout<<randn<<std::endl;
 			PiecList[randn]->update();
-			piece->affiche_coord(1,1);
+			//piece->affiche_coord(1,1);
 			piece = PiecList[randn];
 
 
@@ -266,29 +269,24 @@ void Tetris::loop()
 				static_cast<float>(SDL_GetPerformanceFrequency()));
 
 		t+=delta_t;
-		if(floor(t)>=1) {
+		if(t>=difficulte[sc]) {
+
 			cont = piece->onDown(mat, cont, renderer,
 					blank,texture);
 			//this->printMatrice();
 			t=0;
 		}
+		TetrisLinesUpdate(&score);
 
-		switch(TetrisLinesUpdate()) {
-			case 1:
-				score+=100;
-				break;
-			case 2:
-				score+=300;
-				break;
-			case 3:
-				score+=500;
-				break;
-			case 4:
-				score+=800;
-				break;
-			default:
-				break;
-			}
+
+		if(score-ScoreOld>500) {
+			ScoreOld=score;
+			if(sc!=9) sc++;
+			std::cout << "Niveau supérieur !" << std::endl;
+			std::cout << "		Niveau :" << sc << std::endl;
+			//std::cout << "		Score :" << score << std::endl << std::endl;
+		}
+
 		SDL_RenderPresent(renderer);
 
 	}
@@ -296,7 +294,8 @@ void Tetris::loop()
 
 }
 
-int Tetris::TetrisLinesUpdate() {
+int Tetris::TetrisLinesUpdate(int *score) {
+
 	int decalage = 0;
 	for(int i = BLOCSY-1; i>=0; i--) {
 		int compt = 0;
@@ -316,6 +315,26 @@ int Tetris::TetrisLinesUpdate() {
 		}
 		//else
 		//	break;
+	}
+	switch(decalage) {
+		case 1:
+			*score+=100;
+			break;
+		case 2:
+			*score+=300;
+			break;
+		case 3:
+			*score+=500;
+			break;
+		case 4:
+			*score+=800;
+			break;
+		default:
+			break;
+		}
+	if(decalage!=0) {
+		std::cout << "Bravo !" << std::endl;
+		std::cout << "Score : " << *score << std::endl;
 	}
 	return decalage;
 }
