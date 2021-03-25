@@ -171,13 +171,13 @@ void Tetris::loop()
 			PiecList[randn]->update();
 			//piece->affiche_coord(1,1);
 			piece = PiecList[randn];
-
-
-
+			
 			cont = true;
 			if(!piece->isLegalPosition(piece, mat).NO_ERROR) {
-				piece->draw(renderer,blank,texture);
 				quit=true;
+			}
+			else{
+				piece->draw(renderer,blank,texture);
 			}
 		}
 
