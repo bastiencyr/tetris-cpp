@@ -46,7 +46,7 @@ public :
 	SDL_Window* get_pWindow() {return pWindow;};
 	void printMatrice();
 
-	void TetrisLinesUpdate();
+	int TetrisLinesUpdate();
 	void FillEmpty(int i, int factor);
 	void CopyLine(int i, int decalage, int factor);
 

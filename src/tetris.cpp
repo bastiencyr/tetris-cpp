@@ -138,6 +138,7 @@ void Tetris::loop()
 	bool quit = false;
 	bool cont = true;
 	double t=0;
+	int score = 0;
 	while (!quit)
 	{
 		if(!cont) {
@@ -201,7 +202,6 @@ void Tetris::loop()
 				case SDLK_DOWN:
 					cont = piece->onDown(mat, cont, renderer, blank,
 							texture);
-					TetrisLinesUpdate();
 					break;
 
 				case SDLK_UP:
@@ -250,41 +250,55 @@ void Tetris::loop()
 		if(floor(t)>=1) {
 			cont = piece->onDown(mat, cont, renderer, 
 					blank,texture);
-			TetrisLinesUpdate();
 			//this->printMatrice();
 			t=0;
 		}
 
+		switch(TetrisLinesUpdate()) {
+			case 1:
+				score+=100;
+				break;
+			case 2:
+				score+=300;
+				break;
+			case 3:
+				score+=500;
+				break;
+			case 4:
+				score+=800;
+				break;
+			default:
+				break;
+			}
+		SDL_RenderPresent(renderer);
+
 	}
+	std::cout<< "Game Over" << std::endl << "Score : " << score << std::endl;
 
 }
 
-void Tetris::TetrisLinesUpdate() {
+int Tetris::TetrisLinesUpdate() {
 	int decalage = 0;
-	this->printMatrice();
 	for(int i = BLOCSY-1; i>=0; i--) {
 		int compt = 0;
 		for(int j = 0; j<BLOCSX; j++) {
-			std::cout << "mat : "<< mat[j][i]<< std::endl;
 			if(mat[j][i]) compt++;
 		}
-		std::cout << "Compteur : "<< compt << ", ligne :" << i << std::endl;
 		if(compt==BLOCSX) //ligne pleine
 		{
-			std::cout<<"une ligne"<<std::endl;
 			decalage++;
 			FillEmpty(i,SIZE_BLOC);
 		}
 
 		else if(compt < BLOCSX && compt != 0 && decalage!=0)
 		{
-			std::cout<<"pas une ligne"<<std::endl;
 			CopyLine(i, decalage, SIZE_BLOC);
 			FillEmpty(i,SIZE_BLOC);
 		}
 		//else
 		//	break;
 	}
+	return decalage;
 }
 
 void Tetris::FillEmpty(int i,int factor) {
@@ -300,7 +314,6 @@ void Tetris::FillEmpty(int i,int factor) {
 	for(int j = 0; j<BLOCSX; j++) {
 		mat[j][i]=false;
 	}
-	SDL_RenderPresent(renderer);
 }
 
 void Tetris::CopyLine(int i, int decalage, int factor) {
