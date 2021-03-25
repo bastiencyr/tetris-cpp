@@ -16,7 +16,7 @@
 #define BLOCSX 10
 #define BLOCSY 20
 
-void Jeu::startTetris(int h,int w){
+void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris){
 
 	if(SDL_VideoInit(NULL) < 0) // Initialisation de la SDL
 	{
@@ -24,7 +24,7 @@ void Jeu::startTetris(int h,int w){
 		exit(EXIT_FAILURE);
 	}
 
-	Tetris tetris(w,h);
+	Tetris tetris(w,h, sizeTetris);
 	tetris.init();
 	SDL_RenderPresent(tetris.get_renderer());
 	//SDL_Delay(10000);
@@ -37,7 +37,11 @@ int main(int argc, char** argv)
 {	
 	int h=SIZE_BLOC*BLOCSY;
 	int w=SIZE_BLOC*BLOCSX;
-	
+	SDL_Rect sizeTetris;
+	sizeTetris.w=w;
+	sizeTetris.h=h;
+	sizeTetris.x=0;
+	sizeTetris.y=0;
 	Jeu jeu;
-	jeu.startTetris(h,w);
+	jeu.startTetris(h,w, sizeTetris);
 }

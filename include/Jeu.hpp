@@ -9,7 +9,7 @@
 class Jeu
 {
 public:
-	void startTetris(int h, int w);
+	void startTetris(int h, int w, SDL_Rect sizeTetris);
 	
 private:
 	

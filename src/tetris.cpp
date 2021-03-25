@@ -13,7 +13,7 @@
 #include "../include/tetris.hpp"
 
 
-Tetris::Tetris(int w, int h){
+Tetris::Tetris(int w, int h, SDL_Rect locTetris){
 	this->w=w;
 	this->h=h;
 
@@ -49,10 +49,10 @@ Tetris::Tetris(int w, int h){
 		std::cout << std::endl;
 	}
 	
-	sizeTetris.w = 250;
+	sizeTetris.w = locTetris.w;
 	sizeTetris.h = sizeTetris.w*2;
-	sizeTetris.x = 50;
-	sizeTetris.y = 50;
+	sizeTetris.x = locTetris.x;
+	sizeTetris.y = locTetris.y;
 }
 
 Tetris::~Tetris(){
@@ -120,20 +120,20 @@ void Tetris::loop()
 
 
 	Piece * PiecList[7];
-	PiecList[0] = new LTetri();
-	PiecList[1] = new OTetri();
-	PiecList[2] = new TTetri();
-	PiecList[3] = new ZTetri();
-	PiecList[4] = new JTetri();
-	PiecList[5] = new ITetri();
-	PiecList[6] = new STetri();
+	PiecList[0] = new LTetri(sizeTetris);
+	PiecList[1] = new OTetri(sizeTetris);
+	PiecList[2] = new TTetri(sizeTetris);
+	PiecList[3] = new ZTetri(sizeTetris);
+	PiecList[4] = new JTetri(sizeTetris);
+	PiecList[5] = new ITetri(sizeTetris);
+	PiecList[6] = new STetri(sizeTetris);
 
 	for(int i = 0; i<7; i++)
 		PiecList[i]->update();
 
 	int randn=0;
 
-	Piece *piece = new Piece();
+	Piece *piece = new Piece(sizeTetris);
 
 	bool quit = false;
 	bool cont = true;
@@ -211,7 +211,7 @@ void Tetris::loop()
 
 					}
 					else if (piece->isLegalRotateRight(mat).OVER_X){
-						Piece temp;
+						Piece temp(sizeTetris);
 						for (int i=0 ; i<4 ; i++){
 							temp.dst[i].x=piece->dst[i].x;
 							temp.dst[i].y=piece->dst[i].y;

@@ -39,7 +39,7 @@ protected:
 
 public :
     void init();
-    Tetris(int w, int h);
+    Tetris(int w, int h, SDL_Rect sizeTetris);
     void keyboard(const Uint8* keys);
     void loop();
 	SDL_Renderer* get_renderer() {return renderer;};
