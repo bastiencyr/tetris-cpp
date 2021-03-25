@@ -11,9 +11,6 @@
 #include <iostream>
 #include <cassert>
 #include "../include/tetris.hpp"
-#define SIZE_BLOC 35
-#define BLOCSX 10
-#define BLOCSY 20
 
 
 Tetris::Tetris(int w, int h){
@@ -51,6 +48,11 @@ Tetris::Tetris(int w, int h){
 		}
 		std::cout << std::endl;
 	}
+	
+	sizeTetris.w = 250;
+	sizeTetris.h = sizeTetris.w*2;
+	sizeTetris.x = 50;
+	sizeTetris.y = 50;
 }
 
 Tetris::~Tetris(){
@@ -61,6 +63,9 @@ Tetris::~Tetris(){
 }
 
 void Tetris::init(){
+	//la largeur du tetris doit donc etre un multiple de BLOCSX 
+	//la hauteur doit être deux fois plus grande -> respect de lechelle
+	int size_bloc = sizeTetris.w/BLOCSX;
 	SDL_Point ligne_depart,ligne_arrivee; // Déclaration du point de départ et du point d'arrivée d'une ligne
 
 	//on colorie le fond. La fonction renderDrawColor permet d'initialiser une
@@ -78,33 +83,33 @@ void Tetris::init(){
 	SDL_SetRenderDrawColor(renderer,0,0,0,255);
 
 	// Lignes horizontales
-	ligne_depart.x = 0;
-	ligne_arrivee.x = h;
-	ligne_depart.y = 0;
+	ligne_depart.x = sizeTetris.x;
+	ligne_arrivee.x = sizeTetris.w + sizeTetris.x; //h
+	ligne_depart.y = sizeTetris.y ;
 
-	while(ligne_depart.y<h)
+	while(ligne_depart.y<sizeTetris.h + sizeTetris.y ) //h
 	{
-		ligne_depart.y += SIZE_BLOC;
+		ligne_depart.y += size_bloc;
 		ligne_arrivee.y = ligne_depart.y;
 		SDL_RenderDrawLine(renderer,ligne_depart.x, ligne_depart.y,ligne_arrivee.x,ligne_arrivee.y);
 	}
 
 	// Lignes verticales
-	ligne_depart.x = 0;
-	ligne_depart.y = 0;
-	ligne_arrivee.y = h;
+	ligne_depart.x = sizeTetris.x;
+	ligne_depart.y = sizeTetris.y ;
+	ligne_arrivee.y = sizeTetris.h + sizeTetris.y ; //h
 
-	while(ligne_depart.x<h){
-		ligne_depart.x += SIZE_BLOC;
+	while(ligne_depart.x<sizeTetris.w + sizeTetris.x ){ //h
+		ligne_depart.x += size_bloc;
 		ligne_arrivee.x = ligne_depart.x;
 		SDL_RenderDrawLine(renderer,ligne_depart.x, ligne_depart.y,ligne_arrivee.x,ligne_arrivee.y);
 	}
-
+	
 	SDL_SetRenderTarget(renderer, texture);
-	SDL_RenderCopy(renderer, blank, NULL, NULL);
+	SDL_RenderCopy(renderer, blank, &sizeTetris, &sizeTetris);
 
 	SDL_SetRenderTarget(renderer, NULL);
-	SDL_RenderCopy(renderer, texture, NULL, NULL);
+	SDL_RenderCopy(renderer, texture, &sizeTetris, &sizeTetris);
 }
 
 
@@ -156,7 +161,7 @@ void Tetris::loop()
 
 			cont = true;
 			if(!piece->isLegalPosition(piece, mat).NO_ERROR) {
-				piece->draw(renderer,blank,texture,SIZE_BLOC);
+				piece->draw(renderer,blank,texture);
 				quit=true;
 			}
 		}
@@ -182,25 +187,27 @@ void Tetris::loop()
 				case SDLK_RIGHT:
 					if (piece->isLegalRight(mat).NO_ERROR){
 						piece->right();
-						piece->draw(renderer,blank,texture,SIZE_BLOC);
+						piece->draw(renderer,blank,texture);
 					}
 					break;
 
 				case SDLK_LEFT:
 					if (piece->isLegalLeft(mat).NO_ERROR){
 						piece->left();
-						piece->draw(renderer,blank,texture,SIZE_BLOC);
+						piece->draw(renderer,blank,texture);
 					}
 					break;
 
 				case SDLK_DOWN:
-					cont = piece->onDown(mat, cont, renderer, blank,texture);
+					cont = piece->onDown(mat, cont, renderer, blank,
+							texture);
+					TetrisLinesUpdate();
 					break;
 
 				case SDLK_UP:
 					if (piece->isLegalRotateRight(mat).NO_ERROR){
 						piece->rotateRight();
-						piece->draw(renderer,blank,texture,SIZE_BLOC);
+						piece->draw(renderer,blank,texture);
 
 					}
 					else if (piece->isLegalRotateRight(mat).OVER_X){
@@ -216,7 +223,7 @@ void Tetris::loop()
 							std::cout << "rotation a doite" << std::endl;
 							piece->rotateRight();
 							piece->translate(shift, 0, false);
-							piece->draw(renderer,blank,texture,SIZE_BLOC);
+							piece->draw(renderer,blank,texture);
 						}
 						else
 							std::cout << "une autre erreur" << std::endl;
@@ -241,12 +248,12 @@ void Tetris::loop()
 
 		t+=delta_t;
 		if(floor(t)>=1) {
-			cont = piece->onDown(mat, cont, renderer, blank,texture);
+			cont = piece->onDown(mat, cont, renderer, 
+					blank,texture);
+			TetrisLinesUpdate();
 			//this->printMatrice();
 			t=0;
 		}
-
-		TetrisLinesUpdate();
 
 	}
 
