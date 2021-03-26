@@ -286,7 +286,7 @@ void Tetris::loop()
 
 		if(score-ScoreOld>500) {
 			ScoreOld=score;
-			if(sc!=9) sc++;
+			if(sc!=7) sc++;
 			std::cout << "Niveau supérieur !" << std::endl;
 			std::cout << "		Niveau :" << sc << std::endl;
 			//std::cout << "		Score :" << score << std::endl << std::endl;
