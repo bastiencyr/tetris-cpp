@@ -54,6 +54,7 @@ Piece::~Piece() {
 
 void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  texture,
 		int alpha, bool erase){
+	//pour que la transparence soit prise en compte
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
 
