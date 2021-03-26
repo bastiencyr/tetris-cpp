@@ -63,6 +63,7 @@ Tetris::~Tetris(){
 }
 
 void Tetris::init(){
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 	//la largeur du tetris doit donc etre un multiple de BLOCSX
 	//la hauteur doit être deux fois plus grande -> respect de lechelle
 	int size_bloc = sizeTetris.w/BLOCSX;
@@ -74,6 +75,17 @@ void Tetris::init(){
 	SDL_SetRenderTarget(renderer, blank);
 
 	SDL_SetRenderDrawColor(renderer,63,63,63,255);
+	if(CLASSIC) {
+		SDL_SetRenderDrawColor(renderer,175,175,135,255);
+	}
+	if(ACCESS) {
+		SDL_SetRenderDrawColor(renderer,10,10,10,255);
+	}
+	if(PASTEL) {
+		SDL_SetRenderDrawColor(renderer,212,255,254,255);
+		//SDL_SetRenderDrawColor(renderer,100,100,100,255);
+	}
+	//SDL_SetRenderDrawColor(renderer,220,220,220,255);
 	SDL_RenderClear(renderer);
 
 	// À présent, occupons nous des lignes
@@ -81,6 +93,9 @@ void Tetris::init(){
 	// car celle-ci ne permet pas de créer des lignes indépendantes comme nous voulons le faire mais des chemins
 
 	SDL_SetRenderDrawColor(renderer,0,0,0,255);
+	if(ACCESS) SDL_SetRenderDrawColor(renderer, 0,255,4, 100);
+	if(PASTEL) SDL_SetRenderDrawColor(renderer,0,0,0,80);
+
 
 	// Lignes horizontales
 	ligne_depart.x = sizeTetris.x;

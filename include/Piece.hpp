@@ -15,6 +15,12 @@
 #define BLOCSY 20
 #define SIZE_BLOC 35
 
+#define EYES 1
+#define MILIEU 0
+#define CLASSIC 0
+#define ACCESS 0
+#define PASTEL 1
+
 //class Sprite;
 
 class Piece
@@ -26,6 +32,7 @@ public:
 	SDL_Rect dst[4];
 	SDL_Rect locTetris;
 	int color[3];
+	int pastel[3];
 
 	//il faudrait aussi quune pièce ait une couleur.
 public :
