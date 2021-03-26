@@ -38,10 +38,10 @@ int main(int argc, char** argv)
 	int h=SIZE_BLOC*BLOCSY;
 	int w=SIZE_BLOC*BLOCSX;
 	SDL_Rect sizeTetris;
-	sizeTetris.w=w;
+	sizeTetris.w=250;
 	sizeTetris.h=h;
 	sizeTetris.x=0;
-	sizeTetris.y=0;
+	sizeTetris.y=20;
 	Jeu jeu;
 	jeu.startTetris(h,w, sizeTetris);
 }
