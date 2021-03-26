@@ -76,22 +76,32 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 		dst_r[i].w=this->dst[i].w*factor;
 		dst_r[i].h=this->dst[i].h*factor;
 
-		blanc[i].x=this->dst[i].x*factor + locTetris.x + 0.2*factor;
-		blanc[i].y=((this->dst[i].y))*factor + locTetris.y + 0.2*factor;
-		blanc[i].w=this->dst[i].w*factor - 0.4*factor;
-		blanc[i].h=this->dst[i].h*factor - 0.4*factor;
+		blanc[i].x=this->dst[i].x*factor + locTetris.x + 0.1*factor;
+		blanc[i].y=((this->dst[i].y))*factor + locTetris.y + 0.1*factor;
+		blanc[i].w=this->dst[i].w*factor - 0.25*factor;
+		blanc[i].h=this->dst[i].h*factor - 0.25*factor;
 
 		SDL_RenderCopy(renderer, blank, &src_r[i], &src_r[i]);
 	}
 	if(!erase) {
 		for(int i=0; i<4; i++) {
+			//couleur du carré
 			SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1], this->color[2], alpha);
 			SDL_RenderFillRect(renderer, &dst_r[i]);
 
-			SDL_SetRenderDrawColor(renderer, 0, 0,0, alpha*0.5);
+			//Tour des rectangles
+			SDL_SetRenderDrawColor(renderer, 255, 255,255, alpha*0.5);
 			SDL_RenderDrawRect(renderer,&dst_r[i]);
 
-			SDL_SetRenderDrawColor(renderer, 255, 255,255, alpha*0.5);
+			//Eclaircissement
+			SDL_SetRenderDrawColor(renderer, 255, 255,255, alpha*0.1);
+			SDL_RenderFillRect(renderer, &dst_r[i]);
+
+			//SDL_SetRenderDrawColor(renderer, 255, 255,255, alpha*0.5);
+			//SDL_RenderDrawRect(renderer, &blanc[i]);
+
+			//Carré au milieu pour mettre de la dimension
+			SDL_SetRenderDrawColor(renderer, 255, 255,255, alpha*0.1);
 			SDL_RenderFillRect(renderer, &blanc[i]);
 		}
 	}
@@ -371,8 +381,8 @@ int Piece::getcol(int i) {
 
 JTetri::JTetri(SDL_Rect sizeTetris) : Piece(sizeTetris){
 	this->color[0]=0;
-	this->color[1]=0;
-	this->color[2]=255;
+	this->color[1]=70;
+	this->color[2]=120;
 }
 
 void JTetri::update() {
@@ -398,9 +408,9 @@ void JTetri::update() {
 }
 
 LTetri::LTetri(SDL_Rect sizeTetris) : Piece(sizeTetris){
-	this->color[0]=255;
-	this->color[1]=140;
-	this->color[2]=0;
+	this->color[0]=194;
+	this->color[1]=118;
+	this->color[2]=26;
 	for(int i = 0; i<4; i++) {
 	    this->src[i].x=floor(BLOCSX/2);
 		this->src[i].y=i;
@@ -434,8 +444,8 @@ void LTetri::update(){
 }
 
 OTetri::OTetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
-	this->color[0]=255;
-	this->color[1]=255;
+	this->color[0]=200;
+	this->color[1]=176;
 	this->color[2]=0;
 }
 
@@ -471,9 +481,9 @@ void OTetri::rotateRight(bool moveSource){
 }
 
 ITetri::ITetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
-	this->color[0]=0;
-	this->color[1]=255;
-	this->color[2]=255;
+	this->color[0]=34;
+	this->color[1]=134;
+	this->color[2]=176;
 }
 
 void ITetri::update() {
@@ -500,9 +510,9 @@ void ITetri::update() {
 
 
 TTetri::TTetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
-	this->color[0]=160;
-	this->color[1]=0;
-	this->color[2]=160;
+	this->color[0]=114;
+	this->color[1]=34;
+	this->color[2]=110;
 
 }
 
@@ -529,9 +539,9 @@ void TTetri::update() {
 }
 
 ZTetri::ZTetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
-	this->color[0]=255;
-	this->color[1]=0;
-	this->color[2]=0;
+	this->color[0]=186;
+	this->color[1]=30;
+	this->color[2]=40;
 }
 
 void ZTetri::update() {
@@ -558,9 +568,9 @@ void ZTetri::update() {
 
 
 STetri::STetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
-	this->color[0]=0;
-	this->color[1]=255;
-	this->color[2]=0;
+	this->color[0]=60;
+	this->color[1]=142;
+	this->color[2]=56;
 }
 
 
