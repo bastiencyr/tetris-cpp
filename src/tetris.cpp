@@ -342,7 +342,8 @@ int Tetris::TetrisLinesUpdate(int *score) {
 	return decalage;
 }
 
-void Tetris::FillEmpty(int i,int factor) {
+void Tetris::FillEmpty(int i,int factore) {
+	int factor = sizeTetris.w/BLOCSX;
 	SDL_Rect line;
 	line.x= 0 + sizeTetris.x;
 	line.y= i*factor+ sizeTetris.y;
@@ -357,7 +358,8 @@ void Tetris::FillEmpty(int i,int factor) {
 	}
 }
 
-void Tetris::CopyLine(int i, int decalage, int factor) {
+void Tetris::CopyLine(int i, int decalage, int factore) {
+	int factor = sizeTetris.w/BLOCSX;
 	SDL_Texture* temp = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, this->w, this->h);
 	//(je sais pas si ça marche) On copie la texture originelle sur le truc temporaire (y a une vraie raison à ça)
