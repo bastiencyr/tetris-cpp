@@ -344,8 +344,8 @@ int Tetris::TetrisLinesUpdate(int *score) {
 
 void Tetris::FillEmpty(int i,int factor) {
 	SDL_Rect line;
-	line.x= 0;
-	line.y= i*factor;
+	line.x= 0 + locTetris.x;
+	line.y= i*factor+ locTetris.y;
 	line.h= 1*factor;
 	line.w= BLOCSX*factor;
 	SDL_SetRenderTarget(renderer, texture);
@@ -369,17 +369,17 @@ void Tetris::CopyLine(int i, int decalage, int factor) {
 
 	copyline.h= factor;
 	copyline.w= factor*BLOCSX;
-	copyline.y= (i+decalage)*factor;
-	copyline.x= 0;
+	copyline.y= (i+decalage)*factor+ locTetris.y;
+	copyline.x= 0 + locTetris.x;
 
 	copytext.h= factor;
 	copytext.w= factor;
-	copytext.y= i*factor;
-	copytext.x= 0;
+	copytext.y= i*factor+ locTetris.y;
+	copytext.x= 0 + locTetris.x;
 
 	for(int j = 0; j < BLOCSX; j++) {
 		if(mat[j][i]) {
-			copytext.x=j*factor;
+			copytext.x=j*factor + locTetris.x;
 			SDL_RenderCopy(renderer, texture, &copytext, &copytext);
 			mat[j][i+decalage]=mat[j][i];
 			mat[j][i]=0;
@@ -392,7 +392,7 @@ void Tetris::CopyLine(int i, int decalage, int factor) {
 		//srcrect rect dans la texture
 
 	copytext.w= factor*BLOCSX;
-	copytext.x=0;
+	copytext.x=0 + locTetris.x;
 	SDL_RenderCopy(renderer, temp, &copytext, &copyline);
 
 	SDL_SetRenderTarget(renderer, NULL);

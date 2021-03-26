@@ -87,6 +87,10 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 		for(int i=0; i<4; i++) {
 			SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1], this->color[2], alpha);
 			SDL_RenderFillRect(renderer, &dst_r[i]);
+
+			SDL_SetRenderDrawColor(renderer, 0, 0,0, alpha*0.5);
+			SDL_RenderDrawRect(renderer,&dst_r[i]);
+
 			SDL_SetRenderDrawColor(renderer, 255, 255,255, alpha*0.5);
 			SDL_RenderFillRect(renderer, &blanc[i]);
 		}
