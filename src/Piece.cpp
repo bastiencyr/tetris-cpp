@@ -167,6 +167,8 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 
 		}
 	}
+	
+	
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderPresent(renderer);
@@ -424,18 +426,47 @@ int Piece::gety(int i) {
 int Piece::getcol(int i) {
 	return this->color[i];
 }
- void Piece::update(){
-	 puts("update de la classe mère!!!");
- }
+void Piece::update(){
+	puts("update de la classe mère!!!");
+}
 
- void Piece::adjust(Piece *piece) {
+void Piece::adjust(Piece *piece) {
 	for(int i = 0; i<4; i++) {
 		this->src[i].x=piece->getx(i);
 		this->dst[i].x=piece->getx(i);
 		this->src[i].y=piece->gety(i);
 		this->dst[i].y=piece->gety(i);
 	}
- }
+}
+
+void Piece::printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture){
+	int factor = locTetris.w/BLOCSX;
+	SDL_Rect temp;
+	
+	SDL_SetRenderTarget(renderer, texture);
+	
+	SDL_SetRenderDrawColor(renderer, 0,0,0, 255);
+	temp.x = locTetris.w ;
+	temp.y = factor;
+	temp.h = 4*factor;
+	temp.w = 4*factor;
+	SDL_RenderFillRect(renderer,&temp);
+	
+	SDL_SetRenderDrawColor(renderer, 255,255,255, 255);
+	SDL_RenderDrawRect(renderer,&temp);
+	
+	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1] , this->color[2], 255);
+	for (int i=0; i<4; i++){	
+		temp.x = this->dst[i].x * factor + locTetris.w / 2 + factor ;
+		temp.y = this->dst[i].y * factor + factor;
+		temp.h = factor * 0.8;
+		temp.w = factor * 0.8 ;
+		SDL_RenderFillRect(renderer,&temp);
+	}
+	SDL_SetRenderTarget(renderer, NULL);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);
+	SDL_RenderPresent(renderer);
+}
 
 /*############################################################################
 ########################          LEFT L         #############################
