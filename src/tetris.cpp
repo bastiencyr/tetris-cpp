@@ -155,13 +155,12 @@ void Tetris::loop()
 
 	Piece *piece = new Piece(sizeTetris);
 	
-	//piece = PiecList[randn];
-	//piece->draw(renderer,blank,texture);
+	piece = PiecList[randn];
+	piece->draw(renderer,blank,texture);
 	
-	//new piece
-	//randn=0;
-	//randn = rand() % 7;
-	//Piece *newPiece = new Piece(sizeTetris);
+	//new piec
+	randn = rand() % 7;
+	Piece *newPiece = new Piece(sizeTetris);
 
 
 	Piece * PiecGhosts[7];
@@ -190,15 +189,13 @@ void Tetris::loop()
 	while (!quit)
 	{
 		if(!cont) {
-			//piece = newPiece;
-
-			//std::cout << "Nouvelle pièce en haut" << std::endl;
+			piece = newPiece;
+			piece->update();	
+			
 			randn = rand() % 7;
-			//std::cout<<randn<<std::endl;
-			PiecList[randn]->update();
-			//piece->affiche_coord(1,1);
-			piece = PiecList[randn];
-			//newPiece = PiecList[randn];
+			newPiece = PiecList[randn];
+			newPiece->update();
+			newPiece->printNextPiece(renderer, texture);
 			
 			cont = true;
 			if(!piece->isLegalPosition(piece, mat).NO_ERROR) {

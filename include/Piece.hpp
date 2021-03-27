@@ -68,7 +68,7 @@ public :
 	SDL_Texture* texture);
 
 	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture, int alpha = 255, bool erase=false);
-
+	 void printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture);
 
 	void affiche_coord(bool source, bool dest);
 
