@@ -272,7 +272,7 @@ void Tetris::loop(Mix_Music* music)
 			switch (event.type)
 			{
 			case SDL_QUIT:
-				quit = this->printMenu();
+				this->printMenu();
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
@@ -411,8 +411,9 @@ bool Tetris::printMenu(){
 
 	SDL_RenderPresent(renderer);
 	
-	free(text_surface);
-	free(text_texture);
+	TTF_CloseFont(police);
+	//free(text_surface);
+	//free(text_texture);
 	
 	int choiceMenu = 0;
 	bool quit_menu = false;
@@ -440,6 +441,7 @@ bool Tetris::printMenu(){
 					cadre.y = 150 * choiceMenu;
 					SDL_RenderDrawRect(renderer, &cadre);
 					
+					SDL_RenderPresent(renderer);
 				}
 				break;
 				
@@ -454,6 +456,7 @@ bool Tetris::printMenu(){
 					cadre.y = 150 * choiceMenu ;
 					SDL_RenderDrawRect(renderer, &cadre);
 					
+					SDL_RenderPresent(renderer);
 				}
 				break;
 				
@@ -472,7 +475,7 @@ bool Tetris::printMenu(){
 			default: 
 				break;
 			}
-			SDL_RenderPresent(renderer);
+			
 			
 		default :break;
 		}
