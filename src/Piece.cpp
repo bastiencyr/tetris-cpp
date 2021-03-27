@@ -447,8 +447,8 @@ void Piece::printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture){
 	
 	SDL_SetRenderDrawColor(renderer, 0,0,0, 255);
 	temp.x = locTetris.w ;
-	temp.y = factor;
-	temp.h = 4*factor;
+	temp.y = locTetris.h / 2 - factor;
+	temp.h = 5*factor;
 	temp.w = 4*factor;
 	SDL_RenderFillRect(renderer,&temp);
 	
@@ -457,8 +457,8 @@ void Piece::printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture){
 	
 	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1] , this->color[2], 255);
 	for (int i=0; i<4; i++){	
-		temp.x = this->dst[i].x * factor + locTetris.w / 2 + factor ;
-		temp.y = this->dst[i].y * factor + factor;
+		temp.x = this->dst[i].x * factor + locTetris.w / 2 + factor;
+		temp.y = this->dst[i].y * factor + locTetris.h / 2;
 		temp.h = factor * 0.8;
 		temp.w = factor * 0.8 ;
 		SDL_RenderFillRect(renderer,&temp);
@@ -483,20 +483,20 @@ JTetri::JTetri(SDL_Rect sizeTetris) : Piece(sizeTetris){
 }
 
 void JTetri::update() {
-	this->src[0].x=floor(BLOCSX/2);
-	this->src[1].x=floor(BLOCSX/2)-1;
-	this->src[2].x=floor(BLOCSX/2)-1;
-	this->src[3].x=floor(BLOCSX/2)-1;
+	this->src[0].x=floor(BLOCSX/2)+1;
+	this->src[1].x=floor(BLOCSX/2);
+	this->src[2].x=floor(BLOCSX/2);
+	this->src[3].x=floor(BLOCSX/2);
 
 	this->src[0].y=0;
 	this->src[1].y=0;
 	this->src[2].y=1;
 	this->src[3].y=2;
 
-	this->dst[0].x=floor(BLOCSX/2);
-	this->dst[1].x=floor(BLOCSX/2)-1;
-	this->dst[2].x=floor(BLOCSX/2)-1;
-	this->dst[3].x=floor(BLOCSX/2)-1;
+	this->dst[0].x=floor(BLOCSX/2)+1;
+	this->dst[1].x=floor(BLOCSX/2);
+	this->dst[2].x=floor(BLOCSX/2);
+	this->dst[3].x=floor(BLOCSX/2);
 
 	this->dst[0].y=0;
 	this->dst[1].y=0;
