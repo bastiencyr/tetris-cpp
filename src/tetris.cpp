@@ -144,7 +144,6 @@ void Tetris::NouvPiece(Piece * oldp, Piece * newp, Piece * Liste[7]) {
 	oldp = newp;
 	oldp->update();
 
-	srand(time(0));
 	int randn = rand() % 7;
 	newp = Liste[randn];
 	newp->update();
@@ -173,7 +172,6 @@ void Tetris::loop(Mix_Music* music)
 	int randn=0;
 	srand(time(0));
 	randn = rand() % 7;
-	std::cout<< randn << std::endl;
 
 	Piece *piece = new Piece(sizeTetris);
 	piece = PiecList[randn];
@@ -181,7 +179,6 @@ void Tetris::loop(Mix_Music* music)
 
 	//new piec
 	randn = rand() % 7;
-	std::cout<< randn << std::endl;
 	Piece *newPiece = new Piece(sizeTetris);
 	newPiece = PiecList[randn];
 	newPiece->update();
@@ -209,12 +206,13 @@ void Tetris::loop(Mix_Music* music)
 
 
 		if(!cont) {
-			//NouvPiece(piece, newPiece, PiecList);
+		//	NouvPiece(piece, newPiece, PiecList);
+		//	cont = true;
+
 			piece = newPiece;
 			piece->update();
 
 			randn = rand() % 7;
-			std::cout<< randn << std::endl;
 			newPiece = PiecList[randn];
 			newPiece->update();
 			newPiece->printNextPiece(renderer, texture);
@@ -227,6 +225,7 @@ void Tetris::loop(Mix_Music* music)
 			else{
 				piece->draw(renderer,blank,texture);
 			}
+
 
 		}
 

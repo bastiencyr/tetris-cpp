@@ -21,7 +21,7 @@
 #define CLASSIC 0
 #define ACCESS 0
 #define PASTEL 0
-#define WHITE_LINED 1
+#define WHITE_LINED 0
 
 //class Sprite;
 
