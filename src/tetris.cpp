@@ -12,6 +12,7 @@
 #include <cassert>
 #include <time.h>
 #include "../include/tetris.hpp"
+#include <SDL2/SDL_ttf.h>
 
 
 Tetris::Tetris(int w, int h, SDL_Rect locTetris){
@@ -27,6 +28,8 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris){
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
 	blank = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
+			SDL_TEXTUREACCESS_TARGET, w, h);
+	menu = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
 
 	//mat[BLOCSX][BLOCSY];
@@ -61,6 +64,8 @@ Tetris::~Tetris(){
 }
 
 void Tetris::init(Mix_Music* music){
+	
+
 
 	if (Mix_PlayingMusic() == 0) Mix_PlayMusic(music,-1);
 
@@ -125,6 +130,27 @@ void Tetris::init(Mix_Music* music){
 
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderCopy(renderer, texture, &sizeTetris, &sizeTetris);
+	
+	
+	//affichage du texte
+	TTF_Font *police = TTF_OpenFont("src/FreeSerif.ttf", 65);
+	if(!police){
+		std::cout << TTF_GetError()<< std::endl;
+	}
+	SDL_Color textColor = {255, 255, 255};
+
+	SDL_Surface * text_surface = TTF_RenderText_Blended(police,"Next Piece", textColor);
+	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+	
+	int sCase = sizeTetris.w/BLOCSX;
+	int texW = sCase * 3;
+	int texX = sizeTetris.w + sCase * 0.5 ;
+	int texY = sizeTetris.h/2 - sCase * 3;
+	//SDL_QueryTexture(text_texture, NULL, NULL, &texW, &texH);
+	SDL_Rect dstrect = { texX, texY, texW, 25 };
+	
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 }
 
 void Tetris::ListePieceInit(Piece * Liste[7]) {
@@ -246,8 +272,9 @@ void Tetris::loop(Mix_Music* music)
 			switch (event.type)
 			{
 			case SDL_QUIT:
-				quit = true;
+				quit = this->printMenu();
 				break;
+
 			case SDL_MOUSEBUTTONDOWN:
 				break;
 
@@ -341,6 +368,115 @@ void Tetris::loop(Mix_Music* music)
 		SDL_RenderPresent(renderer);
 
 	}
+}
+
+bool Tetris::printMenu(){
+	
+	SDL_SetRenderDrawColor(renderer,63,63,63,255);
+	SDL_RenderClear(renderer);
+	
+	//le menu devient la cible de rendu
+	SDL_SetRenderTarget(renderer, menu);
+	
+	TTF_Font *police = TTF_OpenFont("src/FreeSerif.ttf", 65);
+	if(!police){
+		std::cout << TTF_GetError()<< std::endl;
+	}
+	SDL_Color textColor = {255, 255, 255};
+	SDL_Surface * text_surface = TTF_RenderText_Blended(police,"Reprendre le jeu", textColor);
+	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+	
+	SDL_Rect dstrect = { sizeTetris.w/2-50, sizeTetris.h/2, 200, 30 };
+	
+	//on copie le text sur le menu
+	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
+	
+	//on affiche un deuxième texte en dessous
+	text_surface = TTF_RenderText_Blended(police,"Quitter le jeu", textColor);
+	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+	dstrect.y += 60;
+	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
+	
+	
+	//on dessine le cadre du texte
+	SDL_SetRenderDrawColor(renderer,63,63,63,255);
+	SDL_Rect cadre ={sizeTetris.w/2-50, sizeTetris.h/2, 200, 30};
+	SDL_RenderDrawRect(renderer, &cadre);
+	
+	
+	
+	//on revient sur le renderer
+	SDL_SetRenderTarget(renderer, NULL);
+	SDL_RenderCopy(renderer, menu, NULL, NULL);
+
+	SDL_RenderPresent(renderer);
+	
+	int choiceMenu = 0;
+	bool quit_menu = false;
+	SDL_Event event;
+	while (!quit_menu && SDL_WaitEvent(&event)){
+		switch (event.type)
+		{
+		case SDL_QUIT:
+			quit_menu = true;
+			quit = true;
+			break;
+			
+		case SDL_KEYDOWN:
+			
+			switch( event.key.keysym.sym ){
+				
+			case SDLK_DOWN:
+				if (choiceMenu <=0){
+					choiceMenu+=1;
+					
+					SDL_SetRenderDrawColor(renderer,0,0,0,255);
+					SDL_RenderDrawRect(renderer, &cadre);
+					
+					SDL_SetRenderDrawColor(renderer,63,63,63,255);
+					cadre.y = 30 * choiceMenu;
+					SDL_RenderDrawRect(renderer, &cadre);
+					
+				}
+				break;
+				
+			case SDLK_UP:
+				if (choiceMenu >=1){
+					choiceMenu-=1;
+					
+					SDL_SetRenderDrawColor(renderer,0,0,0,255);
+					SDL_RenderDrawRect(renderer, &cadre);
+					
+					SDL_SetRenderDrawColor(renderer,63,63,63,255);
+					cadre.y = 30 * choiceMenu ;
+					SDL_RenderDrawRect(renderer, &cadre);
+					
+				}
+				break;
+				
+				//jaimerais mettre enter mais je trouve pas...
+			case SDLK_TAB:
+				if (choiceMenu == 0){
+					quit_menu = true;
+					quit = false;
+				}
+				else if (choiceMenu == 1){
+					quit_menu = true;
+					quit = true;
+				}
+				break;
+				
+			default: 
+				break;
+			}
+			SDL_RenderPresent(renderer);
+			
+		default :break;
+		}
+	}
+	
+	return quit;
+	
 }
 
 int Tetris::TetrisLinesUpdate(int *score) {
