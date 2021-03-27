@@ -18,14 +18,11 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris){
 	this->w=w;
 	this->h=h;
 
+	timer=0;
+
 	pWindow = SDL_CreateWindow("Une fenetre SDL" , SDL_WINDOWPOS_CENTERED ,
 			SDL_WINDOWPOS_CENTERED , w , h , SDL_WINDOW_SHOWN);
-
 	renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_SOFTWARE);
-
-	//renderer2 = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED |
-	//SDL_RENDERER_PRESENTVSYNC);k
-	timer=0;
 
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
@@ -82,14 +79,13 @@ void Tetris::init(Mix_Music* music){
 	if(CLASSIC) {
 		SDL_SetRenderDrawColor(renderer,175,175,135,255);
 	}
-	if(ACCESS) {
+	else if(ACCESS) {
 		SDL_SetRenderDrawColor(renderer,10,10,10,255);
 	}
-	if(PASTEL) {
+	else if(PASTEL) {
 		SDL_SetRenderDrawColor(renderer,212,255,254,255);
 		//SDL_SetRenderDrawColor(renderer,10,10,10,255);
 	}
-	//SDL_SetRenderDrawColor(renderer,220,220,220,255);
 	SDL_RenderClear(renderer);
 
 	// À présent, occupons nous des lignes
@@ -98,7 +94,7 @@ void Tetris::init(Mix_Music* music){
 
 	SDL_SetRenderDrawColor(renderer,0,0,0,255);
 	if(ACCESS) SDL_SetRenderDrawColor(renderer, 0,255,4, 100);
-	if(PASTEL) SDL_SetRenderDrawColor(renderer,0,0,0,80);
+	else if(PASTEL) SDL_SetRenderDrawColor(renderer,0,0,0,80);
 
 
 	// Lignes horizontales
@@ -131,18 +127,48 @@ void Tetris::init(Mix_Music* music){
 	SDL_RenderCopy(renderer, texture, &sizeTetris, &sizeTetris);
 }
 
+void Tetris::ListePieceInit(Piece * Liste[7]) {
+	Liste[0] = new LTetri(sizeTetris);
+	Liste[1] = new OTetri(sizeTetris);
+	Liste[2] = new TTetri(sizeTetris);
+	Liste[3] = new ZTetri(sizeTetris);
+	Liste[4] = new JTetri(sizeTetris);
+	Liste[5] = new ITetri(sizeTetris);
+	Liste[6] = new STetri(sizeTetris);
+
+	for(int i = 0; i<7; i++)
+		Liste[i]->update();
+}
+
+void Tetris::NouvPiece(Piece * oldp, Piece * newp, Piece * Liste[7]) {
+	oldp = newp;
+	oldp->update();
+
+	srand(time(0));
+	int randn = rand() % 7;
+	newp = Liste[randn];
+	newp->update();
+	newp->printNextPiece(renderer, texture);
+
+	if(!oldp->isLegalPosition(oldp, mat).NO_ERROR) {
+		quit=true;
+		std::cout<< "Game Over" << std::endl << "Score : " << score << std::endl;
+	}
+	else
+		oldp->draw(renderer,blank,texture);
+}
 
 void Tetris::loop(Mix_Music* music)
 {
-	if (Mix_PlayingMusic() == 0) Mix_PlayMusic(music,-1);
 	//INITIALISATION
+	if (Mix_PlayingMusic() == 0) Mix_PlayMusic(music,-1);
 	Uint64 prev, now = SDL_GetPerformanceCounter(); // timers
 	double delta_t;  // durée frame en ms
-	double difficulte[8]={1.,0.9,0.8,0.7,0.6,0.5,0.4,0.3};
-	int sc=0;
-
+	double difficulte[8]={1.,0.9,0.8,0.7,0.6,0.5,0.4,0.3}; //difficulté
+	int sc=0; //niveau de difficulté actuel
 
 	Piece * PiecList[7];
+//	ListePieceInit(PiecList);
 	PiecList[0] = new LTetri(sizeTetris);
 	PiecList[1] = new OTetri(sizeTetris);
 	PiecList[2] = new TTetri(sizeTetris);
@@ -154,57 +180,53 @@ void Tetris::loop(Mix_Music* music)
 	for(int i = 0; i<7; i++)
 		PiecList[i]->update();
 
-
 	int randn=0;
 	srand(time(0));
 	randn = rand() % 7;
+	std::cout<< randn << std::endl;
 
 	Piece *piece = new Piece(sizeTetris);
-
 	piece = PiecList[randn];
 	piece->draw(renderer,blank,texture);
 
 	//new piec
 	srand(time(0));
 	randn = rand() % 7;
+	std::cout<< randn << std::endl;
 	Piece *newPiece = new Piece(sizeTetris);
 	newPiece = PiecList[randn];
 	newPiece->update();
 	newPiece->printNextPiece(renderer, texture);
 
-	Piece * PiecGhosts[7];
-	PiecGhosts[0] = new LTetri(sizeTetris);
-	PiecGhosts[1] = new OTetri(sizeTetris);
-	PiecGhosts[2] = new TTetri(sizeTetris);
-	PiecGhosts[3] = new ZTetri(sizeTetris);
-	PiecGhosts[4] = new JTetri(sizeTetris);
-	PiecGhosts[5] = new ITetri(sizeTetris);
-	PiecGhosts[6] = new STetri(sizeTetris);
+	/*Piece * PiecGhosts[7];
+	ListePieceInit(PiecGhosts);
 	for(int i = 0; i<7; i++)
 		PiecGhosts[i]->adjust(PiecList[i]);
 
 	Piece *ghost = new Piece(sizeTetris);
-	ghost=PiecGhosts[randn];
+	ghost=PiecGhosts[randn];*/
 
 
-
-	bool quit = false;
+	quit = false;
 	bool cont = true;
 	double t=0;
-	int score = 0;
-	int ScoreOld=0;
+	score = 0;
+	int ScoreOld=score;
 
 	//BOUCLE
 	while (!quit)
 	{
 		if (Mix_PlayingMusic() == 0) Mix_PlayMusic(music,-1);
 
+
 		if(!cont) {
+			//NouvPiece(piece, newPiece, PiecList);
 			piece = newPiece;
 			piece->update();
 
 			srand(time(0));
 			randn = rand() % 7;
+			std::cout<< randn << std::endl;
 			newPiece = PiecList[randn];
 			newPiece->update();
 			newPiece->printNextPiece(renderer, texture);
@@ -217,6 +239,7 @@ void Tetris::loop(Mix_Music* music)
 			else{
 				piece->draw(renderer,blank,texture);
 			}
+
 		}
 
 		/*
