@@ -10,6 +10,7 @@
 #include <string>
 #include <iostream>
 #include <cassert>
+#include <time.h>
 #include "../include/tetris.hpp"
 
 
@@ -83,7 +84,7 @@ void Tetris::init(){
 	}
 	if(PASTEL) {
 		SDL_SetRenderDrawColor(renderer,212,255,254,255);
-		//SDL_SetRenderDrawColor(renderer,100,100,100,255);
+		SDL_SetRenderDrawColor(renderer,10,10,10,255);
 	}
 	//SDL_SetRenderDrawColor(renderer,220,220,220,255);
 	SDL_RenderClear(renderer);
@@ -150,6 +151,7 @@ void Tetris::loop()
 		PiecList[i]->update();
 
 	int randn=0;
+	srand(time(0));
 	randn = rand() % 7;
 
 	Piece *piece = new Piece(sizeTetris);
@@ -183,6 +185,7 @@ void Tetris::loop()
 	{
 		if(!cont) {
 			//std::cout << "Nouvelle pièce en haut" << std::endl;
+			srand(time(0));
 			randn = rand() % 7;
 			//std::cout<<randn<<std::endl;
 			PiecList[randn]->update();

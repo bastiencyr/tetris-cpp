@@ -1,6 +1,6 @@
 CC=g++
 CFLAGS= $(shell sdl2-config --cflags)
-LDFLAGS=  $(shell sdl2-config --libs) 
+LDFLAGS=  $(shell sdl2-config --libs) -lSDL_mixer 
 #-lSDL2_ttf
 
 TARGET = tetris
@@ -34,7 +34,7 @@ clean:
 #tetris: tetris.o func.o
 #	$(CC) -o $@ $^ $(LDFLAGS)
 
-#tetris.o: $(SRC)/tetris.cpp $(HEADERS)/func.hpp 
+#tetris.o: $(SRC)/tetris.cpp $(HEADERS)/func.hpp
 #	$(CC) -o $@ -c $< $(CFLAGS)
 
 #func.o: $(SRC)/func.cpp $(HEADERS)/func.hpp
