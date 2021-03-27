@@ -168,17 +168,7 @@ void Tetris::loop(Mix_Music* music)
 	int sc=0; //niveau de difficulté actuel
 
 	Piece * PiecList[7];
-//	ListePieceInit(PiecList);
-	PiecList[0] = new LTetri(sizeTetris);
-	PiecList[1] = new OTetri(sizeTetris);
-	PiecList[2] = new TTetri(sizeTetris);
-	PiecList[3] = new ZTetri(sizeTetris);
-	PiecList[4] = new JTetri(sizeTetris);
-	PiecList[5] = new ITetri(sizeTetris);
-	PiecList[6] = new STetri(sizeTetris);
-
-	for(int i = 0; i<7; i++)
-		PiecList[i]->update();
+	ListePieceInit(PiecList);
 
 	int randn=0;
 	srand(time(0));
@@ -190,7 +180,6 @@ void Tetris::loop(Mix_Music* music)
 	piece->draw(renderer,blank,texture);
 
 	//new piec
-	srand(time(0));
 	randn = rand() % 7;
 	std::cout<< randn << std::endl;
 	Piece *newPiece = new Piece(sizeTetris);
@@ -224,7 +213,6 @@ void Tetris::loop(Mix_Music* music)
 			piece = newPiece;
 			piece->update();
 
-			srand(time(0));
 			randn = rand() % 7;
 			std::cout<< randn << std::endl;
 			newPiece = PiecList[randn];
