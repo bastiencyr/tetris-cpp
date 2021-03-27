@@ -25,6 +25,7 @@ protected:
     //SDL_Renderer* welcome_screen;
 	SDL_Texture *blank;
     SDL_Texture *texture;
+	SDL_Texture *menu;
 
 	//Piece *piece;
 
@@ -55,6 +56,7 @@ public :
 	int TetrisLinesUpdate(int* score);
 	void FillEmpty(int i, int factor);
 	void CopyLine(int i, int decalage, int factor);
+	bool printMenu();
 
 	SDL_Renderer* get_renderer() {return renderer;};
 	SDL_Window* get_pWindow() {return pWindow;};

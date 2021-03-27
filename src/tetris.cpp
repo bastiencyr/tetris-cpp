@@ -411,6 +411,9 @@ bool Tetris::printMenu(){
 
 	SDL_RenderPresent(renderer);
 	
+	free(text_surface);
+	free(text_texture);
+	
 	int choiceMenu = 0;
 	bool quit_menu = false;
 	SDL_Event event;
@@ -434,7 +437,7 @@ bool Tetris::printMenu(){
 					SDL_RenderDrawRect(renderer, &cadre);
 					
 					SDL_SetRenderDrawColor(renderer,63,63,63,255);
-					cadre.y = 30 * choiceMenu;
+					cadre.y = 150 * choiceMenu;
 					SDL_RenderDrawRect(renderer, &cadre);
 					
 				}
@@ -448,7 +451,7 @@ bool Tetris::printMenu(){
 					SDL_RenderDrawRect(renderer, &cadre);
 					
 					SDL_SetRenderDrawColor(renderer,63,63,63,255);
-					cadre.y = 30 * choiceMenu ;
+					cadre.y = 150 * choiceMenu ;
 					SDL_RenderDrawRect(renderer, &cadre);
 					
 				}

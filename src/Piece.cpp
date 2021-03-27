@@ -5,6 +5,7 @@
  */
 
 #include <SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <string>
 #include <iostream>
 #include <cassert>
@@ -441,6 +442,8 @@ void Piece::adjust(Piece *piece) {
 }
 
 void Piece::printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture){
+	
+	
 	int factor = locTetris.w/BLOCSX;
 	SDL_Rect temp;
 

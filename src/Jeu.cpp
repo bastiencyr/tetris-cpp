@@ -6,6 +6,7 @@
 
 #include <SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_ttf.h>
 //#include <SDL/SDL_mixer.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,21 +43,26 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris){
 	    SDL_Quit();
 	    return;
 	}
-
+	
 	if(Mix_PlayMusic(music, -1)==-1) {
     	printf("Mix_PlayMusic: %s\n", Mix_GetError());
-    // well, there's no music, but most games don't break without music...
+		// well, there's no music, but most games don't break without music...
 	}
-
+	
+	if(TTF_Init() == -1)
+	{
+		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
+		exit(EXIT_FAILURE);
+	}
 
 	Tetris tetris(w,h, sizeTetris);
 	tetris.init(music);
 	SDL_RenderPresent(tetris.get_renderer());
-	//SDL_Delay(10000);
 	tetris.loop(music);
-
+	
 	Mix_FreeMusic(music); //Libération de la musique
    	Mix_CloseAudio(); //Fermeture de l'API
+	TTF_Quit();
 	SDL_Quit();
 }
 
