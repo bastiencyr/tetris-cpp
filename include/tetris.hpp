@@ -8,6 +8,7 @@
 #define _TETRIS_HPP_
 
 #include <SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <string>
 #include "Piece.hpp"
 
@@ -38,10 +39,10 @@ protected:
 //    SDL_Rect dest;
 
 public :
-    void init();
+    void init(Mix_Music* music);
     Tetris(int w, int h, SDL_Rect sizeTetris);
     void keyboard(const Uint8* keys);
-    void loop();
+    void loop(Mix_Music* music);
 	SDL_Renderer* get_renderer() {return renderer;};
 	SDL_Window* get_pWindow() {return pWindow;};
 	void printMatrice();

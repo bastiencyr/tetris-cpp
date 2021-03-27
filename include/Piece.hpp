@@ -9,17 +9,18 @@
 #define _FUNC_HPP_
 
 #include <SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <string>
 #include "Error.hpp"
 #define BLOCSX 10
 #define BLOCSY 20
 #define SIZE_BLOC 35
 
-#define EYES 1
-#define MILIEU 0
+#define EYES 0
+#define MILIEU 1
 #define CLASSIC 0
 #define ACCESS 0
-#define PASTEL 1
+#define PASTEL 0
 
 //class Sprite;
 

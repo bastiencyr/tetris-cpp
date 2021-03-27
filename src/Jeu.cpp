@@ -5,7 +5,7 @@
  */
 
 #include <SDL.h>
-#include "SDL_mixer.h"
+#include <SDL2/SDL_mixer.h>
 //#include <SDL/SDL_mixer.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,39 +44,16 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris){
 	}
 
 	if(Mix_PlayMusic(music, -1)==-1) {
-    printf("Mix_PlayMusic: %s\n", Mix_GetError());
+    	printf("Mix_PlayMusic: %s\n", Mix_GetError());
     // well, there's no music, but most games don't break without music...
 	}
 
-	/*SDL_AudioSpec obtained;
-	SDL_AudioSpec desired;
-
-	desired.freq=48000;
-	desired.format = AUDIO_F32SYS;
-	desired.channels= 2;
-	desired.samples = 4096;
-	desired.callback = [](void* param, Uint8* stream, int len)
-	{
-    // Envoyez les données dans notre buffer...
-		int samples = len / sizeof(float); // 4096
-
-	    for (auto i = 0; i < samples; i++)
-	    {
-	        reinterpret_cast<float*>(stream)[i] = 0.5 * SDL_sinf(2 * M_PI * i / 1000);
-	    }
-	};
-
-	SDL_AudioDeviceID dev = SDL_OpenAudioDevice(nullptr, 0, &desired, &obtained, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
-
-	SDL_PauseAudioDevice(dev, SDL_FALSE);
-
-    for (;;); // boucle infinie*/
 
 	Tetris tetris(w,h, sizeTetris);
-	tetris.init();
+	tetris.init(music);
 	SDL_RenderPresent(tetris.get_renderer());
 	//SDL_Delay(10000);
-	tetris.loop();
+	tetris.loop(music);
 
 	Mix_FreeMusic(music); //Libération de la musique
    	Mix_CloseAudio(); //Fermeture de l'API

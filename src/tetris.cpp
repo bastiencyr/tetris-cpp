@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-#include <SDL.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
@@ -63,7 +63,10 @@ Tetris::~Tetris(){
 	SDL_DestroyWindow(pWindow);
 }
 
-void Tetris::init(){
+void Tetris::init(Mix_Music* music){
+
+	if (Mix_PlayingMusic() == 0) Mix_PlayMusic(music,-1);
+
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 	//la largeur du tetris doit donc etre un multiple de BLOCSX
 	//la hauteur doit être deux fois plus grande -> respect de lechelle
@@ -84,7 +87,7 @@ void Tetris::init(){
 	}
 	if(PASTEL) {
 		SDL_SetRenderDrawColor(renderer,212,255,254,255);
-		SDL_SetRenderDrawColor(renderer,10,10,10,255);
+		//SDL_SetRenderDrawColor(renderer,10,10,10,255);
 	}
 	//SDL_SetRenderDrawColor(renderer,220,220,220,255);
 	SDL_RenderClear(renderer);
@@ -129,8 +132,9 @@ void Tetris::init(){
 }
 
 
-void Tetris::loop()
+void Tetris::loop(Mix_Music* music)
 {
+	if (Mix_PlayingMusic() == 0) Mix_PlayMusic(music,-1);
 	//INITIALISATION
 	Uint64 prev, now = SDL_GetPerformanceCounter(); // timers
 	double delta_t;  // durée frame en ms
@@ -149,21 +153,24 @@ void Tetris::loop()
 
 	for(int i = 0; i<7; i++)
 		PiecList[i]->update();
-	
-	
+
+
 	int randn=0;
 	srand(time(0));
 	randn = rand() % 7;
 
 	Piece *piece = new Piece(sizeTetris);
-	
+
 	piece = PiecList[randn];
 	piece->draw(renderer,blank,texture);
-	
+
 	//new piec
+	srand(time(0));
 	randn = rand() % 7;
 	Piece *newPiece = new Piece(sizeTetris);
-
+	newPiece = PiecList[randn];
+	newPiece->update();
+	newPiece->printNextPiece(renderer, texture);
 
 	Piece * PiecGhosts[7];
 	PiecGhosts[0] = new LTetri(sizeTetris);
@@ -190,16 +197,18 @@ void Tetris::loop()
 	//BOUCLE
 	while (!quit)
 	{
+		if (Mix_PlayingMusic() == 0) Mix_PlayMusic(music,-1);
+
 		if(!cont) {
 			piece = newPiece;
-			piece->update();	
-			
+			piece->update();
+
 			srand(time(0));
 			randn = rand() % 7;
 			newPiece = PiecList[randn];
 			newPiece->update();
 			newPiece->printNextPiece(renderer, texture);
-			
+
 			cont = true;
 			if(!piece->isLegalPosition(piece, mat).NO_ERROR) {
 				quit=true;
@@ -217,6 +226,7 @@ void Tetris::loop()
 		while(ghost->isLegalPosition(ghost,mat).NO_ERROR) {
 			ghost->down(1);
 		}
+		ghost->up();
 		ghost->draw(renderer,blank,texture,20);
 		*/
 
