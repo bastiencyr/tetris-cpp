@@ -151,6 +151,7 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 
 			if(EYES) {
 				//yeux (jsp pourquoi)
+
 				SDL_SetRenderDrawColor(renderer, 0, 0,0, alpha*0.9);
 				SDL_RenderFillRect(renderer, &eyes[i][0]);
 				SDL_RenderFillRect(renderer, &eyes[i][1]);
