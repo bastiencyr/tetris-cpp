@@ -252,46 +252,50 @@ void Tetris::loop(Mix_Music* music)
 				piece->draw(renderer,blank,texture);
 			}
 
-
+			
 		}
-
+		
 		/*
-		ghost->draw(renderer,blank,texture,255,1);
-		PiecGhosts[randn]->adjust(PiecList[randn]);
-		ghost=PiecGhosts[randn];
-		while(ghost->isLegalPosition(ghost,mat).NO_ERROR) {
-			ghost->down(1);
-		}
-		ghost->up();
-		ghost->draw(renderer,blank,texture,20);
-		*/
-
+		 ghost->draw(renderer,blank,texture,255,1);
+		 PiecGhosts[randn]->adjust(PiecList[randn]);
+		 ghost=PiecGhosts[randn];
+		 while(ghost->isLegalPosition(ghost,mat).NO_ERROR) {
+		 ghost->down(1);
+		 }
+		 ghost->up();
+		 ghost->draw(renderer,blank,texture,20);
+		 */
+		
 		SDL_Event event;
 		while (!quit && SDL_PollEvent(&event) && cont == true)
 		{
 			switch (event.type)
 			{
+				
 			case SDL_QUIT:
-				this->printMenu();
+				quit = true;
 				break;
-
+				
 			case SDL_MOUSEBUTTONDOWN:
 				break;
-
+				
 				// c'est ici quuon prend les événements du clavier.
 				// Jai pris sur internet, je sais pas trop comment ca fonctionne sinon
 			case SDL_KEYDOWN:
 				/* Check the SDLKey values and move change the coords */
 				switch( event.key.keysym.sym ){
 					//si lutilisateur appuie sur la flèche droite du clavier:
-
+				case SDLK_ESCAPE:
+					this->printMenu();
+					break;
+					
 				case SDLK_RIGHT:
 					if (piece->isLegalRight(mat).NO_ERROR){
 						piece->right();
 						piece->draw(renderer,blank,texture);
 					}
 					break;
-
+					
 				case SDLK_LEFT:
 					if (piece->isLegalLeft(mat).NO_ERROR){
 						piece->left();
@@ -337,10 +341,7 @@ void Tetris::loop(Mix_Music* music)
 
 			//this->printMatrice();
 		}
-
-		const Uint8* state = SDL_GetKeyboardState(NULL);
-		quit |= (state[SDL_SCANCODE_ESCAPE]!=0);
-
+		
 		prev = now;
 		now = SDL_GetPerformanceCounter();
 		delta_t = static_cast<double>((now - prev)/
@@ -461,7 +462,7 @@ bool Tetris::printMenu(){
 				break;
 				
 				//jaimerais mettre enter mais je trouve pas...
-			case SDLK_TAB:
+			case SDLK_RETURN:
 				if (choiceMenu == 0){
 					quit_menu = true;
 					quit = false;
