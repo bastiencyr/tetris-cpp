@@ -20,7 +20,7 @@
 #define MILIEU 1
 #define CLASSIC 0
 #define ACCESS 0
-#define PASTEL 1
+#define PASTEL 0
 #define WHITE_LINED 0
 
 //class Sprite;
