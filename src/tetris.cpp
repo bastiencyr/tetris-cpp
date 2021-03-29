@@ -398,7 +398,7 @@ bool Tetris::printMenu(){
 	SDL_SetRenderTarget(renderer, menu);
 
 
-	SDL_Rect dstrect = { sizeTetris.w/2-50, sizeTetris.h/4, 200, 30 };
+	SDL_Rect dstrect = { sizeTetris.w/2-50, sizeTetris.h/4, 200, 40 };
 
 	//on copie le text sur le menu
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
@@ -414,25 +414,27 @@ bool Tetris::printMenu(){
 	//on affiche un deuxième texte en dessous
 	text_surface = TTF_RenderText_Blended(police,"Recommencer", textColor);
 	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-	dstrect.y += 60;
+	dstrect.y += 80;
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 
 	//troisième texte
 	text_surface = TTF_RenderText_Blended(police,"Aller au menu", textColor);
 	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-	dstrect.y += 60;
+	dstrect.y += 80;
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 
 	//quatrième texte
 	text_surface = TTF_RenderText_Blended(police,"Quitter", textColor);
 	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-	dstrect.y += 60;
+	dstrect.x += 40;
+	dstrect.y += 80;
+	dstrect.w = 120;
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 
 
 	//on dessine le cadre du texte
-	SDL_SetRenderDrawColor(renderer,63,63,63,255);
-	SDL_Rect cadre ={sizeTetris.w/2-50, sizeTetris.h/2, 200, 30};
+	SDL_SetRenderDrawColor(renderer,255,255,255,255);
+	SDL_Rect cadre ={sizeTetris.w/2-50, sizeTetris.h/2, 200, 40};
 	SDL_RenderDrawRect(renderer, &cadre);
 
 
@@ -471,8 +473,8 @@ bool Tetris::printMenu(){
 				SDL_SetRenderDrawColor(renderer,0,0,0,255);
 				SDL_RenderDrawRect(renderer, &cadre);
 
-				SDL_SetRenderDrawColor(renderer,63,63,63,255);
-				cadre.y =sizeTetris.h/2 +60 *choiceMenu ;
+				SDL_SetRenderDrawColor(renderer,255,255,255,255);
+				cadre.y =sizeTetris.h/2 +80 *choiceMenu ;
 				SDL_RenderDrawRect(renderer, &cadre);
 
 				SDL_RenderPresent(renderer);
@@ -486,8 +488,8 @@ bool Tetris::printMenu(){
 				SDL_SetRenderDrawColor(renderer,0,0,0,255);
 				SDL_RenderDrawRect(renderer, &cadre);
 
-				SDL_SetRenderDrawColor(renderer,63,63,63,255);
-				cadre.y = sizeTetris.h/2 + 60*choiceMenu;
+				SDL_SetRenderDrawColor(renderer,255,255,255,255);
+				cadre.y = sizeTetris.h/2 + 80*choiceMenu;
 				SDL_RenderDrawRect(renderer, &cadre);
 
 				SDL_RenderPresent(renderer);
