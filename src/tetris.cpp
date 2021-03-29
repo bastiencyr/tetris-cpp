@@ -133,7 +133,7 @@ void Tetris::init(Mix_Music* music){
 
 
 	//affichage du texte
-	TTF_Font *police = TTF_OpenFont("src/FreeSerif.ttf", 65);
+	TTF_Font *police = TTF_OpenFont("src/Tetris.ttf", 65);
 	if(!police){
 		std::cout << TTF_GetError()<< std::endl;
 	}
@@ -379,12 +379,12 @@ bool Tetris::printMenu(){
 	//le menu devient la cible de rendu
 	SDL_SetRenderTarget(renderer, menu);
 
-	TTF_Font *police = TTF_OpenFont("src/FreeSerif.ttf", 65);
+	TTF_Font *police = TTF_OpenFont("src/Tetris.ttf", 65);
 	if(!police){
 		std::cout << TTF_GetError()<< std::endl;
 	}
 
-	TTF_SetFontStyle(police, TTF_STYLE_ITALIC );
+	//TTF_SetFontStyle(police, TTF_STYLE_ITALIC );
 
 	SDL_Color textColor = {255, 255, 255};
 	SDL_Surface * text_surface = TTF_RenderText_Blended(police,"Tetris", textColor);
@@ -499,12 +499,12 @@ bool Tetris::printMenu(){
 
 				//jaimerais mettre enter mais je trouve pas...
 			case SDLK_RETURN:
-				
+
 				if (choiceMenu == 0){
 					quit_menu = true;
 					quit = false;
 				}
-				
+
 				//recommencer
 				if (choiceMenu == 1){
 					score = 0 ;
@@ -518,13 +518,13 @@ bool Tetris::printMenu(){
 					quit_menu = true;
 					quit = false;
 				}
-				
+
 				else if (choiceMenu == 3){
 					quit_menu = true;
 					quit = true;
 				}
 				break;
-			
+
 			case SDLK_ESCAPE:
 				quit_menu = true;
 				quit = false;
