@@ -383,17 +383,40 @@ bool Tetris::printMenu(){
 	if(!police){
 		std::cout << TTF_GetError()<< std::endl;
 	}
+	
+	TTF_SetFontStyle(police, TTF_STYLE_ITALIC );
+	
 	SDL_Color textColor = {255, 255, 255};
-	SDL_Surface * text_surface = TTF_RenderText_Blended(police,"Reprendre le jeu", textColor);
+	SDL_Surface * text_surface = TTF_RenderText_Blended(police,"Tetris", textColor);
 	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 	
-	SDL_Rect dstrect = { sizeTetris.w/2-50, sizeTetris.h/2, 200, 30 };
+	SDL_Rect dstrect = { sizeTetris.w/2-50, sizeTetris.h/4, 200, 30 };
 	
 	//on copie le text sur le menu
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 	
+	//premier texte hors titre
 	//on affiche un deuxième texte en dessous
-	text_surface = TTF_RenderText_Blended(police,"Quitter le jeu", textColor);
+	text_surface = TTF_RenderText_Blended(police,"Reprendre le jeu", textColor);
+	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+	dstrect.y = sizeTetris.h/2;
+	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
+	
+	
+	//on affiche un deuxième texte en dessous
+	text_surface = TTF_RenderText_Blended(police,"Recommencer", textColor);
+	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+	dstrect.y += 60;
+	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
+	
+	//troisième texte
+	text_surface = TTF_RenderText_Blended(police,"Aller au menu", textColor);
+	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+	dstrect.y += 60;
+	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
+	
+	//quatrième texte
+	text_surface = TTF_RenderText_Blended(police,"Quitter", textColor);
 	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 	dstrect.y += 60;
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
@@ -416,7 +439,7 @@ bool Tetris::printMenu(){
 	//free(text_surface);
 	//free(text_texture);
 	
-	int choiceMenu = 0;
+	int choiceMenu = 1;
 	bool quit_menu = false;
 	SDL_Event event;
 	while (!quit_menu && SDL_WaitEvent(&event)){
@@ -432,14 +455,14 @@ bool Tetris::printMenu(){
 			switch( event.key.keysym.sym ){
 				
 			case SDLK_DOWN:
-				if (choiceMenu <=0){
+				if (choiceMenu <= 3){ //on dépasse pas le max
 					choiceMenu+=1;
 					
 					SDL_SetRenderDrawColor(renderer,0,0,0,255);
 					SDL_RenderDrawRect(renderer, &cadre);
 					
 					SDL_SetRenderDrawColor(renderer,63,63,63,255);
-					cadre.y = 150 * choiceMenu;
+					cadre.y =sizeTetris.h/2 +60 *(choiceMenu-1) ;
 					SDL_RenderDrawRect(renderer, &cadre);
 					
 					SDL_RenderPresent(renderer);
@@ -447,14 +470,14 @@ bool Tetris::printMenu(){
 				break;
 				
 			case SDLK_UP:
-				if (choiceMenu >=1){
+				if (choiceMenu >= 2){ // ca doit etre plus grand que la valeur min
 					choiceMenu-=1;
 					
 					SDL_SetRenderDrawColor(renderer,0,0,0,255);
 					SDL_RenderDrawRect(renderer, &cadre);
 					
 					SDL_SetRenderDrawColor(renderer,63,63,63,255);
-					cadre.y = 150 * choiceMenu ;
+					cadre.y = sizeTetris.h/2 + 60*(choiceMenu-1);
 					SDL_RenderDrawRect(renderer, &cadre);
 					
 					SDL_RenderPresent(renderer);
@@ -463,11 +486,11 @@ bool Tetris::printMenu(){
 				
 				//jaimerais mettre enter mais je trouve pas...
 			case SDLK_RETURN:
-				if (choiceMenu == 0){
+				if (choiceMenu == 1){
 					quit_menu = true;
 					quit = false;
 				}
-				else if (choiceMenu == 1){
+				else if (choiceMenu == 4){
 					quit_menu = true;
 					quit = true;
 				}
