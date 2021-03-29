@@ -386,10 +386,11 @@ bool Tetris::printMenu(){
 
 	SDL_Color textColor = {255, 255, 255};
 	SDL_Surface * text_surface = TTF_RenderText_Blended(police,"Tetris", textColor);
-	SDL_SetRenderDrawColor(renderer,63,63,63,150);
+
 	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 	//on copie la texture de fond sur le texte
 	SDL_SetRenderTarget(renderer, text_texture);
+	SDL_SetRenderDrawColor(renderer,63,63,63,150);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderFillRect(renderer, NULL);
 
