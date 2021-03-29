@@ -144,9 +144,8 @@ void Tetris::init(Mix_Music* music){
 
 	int sCase = sizeTetris.w/BLOCSX;
 	int texW = sCase * 3;
-	int texX = sizeTetris.w + sCase * 0.5 ;
-	int texY = sizeTetris.h/2 - sCase * 3;
-	//SDL_QueryTexture(text_texture, NULL, NULL, &texW, &texH);
+	int texX = sizeTetris.w + sCase * 0.5 + sizeTetris.x;
+	int texY = sizeTetris.h/2 - sCase * 3 + sizeTetris.y;
 	SDL_Rect dstrect = { texX, texY, texW, 25 };
 
 	SDL_SetRenderTarget(renderer, texture);
