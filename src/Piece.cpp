@@ -449,9 +449,10 @@ void Piece::printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture){
 
 	SDL_SetRenderTarget(renderer, texture);
 
+	//dessiner le contour
 	SDL_SetRenderDrawColor(renderer, 0,0,0, 255);
-	temp.x = locTetris.w ;
-	temp.y = locTetris.h / 2 - factor;
+	temp.x = locTetris.w +locTetris.x ;
+	temp.y = locTetris.h / 2 - factor + locTetris.y;
 	temp.h = 5*factor;
 	temp.w = 4*factor;
 	SDL_RenderFillRect(renderer,&temp);
@@ -461,8 +462,8 @@ void Piece::printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture){
 
 	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1] , this->color[2], 255);
 	for (int i=0; i<4; i++){
-		temp.x = this->dst[i].x * factor + locTetris.w / 2 + factor;
-		temp.y = this->dst[i].y * factor + locTetris.h / 2;
+		temp.x = this->dst[i].x * factor + locTetris.w / 2 + factor + locTetris.x;
+		temp.y = this->dst[i].y * factor + locTetris.h / 2 + locTetris.y;
 		temp.h = factor * 0.8;
 		temp.w = factor * 0.8 ;
 		SDL_RenderFillRect(renderer,&temp);
@@ -472,9 +473,35 @@ void Piece::printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture){
 	SDL_RenderPresent(renderer);
 }
 
+
+
+void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
+	Error e;
+	
+	Piece temp(locTetris);
+	for (int i=0 ; i <4 ; i++){
+		temp.dst[i].x = this->dst[i].x;
+		temp.dst[i].y = this->dst[i].y;
+	}
+	while (this->isLegalPosition(&temp, mat).NO_ERROR){
+		for (int i=0 ; i <4 ; i++){
+			temp.dst[i].y += 1;
+		}
+	}
+	
+	for (int i=0 ; i <4 ; i++){
+		temp.dst[i].y -= 1;
+	}
+	
+	for (int i=0 ; i <4 ; i++){
+		this->src[i].y = this->dst[i].y;
+		this->src[i].x = this->dst[i].x;
+		this->dst[i].y = temp.dst[i].y;
+	}
+}
 /*############################################################################
-########################          LEFT L         #############################
-############################################################################*/
+ ########################          LEFT L         #############################
+ ############################################################################*/
 
 JTetri::JTetri(SDL_Rect sizeTetris) : Piece(sizeTetris){
 	this->color[0]=0;
