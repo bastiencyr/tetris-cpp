@@ -373,8 +373,8 @@ void Tetris::loop(Mix_Music* music)
 
 bool Tetris::printMenu(){
 	
-	//SDL_SetRenderDrawColor(renderer,63,63,63,255);
-	//SDL_RenderClear(renderer);
+	SDL_SetRenderDrawColor(renderer,63,63,63,255);
+	SDL_RenderClear(renderer);
 	
 	//le menu devient la cible de rendu
 	SDL_SetRenderTarget(renderer, menu);
