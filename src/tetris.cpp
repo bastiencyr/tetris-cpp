@@ -497,15 +497,32 @@ bool Tetris::printMenu(){
 
 				//jaimerais mettre enter mais je trouve pas...
 			case SDLK_RETURN:
+				
 				if (choiceMenu == 0){
 					quit_menu = true;
 					quit = false;
 				}
+				
+				//recommencer
+				if (choiceMenu == 1){
+					score = 0 ;
+					for(int i = 0; i < BLOCSX; i++) {
+						for(int j = 0; j < BLOCSY; j++) {
+							mat[i][j] = false;
+						}
+					}
+					SDL_SetRenderTarget(renderer, texture);
+					SDL_RenderCopy(renderer, blank, &sizeTetris, &sizeTetris);
+					quit_menu = true;
+					quit = false;
+				}
+				
 				else if (choiceMenu == 3){
 					quit_menu = true;
 					quit = true;
 				}
 				break;
+			
 			case SDLK_ESCAPE:
 				quit_menu = true;
 				quit = false;
