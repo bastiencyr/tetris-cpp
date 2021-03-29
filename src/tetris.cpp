@@ -443,7 +443,9 @@ bool Tetris::printMenu(){
 	//free(text_surface);
 	//free(text_texture);
 
-	int choiceMenu = 1;
+	int choiceMenu = 0;
+	//UODATE CETTE VARIABLE SI CHANGEMENT
+	int numberChoice = 4;
 	bool quit_menu = false;
 	SDL_Event event;
 	while (!quit_menu && SDL_WaitEvent(&event)){
@@ -459,42 +461,41 @@ bool Tetris::printMenu(){
 			switch( event.key.keysym.sym ){
 
 			case SDLK_DOWN:
-				if (choiceMenu <= 3){ //on dépasse pas le max
-					choiceMenu+=1;
+				choiceMenu+=1;
+				choiceMenu = choiceMenu % numberChoice ;
 
-					SDL_SetRenderDrawColor(renderer,0,0,0,255);
-					SDL_RenderDrawRect(renderer, &cadre);
+				SDL_SetRenderDrawColor(renderer,0,0,0,255);
+				SDL_RenderDrawRect(renderer, &cadre);
 
-					SDL_SetRenderDrawColor(renderer,63,63,63,255);
-					cadre.y =sizeTetris.h/2 +60 *(choiceMenu-1) ;
-					SDL_RenderDrawRect(renderer, &cadre);
+				SDL_SetRenderDrawColor(renderer,63,63,63,255);
+				cadre.y =sizeTetris.h/2 +60 *choiceMenu ;
+				SDL_RenderDrawRect(renderer, &cadre);
 
-					SDL_RenderPresent(renderer);
-				}
+				SDL_RenderPresent(renderer);
+
 				break;
 
 			case SDLK_UP:
-				if (choiceMenu >= 2){ // ca doit etre plus grand que la valeur min
-					choiceMenu-=1;
+				choiceMenu-=1 - numberChoice;
+				choiceMenu = choiceMenu % numberChoice ;
 
-					SDL_SetRenderDrawColor(renderer,0,0,0,255);
-					SDL_RenderDrawRect(renderer, &cadre);
+				SDL_SetRenderDrawColor(renderer,0,0,0,255);
+				SDL_RenderDrawRect(renderer, &cadre);
 
-					SDL_SetRenderDrawColor(renderer,63,63,63,255);
-					cadre.y = sizeTetris.h/2 + 60*(choiceMenu-1);
-					SDL_RenderDrawRect(renderer, &cadre);
+				SDL_SetRenderDrawColor(renderer,63,63,63,255);
+				cadre.y = sizeTetris.h/2 + 60*choiceMenu;
+				SDL_RenderDrawRect(renderer, &cadre);
 
-					SDL_RenderPresent(renderer);
-				}
+				SDL_RenderPresent(renderer);
 				break;
 
 				//jaimerais mettre enter mais je trouve pas...
 			case SDLK_RETURN:
-				if (choiceMenu == 1){
+				if (choiceMenu == 0){
 					quit_menu = true;
 					quit = false;
 				}
-				else if (choiceMenu == 4){
+				else if (choiceMenu == 3){
 					quit_menu = true;
 					quit = true;
 				}
