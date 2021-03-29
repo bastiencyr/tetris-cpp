@@ -430,7 +430,7 @@ bool Tetris::printMenu(){
 
 
 	//on dessine le cadre du texte
-	SDL_SetRenderDrawColor(renderer,63,63,63,255);
+	SDL_SetRenderDrawColor(renderer,255,255,255,255);
 	SDL_Rect cadre ={sizeTetris.w/2-50, sizeTetris.h/2, 200, 30};
 	SDL_RenderDrawRect(renderer, &cadre);
 
@@ -470,7 +470,7 @@ bool Tetris::printMenu(){
 				SDL_SetRenderDrawColor(renderer,0,0,0,255);
 				SDL_RenderDrawRect(renderer, &cadre);
 
-				SDL_SetRenderDrawColor(renderer,63,63,63,255);
+				SDL_SetRenderDrawColor(renderer,255,255,255,255);
 				cadre.y =sizeTetris.h/2 +60 *choiceMenu ;
 				SDL_RenderDrawRect(renderer, &cadre);
 
@@ -485,7 +485,7 @@ bool Tetris::printMenu(){
 				SDL_SetRenderDrawColor(renderer,0,0,0,255);
 				SDL_RenderDrawRect(renderer, &cadre);
 
-				SDL_SetRenderDrawColor(renderer,63,63,63,255);
+				SDL_SetRenderDrawColor(renderer,255,255,255,255);
 				cadre.y = sizeTetris.h/2 + 60*choiceMenu;
 				SDL_RenderDrawRect(renderer, &cadre);
 
