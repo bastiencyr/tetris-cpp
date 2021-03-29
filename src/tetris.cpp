@@ -189,7 +189,7 @@ void Tetris::loop(Mix_Music* music)
 	if (Mix_PlayingMusic() == 0) Mix_PlayMusic(music,-1);
 	Uint64 prev, now = SDL_GetPerformanceCounter(); // timers
 	double delta_t;  // durée frame en ms
-	double difficulte[8]={1.,0.9,0.8,0.7,0.6,0.5,0.4,0.3}; //difficulté
+	double difficulte[18]={1.,0.9,0.82,0.72,0.61,0.52,0.45,0.4,0.37,0.35,0.34,0.33,0.32,0.31,0.3,0.29,0.28,0.27}; //difficulté
 	int sc=0; //niveau de difficulté actuel
 
 	Piece * PiecList[7];
@@ -360,9 +360,11 @@ void Tetris::loop(Mix_Music* music)
 
 		if(score-ScoreOld>500) {
 			ScoreOld=score;
-			if(sc!=7) sc++;
-			std::cout << "Niveau supérieur !" << std::endl;
-			std::cout << "		Niveau :" << sc << std::endl;
+			if(sc!=17) {
+				sc++;
+				std::cout << "Niveau supérieur !" << std::endl;
+				std::cout << "		Niveau :" << sc << std::endl;
+			}
 			//std::cout << "		Score :" << score << std::endl << std::endl;
 		}
 
@@ -390,7 +392,7 @@ bool Tetris::printMenu(){
 	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 	//on copie la texture de fond sur le texte
 	SDL_SetRenderTarget(renderer, text_texture);
-	SDL_SetRenderDrawColor(renderer,63,63,63,150);
+	SDL_SetRenderDrawColor(renderer,63,63,63,200);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderFillRect(renderer, NULL);
 
