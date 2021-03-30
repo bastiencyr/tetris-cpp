@@ -478,11 +478,14 @@ void Piece::printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture){
 void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 	Error e;
 	
+	int score_min = 0;
+	
 	Piece temp(locTetris);
 	for (int i=0 ; i <4 ; i++){
 		temp.dst[i].x = this->dst[i].x;
 		temp.dst[i].y = this->dst[i].y;
 	}
+	
 	while (this->isLegalPosition(&temp, mat).NO_ERROR){
 		for (int i=0 ; i <4 ; i++){
 			temp.dst[i].y += 1;
@@ -498,6 +501,52 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 		this->src[i].x = this->dst[i].x;
 		this->dst[i].y = temp.dst[i].y;
 	}
+	
+	for(int i = 0; i < 4; i++)
+		mat[this->getx(i)][this->gety(i)]=true;
+	
+	
+	Piece best_piece(locTetris);
+	
+	//on veut minimiser le score
+	
+	for (int i=0 ; i <4 ; i++){
+		temp.dst[i].y = this->dst[i].y;
+		temp.dst[i].x = this->dst[i].x;
+	}
+	
+//	while(this->isLegalPosition(&temp, mat).NO_ERROR){
+//		int score = 0;
+//		temp.right();
+//		
+//		//mat_temp = temp.matRight(mat);
+//		
+//		for (int y= 0 ; y < BLOCSY ; y++ ){
+//			bool is_full_line = true;
+//			for (int x=0 : x < BLOCSY ; x++){
+//				if (mat[x][y] = false)
+//					is_full_line = false;
+//			}
+//			if (is_full_line)
+//				score -= 100;
+//		}
+//		
+//		int hauteur_sum =0;
+//		for (int x= 0 ; x < BLOCSX ; x++ ){
+//			for (int y=0 ; y < BLOCSY ; y++){
+//				while(mat[x][y]== false)
+//					score+=10;
+//			}
+//		}
+//		if (score < score_min){
+//			fir (int i= 0 ; i <4 ; i++){
+//				best_piece.dst[i].x = temp.dst[i].x;
+//				best_piece.dst[i].y = temp.dst[i].y;
+//			}
+//		}
+//		
+//	}
+	
 }
 /*############################################################################
  ########################          LEFT L         #############################
