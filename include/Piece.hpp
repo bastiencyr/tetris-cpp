@@ -17,11 +17,11 @@
 #define SIZE_BLOC 35
 
 #define EYES 0
-#define MILIEU 1
+#define MILIEU 0
 #define CLASSIC 0
 #define ACCESS 0
 #define PASTEL 0
-#define WHITE_LINED 0
+#define WHITE_LINED 1
 
 //class Sprite;
 
@@ -74,6 +74,7 @@ public :
 
 	void affiche_coord(bool source, bool dest);
 
+	void cheat(bool mat[BLOCSX][BLOCSY]);
 
 };
 

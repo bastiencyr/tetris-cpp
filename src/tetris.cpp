@@ -284,6 +284,12 @@ void Tetris::loop(Mix_Music* music)
 				/* Check the SDLKey values and move change the coords */
 				switch( event.key.keysym.sym ){
 					//si lutilisateur appuie sur la flèche droite du clavier:
+				case SDLK_F1:
+					piece->cheat(mat);
+					piece->draw(renderer,blank,texture);
+					cont = false;
+					break;
+					
 				case SDLK_ESCAPE:
 					this->printMenu();
 					break;
@@ -294,7 +300,7 @@ void Tetris::loop(Mix_Music* music)
 						piece->draw(renderer,blank,texture);
 					}
 					break;
-
+						
 				case SDLK_LEFT:
 					if (piece->isLegalLeft(mat).NO_ERROR){
 						piece->left();

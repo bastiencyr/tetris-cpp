@@ -68,13 +68,12 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris){
 
 int main(int argc, char** argv)
 {
-	int h=SIZE_BLOC*BLOCSY;
-	int w=SIZE_BLOC*BLOCSX;
+	int h=SIZE_BLOC*BLOCSY+200;
+	int w=SIZE_BLOC*BLOCSX + 200;
 	SDL_Rect sizeTetris;
-	sizeTetris.w=250;
-	sizeTetris.h=h;
-	sizeTetris.x=0;
-	sizeTetris.y=20;
+	sizeTetris.w=310;
+	sizeTetris.x=30;
+	sizeTetris.y=30;
 	Jeu jeu;
 	jeu.startTetris(h,w, sizeTetris);
 }
