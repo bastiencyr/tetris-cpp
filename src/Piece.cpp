@@ -392,7 +392,7 @@ Error Piece::isLegalRotateRight(bool mat[BLOCSX][BLOCSY]){
  */
 void Piece::affiche_coord(bool source, bool dest){
 	if(source) {
-		std::cout << "coordonnées de la source ";
+		std::cout << "coordonnées de la source "<<std::endl;
 		for(int i=0; i< 4; i++) {
 			std::cout << "(" <<  this->src[i].x << ", " << this->src[i].y << ")";
 			std::cout << "    (taille : (" << this->src[i].w << ",";
@@ -400,7 +400,7 @@ void Piece::affiche_coord(bool source, bool dest){
 		}
 	}
 	if(dest) {
-		std::cout << "coordonnées de la destination";
+		std::cout << "coordonnées de la destination"<<std::endl;
 		for(int i=0; i< 4; i++) {
 			std::cout << "(" <<  this->dst[i].x << ", " << this->dst[i].y << ")";
 			std::cout << "    (taille : (" << this->dst[i].w << ",";
@@ -428,8 +428,23 @@ int Piece::gety(int i) {
 int Piece::getcol(int i) {
 	return this->color[i];
 }
+
+int Piece::getpastel(int i) {
+	return this->pastel[i];
+}
 void Piece::update(){
 	puts("update de la classe mère!!!");
+}
+
+bool Piece::verif(Piece * ref) {
+	for(int i = 0; i<4; i++) {
+		for(int j = 0; j<4; j++) {
+			if(this->src[i].y==ref->gety(j)
+				|| this->dst[i].y==ref->gety(j))
+				return false;
+		}
+	}
+	return true;
 }
 
 void Piece::adjust(Piece *piece) {
@@ -439,11 +454,15 @@ void Piece::adjust(Piece *piece) {
 		this->src[i].y=piece->gety(i);
 		this->dst[i].y=piece->gety(i);
 	}
+	for(int i = 0; i< 3; i++) {
+		this->color[i]=piece->getcol(i);
+		this->pastel[i]=piece->getpastel(i);
+	}
 }
 
 void Piece::printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture){
-	
-	
+
+
 	int factor = locTetris.w/BLOCSX;
 	SDL_Rect temp;
 
@@ -473,54 +492,86 @@ void Piece::printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture){
 	SDL_RenderPresent(renderer);
 }
 
-
-
-void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
-	Error e;
-	
-	int score_min = 0;
-	
+void Piece::DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen) {
 	Piece temp(locTetris);
 	for (int i=0 ; i <4 ; i++){
-		temp.dst[i].x = this->dst[i].x;
-		temp.dst[i].y = this->dst[i].y;
+		temp.dst[i].x = ref->dst[i].x;
+		temp.dst[i].y = ref->dst[i].y;
+	//	temp.src[i].x = ref->dst[i].x;
+	//	temp.src[i].y = ref->dst[i].y;
 	}
-	
+
 	while (this->isLegalPosition(&temp, mat).NO_ERROR){
 		for (int i=0 ; i <4 ; i++){
 			temp.dst[i].y += 1;
 		}
 	}
-	
+
 	for (int i=0 ; i <4 ; i++){
 		temp.dst[i].y -= 1;
 	}
-	
+
+	for (int i=0 ; i <4 ; i++){
+		this->src[i].y = this->dst[i].y;
+		this->src[i].x = this->dst[i].x;
+		this->dst[i].x = temp.dst[i].x;
+		this->dst[i].y = temp.dst[i].y;
+	}
+	if(gen)
+		for (int i=0 ; i <4 ; i++){
+			this->src[i].y = this->dst[i].y;
+			this->src[i].x = this->dst[i].x;
+	}
+
+}
+
+void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
+	Error e;
+
+	int score_min = 0;
+
+	Piece temp(locTetris);
+	for (int i=0 ; i <4 ; i++){
+		temp.dst[i].x = this->dst[i].x;
+		temp.dst[i].y = this->dst[i].y;
+	}
+
+	while (this->isLegalPosition(&temp, mat).NO_ERROR){
+		for (int i=0 ; i <4 ; i++){
+			temp.dst[i].y += 1;
+		}
+	}
+
+	for (int i=0 ; i <4 ; i++){
+		temp.dst[i].y -= 1;
+	}
+
 	for (int i=0 ; i <4 ; i++){
 		this->src[i].y = this->dst[i].y;
 		this->src[i].x = this->dst[i].x;
 		this->dst[i].y = temp.dst[i].y;
 	}
-	
+
+
 	for(int i = 0; i < 4; i++)
 		mat[this->getx(i)][this->gety(i)]=true;
-	
-	
+
+
 	Piece best_piece(locTetris);
-	
+
 	//on veut minimiser le score
-	
+
 	for (int i=0 ; i <4 ; i++){
 		temp.dst[i].y = this->dst[i].y;
 		temp.dst[i].x = this->dst[i].x;
 	}
-	
+
 //	while(this->isLegalPosition(&temp, mat).NO_ERROR){
 //		int score = 0;
 //		temp.right();
-//		
+//
 //		//mat_temp = temp.matRight(mat);
-//		
+//
 //		for (int y= 0 ; y < BLOCSY ; y++ ){
 //			bool is_full_line = true;
 //			for (int x=0 : x < BLOCSY ; x++){
@@ -530,7 +581,7 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 //			if (is_full_line)
 //				score -= 100;
 //		}
-//		
+//
 //		int hauteur_sum =0;
 //		for (int x= 0 ; x < BLOCSX ; x++ ){
 //			for (int y=0 ; y < BLOCSY ; y++){
@@ -544,9 +595,9 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 //				best_piece.dst[i].y = temp.dst[i].y;
 //			}
 //		}
-//		
+//
 //	}
-	
+
 }
 /*############################################################################
  ########################          LEFT L         #############################

@@ -202,20 +202,25 @@ void Tetris::loop(Mix_Music* music)
 	piece = PiecList[randn];
 	piece->draw(renderer,blank,texture);
 
+
+
+	Piece * PiecGhosts[7];
+	ListePieceInit(PiecGhosts);
+	for(int i = 0; i<7; i++)
+		PiecGhosts[i]->adjust(PiecList[i]);
+
+	Piece *ghost = new Piece(sizeTetris);
+	ghost=PiecGhosts[randn];
+	ghost->adjust(piece);
+	ghost->DownGhost(mat,piece,1);
+	ghost->draw(renderer,blank,texture,40);
+
 	//new piec
 	randn = rand() % 7;
 	Piece *newPiece = new Piece(sizeTetris);
 	newPiece = PiecList[randn];
 	newPiece->update();
 	newPiece->printNextPiece(renderer, texture);
-
-	/*Piece * PiecGhosts[7];
-	ListePieceInit(PiecGhosts);
-	for(int i = 0; i<7; i++)
-		PiecGhosts[i]->adjust(PiecList[i]);
-
-	Piece *ghost = new Piece(sizeTetris);
-	ghost=PiecGhosts[randn];*/
 
 
 	quit = false;
@@ -251,6 +256,9 @@ void Tetris::loop(Mix_Music* music)
 				piece->draw(renderer,blank,texture);
 			}
 
+			ghost->adjust(piece);
+			ghost->DownGhost(mat,piece,1);
+			if(ghost->verif(piece)) ghost->draw(renderer,blank,texture,40);
 
 		}
 
@@ -289,7 +297,7 @@ void Tetris::loop(Mix_Music* music)
 					piece->draw(renderer,blank,texture);
 					cont = false;
 					break;
-					
+
 				case SDLK_ESCAPE:
 					this->printMenu();
 					break;
@@ -298,13 +306,19 @@ void Tetris::loop(Mix_Music* music)
 					if (piece->isLegalRight(mat).NO_ERROR){
 						piece->right();
 						piece->draw(renderer,blank,texture);
+
+						ghost->DownGhost(mat,piece);
+						if(ghost->verif(piece)) ghost->draw(renderer,blank,texture,40);
 					}
 					break;
-						
+
 				case SDLK_LEFT:
 					if (piece->isLegalLeft(mat).NO_ERROR){
 						piece->left();
 						piece->draw(renderer,blank,texture);
+
+						ghost->DownGhost(mat,piece);
+						if(ghost->verif(piece)) ghost->draw(renderer,blank,texture,40);
 					}
 					break;
 
@@ -336,8 +350,11 @@ void Tetris::loop(Mix_Music* music)
 						}
 						else
 							std::cout << "une autre erreur" << std::endl;
-					}
 
+
+					}
+					ghost->DownGhost(mat,piece);
+					if(ghost->verif(piece)) ghost->draw(renderer,blank,texture,40);
 					break;
 				}
 
