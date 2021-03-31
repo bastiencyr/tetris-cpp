@@ -107,10 +107,11 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 		}
 
 
-		SDL_RenderCopy(renderer, blank, &src_r[i], &src_r[i]);
+		if(src[i].y!=-1) SDL_RenderCopy(renderer, blank, &src_r[i], &src_r[i]);
 	}
 	if(!erase) {
 		for(int i=0; i<4; i++) {
+			if(dst[i].y!=-1) {
 			//couleur du carré
 			if(ACCESS || CLASSIC) {
 				SDL_SetRenderDrawColor(renderer, 20,20,20, alpha);
@@ -166,7 +167,7 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 			//SDL_SetRenderDrawColor(renderer, 255, 255,255, alpha*0.5);
 			//SDL_RenderDrawRect(renderer, &blanc[i]);
 
-
+			}
 		}
 	}
 
@@ -436,15 +437,15 @@ void Piece::update(){
 	puts("update de la classe mère!!!");
 }
 
-bool Piece::verif(Piece * ref) {
+void Piece::verif(Piece * ref) {
 	for(int i = 0; i<4; i++) {
 		for(int j = 0; j<4; j++) {
-			if(this->src[i].y==ref->gety(j)
-				|| this->dst[i].y==ref->gety(j))
-				return false;
+			if(this->dst[i].y==ref->gety(j) && this->dst[i].x==ref->getx(j))
+				this->dst[i].y=-1;
+			if(this->src[i].y==ref->gety(j) && this->src[i].x==ref->getx(j))
+				this->src[i].y=-1;
 		}
 	}
-	return true;
 }
 
 void Piece::adjust(Piece *piece) {
@@ -512,17 +513,16 @@ void Piece::DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen) {
 	}
 
 	for (int i=0 ; i <4 ; i++){
-		this->src[i].y = this->dst[i].y;
-		this->src[i].x = this->dst[i].x;
-		this->dst[i].x = temp.dst[i].x;
-		this->dst[i].y = temp.dst[i].y;
+			this->src[i].y = this->dst[i].y;
+			this->src[i].x = this->dst[i].x;
+			this->dst[i].x = temp.dst[i].x;
+			this->dst[i].y = temp.dst[i].y;
 	}
 	if(gen)
 		for (int i=0 ; i <4 ; i++){
 			this->src[i].y = this->dst[i].y;
 			this->src[i].x = this->dst[i].x;
 	}
-
 }
 
 void Piece::cheat(bool mat[BLOCSX][BLOCSY]){

@@ -258,7 +258,8 @@ void Tetris::loop(Mix_Music* music)
 
 			ghost->adjust(piece);
 			ghost->DownGhost(mat,piece,1);
-			if(ghost->verif(piece)) ghost->draw(renderer,blank,texture,40);
+			ghost->verif(piece);
+			ghost->draw(renderer,blank,texture,40);
 
 		}
 
@@ -308,7 +309,8 @@ void Tetris::loop(Mix_Music* music)
 						piece->draw(renderer,blank,texture);
 
 						ghost->DownGhost(mat,piece);
-						if(ghost->verif(piece)) ghost->draw(renderer,blank,texture,40);
+						ghost->verif(piece);
+						ghost->draw(renderer,blank,texture,40);
 					}
 					break;
 
@@ -318,7 +320,8 @@ void Tetris::loop(Mix_Music* music)
 						piece->draw(renderer,blank,texture);
 
 						ghost->DownGhost(mat,piece);
-						if(ghost->verif(piece)) ghost->draw(renderer,blank,texture,40);
+						ghost->verif(piece);
+						ghost->draw(renderer,blank,texture,40);
 					}
 					break;
 
@@ -354,7 +357,8 @@ void Tetris::loop(Mix_Music* music)
 
 					}
 					ghost->DownGhost(mat,piece);
-					if(ghost->verif(piece)) ghost->draw(renderer,blank,texture,40);
+					ghost->verif(piece);
+					ghost->draw(renderer,blank,texture,40);
 					break;
 				}
 

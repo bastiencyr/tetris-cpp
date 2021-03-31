@@ -43,7 +43,7 @@ public :
 
 	virtual void update();
 	void adjust(Piece *piece);
-	bool verif(Piece * ref);
+	void verif(Piece * ref);
 	void DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen=false);
 
 	int getx(int i);
