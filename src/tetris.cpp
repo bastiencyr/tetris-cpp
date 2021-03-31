@@ -14,6 +14,8 @@
 #include "../include/tetris.hpp"
 #include <SDL2/SDL_ttf.h>
 
+#define OPAC 70
+
 
 Tetris::Tetris(int w, int h, SDL_Rect locTetris){
 	this->w=w;
@@ -219,7 +221,7 @@ void Tetris::loop(Mix_Music* music)
 	ghost=PiecGhosts[randn];
 	ghost->adjust(piece);
 	ghost->DownGhost(mat,piece,1);
-	ghost->draw(renderer,blank,texture,40);
+	ghost->draw(renderer,blank,texture,OPAC);
 
 	//new piec
 	randn = rand() % 7;
@@ -272,7 +274,7 @@ void Tetris::loop(Mix_Music* music)
 			ghost->DownGhost(mat,piece,1);
 			ghost->verif(piece);
 
-			ghost->draw(renderer,blank,texture,40);
+			ghost->draw(renderer,blank,texture,OPAC);
 
 		}
 
@@ -314,7 +316,7 @@ void Tetris::loop(Mix_Music* music)
 
 						ghost->DownGhost(mat,piece);
 						ghost->verif(piece);
-						ghost->draw(renderer,blank,texture,40);
+						ghost->draw(renderer,blank,texture,OPAC);
 					}
 					break;
 
@@ -326,7 +328,7 @@ void Tetris::loop(Mix_Music* music)
 
 						ghost->DownGhost(mat,piece);
 						ghost->verif(piece);
-						ghost->draw(renderer,blank,texture,40);
+						ghost->draw(renderer,blank,texture,OPAC);
 					}
 					break;
 
@@ -363,7 +365,7 @@ void Tetris::loop(Mix_Music* music)
 					}
 					ghost->DownGhost(mat,piece);
 					ghost->verif(piece);
-					ghost->draw(renderer,blank,texture,40);
+					ghost->draw(renderer,blank,texture,OPAC);
 					break;
 				}
 
@@ -434,15 +436,20 @@ bool Tetris::printMenu(){
 
 
 	SDL_Rect dstrect = { sizeTetris.w/2-50, sizeTetris.h/4, 200, 40 };
+	SDL_Rect cadrect = { sizeTetris.w/2-50-25, sizeTetris.h/4, 200+50, 40};
 
 	//on copie le text sur le menu
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
+	SDL_SetRenderDrawColor(renderer,0,0,0,255);
 
 	//premier texte hors titre
 	//on affiche un deuxième texte en dessous
+
 	text_surface = TTF_RenderText_Blended(police,"Reprendre le jeu", textColor);
 	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 	dstrect.y = sizeTetris.h/2;
+	cadrect.y = sizeTetris.h/2;
+	SDL_RenderFillRect(renderer, &cadrect);
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 
 
@@ -450,12 +457,16 @@ bool Tetris::printMenu(){
 	text_surface = TTF_RenderText_Blended(police,"Recommencer", textColor);
 	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 	dstrect.y += 80;
+	cadrect.y += 80;
+	SDL_RenderFillRect(renderer, &cadrect);
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 
 	//troisième texte
 	text_surface = TTF_RenderText_Blended(police,"Aller au menu", textColor);
 	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 	dstrect.y += 80;
+	cadrect.y += 80;
+	SDL_RenderFillRect(renderer, &cadrect);
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 
 	//quatrième texte
@@ -464,12 +475,14 @@ bool Tetris::printMenu(){
 	dstrect.x += 40;
 	dstrect.y += 80;
 	dstrect.w = 120;
+	cadrect.y += 80;
+	SDL_RenderFillRect(renderer, &cadrect);
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 
 
 	//on dessine le cadre du texte
 	SDL_SetRenderDrawColor(renderer,255,255,255,255);
-	SDL_Rect cadre ={sizeTetris.w/2-50, sizeTetris.h/2, 200, 40};
+	SDL_Rect cadre ={sizeTetris.w/2-50-25, sizeTetris.h/2, 250, 40};
 	SDL_RenderDrawRect(renderer, &cadre);
 
 
@@ -530,7 +543,6 @@ bool Tetris::printMenu(){
 				SDL_RenderPresent(renderer);
 				break;
 
-				//jaimerais mettre enter mais je trouve pas...
 			case SDLK_RETURN:
 
 				if (choiceMenu == 0){
