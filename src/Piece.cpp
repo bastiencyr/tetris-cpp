@@ -171,7 +171,6 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 		}
 	}
 
-
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderPresent(renderer);
@@ -461,6 +460,47 @@ void Piece::adjust(Piece *piece) {
 	}
 }
 
+void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture){
+	int factor = locTetris.w/BLOCSX;
+
+	SDL_Rect tour;
+	SDL_SetRenderTarget(renderer, texture);
+
+	SDL_SetRenderDrawColor(renderer,63,63,63,255);
+	if(CLASSIC) {
+		SDL_SetRenderDrawColor(renderer,175,175,135,255);
+	}
+	else if(ACCESS) {
+		SDL_SetRenderDrawColor(renderer,10,10,10,255);
+	}
+	else if(PASTEL) {
+		SDL_SetRenderDrawColor(renderer,212,255,254,255);
+		//SDL_SetRenderDrawColor(renderer,10,10,10,255);
+	}
+	tour.x = locTetris.w +locTetris.x +factor;
+	tour.y = locTetris.h / 2 - factor + locTetris.y;
+	tour.h = 5*factor;
+	tour.w = 5*factor;
+	SDL_RenderFillRect(renderer,&tour);
+
+	SDL_SetRenderDrawColor(renderer, 255,255,255, 255);
+	SDL_RenderDrawRect(renderer,&tour);
+
+	SDL_SetRenderTarget(renderer, NULL);
+
+
+	Piece * temp = new Piece(locTetris);
+	temp->adjust(this);
+	int a =  locTetris.w/(2*factor) +2;
+	int b = locTetris.h/(2*factor);
+
+	temp->translate(a, b, false);
+	temp->translate(0,0,true);
+
+	temp->draw(renderer, blank, texture);
+}
+
+
 void Piece::printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture){
 
 
@@ -483,7 +523,10 @@ void Piece::printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture){
 	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1] , this->color[2], 255);
 	for (int i=0; i<4; i++){
 		temp.x = this->dst[i].x * factor + locTetris.w / 2 + factor + locTetris.x;
+		std::cout << "x" << i << ": " << temp.x << std::endl;
 		temp.y = this->dst[i].y * factor + locTetris.h / 2 + locTetris.y;
+		std::cout << "y" << i << ": " << temp.y << std::endl;
+
 		temp.h = factor * 0.8;
 		temp.w = factor * 0.8 ;
 		SDL_RenderFillRect(renderer,&temp);

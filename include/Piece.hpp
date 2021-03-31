@@ -17,11 +17,11 @@
 #define SIZE_BLOC 35
 
 #define EYES 0
-#define MILIEU 0
+#define MILIEU 1
 #define CLASSIC 0
 #define ACCESS 0
 #define PASTEL 0
-#define WHITE_LINED 1
+#define WHITE_LINED 0
 
 //class Sprite;
 
@@ -74,6 +74,8 @@ public :
 
 	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture, int alpha = 255, bool erase=false);
 	void printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture);
+	void printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture);
+
 
 	void affiche_coord(bool source, bool dest);
 

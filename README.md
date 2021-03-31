@@ -1,13 +1,16 @@
 il faut faire un **tetris**
 
 Ajouts :
-- afficher le score et le niveau sur le côté, ainsi que la prochaine pièce
+/ - afficher le score et le niveau sur le côté, ainsi que la prochaine pièce
 - nettoyer la fonction loop
 - modifier le constructeur
-- faire des couleurs plus chouettes
-- afficher les pièces "fantômes"
+X - faire des couleurs plus chouettes
+X - afficher les pièces "fantômes"
 - faire une gestion des high scores
-- ajouter la musique
-- faire un menu pause
+X - ajouter la musique
+- ajouter des effets sonores
+X - faire un menu pause
 - faire un menu de lancement
+- faire un vrai "hard drop"
+- utiliser la fonction draw pour la pièce sur le côté
 (gros ajout)- mode multi contre l'IA

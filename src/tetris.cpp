@@ -184,6 +184,12 @@ void Tetris::NouvPiece(Piece * oldp, Piece * newp, Piece * Liste[7]) {
 
 void Tetris::loop(Mix_Music* music)
 {
+	Mix_Music* rotate = Mix_LoadMUS("sfx/SFX_PieceRotateLR.ogg");
+	Mix_Music* drop = Mix_LoadMUS("sfx/SFX_PieceSoftDrop.ogg");
+	Mix_Music* line = Mix_LoadMUS("sfx/SFX_SpecialLineClearSingle.ogg");
+	Mix_Music* lines = Mix_LoadMUS("sfx/SFX_SpecialLineClearTriple.ogg");
+
+
 	//INITIALISATION
 	if (Mix_PlayingMusic() == 0) Mix_PlayMusic(music,-1);
 	Uint64 prev, now = SDL_GetPerformanceCounter(); // timers
@@ -220,7 +226,8 @@ void Tetris::loop(Mix_Music* music)
 	Piece *newPiece = new Piece(sizeTetris);
 	newPiece = PiecList[randn];
 	newPiece->update();
-	newPiece->printNextPiece(renderer, texture);
+	//newPiece->printNextPiece(renderer, texture);
+	newPiece->printNextPiece2(renderer, blank, texture);
 
 
 	quit = false;
@@ -228,6 +235,7 @@ void Tetris::loop(Mix_Music* music)
 	double t=0;
 	score = 0;
 	int ScoreOld=score;
+	int d=0;
 
 	//BOUCLE
 	while (!quit)
@@ -239,13 +247,17 @@ void Tetris::loop(Mix_Music* music)
 		//	NouvPiece(piece, newPiece, PiecList);
 		//	cont = true;
 
+			//Mix_PlayMusic(drop, 0);
+
 			piece = newPiece;
 			piece->update();
 
 			randn = rand() % 7;
 			newPiece = PiecList[randn];
 			newPiece->update();
-			newPiece->printNextPiece(renderer, texture);
+			//newPiece->printNextPiece(renderer, texture);
+			newPiece->printNextPiece2(renderer, blank, texture);
+
 
 			cont = true;
 			if(!piece->isLegalPosition(piece, mat).NO_ERROR) {
@@ -259,20 +271,11 @@ void Tetris::loop(Mix_Music* music)
 			ghost->adjust(piece);
 			ghost->DownGhost(mat,piece,1);
 			ghost->verif(piece);
+
 			ghost->draw(renderer,blank,texture,40);
 
 		}
 
-		/*
-		 ghost->draw(renderer,blank,texture,255,1);
-		 PiecGhosts[randn]->adjust(PiecList[randn]);
-		 ghost=PiecGhosts[randn];
-		 while(ghost->isLegalPosition(ghost,mat).NO_ERROR) {
-		 ghost->down(1);
-		 }
-		 ghost->up();
-		 ghost->draw(renderer,blank,texture,20);
-		 */
 
 		SDL_Event event;
 		while (!quit && SDL_PollEvent(&event) && cont == true)
@@ -307,6 +310,7 @@ void Tetris::loop(Mix_Music* music)
 					if (piece->isLegalRight(mat).NO_ERROR){
 						piece->right();
 						piece->draw(renderer,blank,texture);
+						//Mix_PlayMusic(rotate, 0);
 
 						ghost->DownGhost(mat,piece);
 						ghost->verif(piece);
@@ -318,6 +322,7 @@ void Tetris::loop(Mix_Music* music)
 					if (piece->isLegalLeft(mat).NO_ERROR){
 						piece->left();
 						piece->draw(renderer,blank,texture);
+						//Mix_PlayMusic(rotate, 0);
 
 						ghost->DownGhost(mat,piece);
 						ghost->verif(piece);
@@ -381,7 +386,9 @@ void Tetris::loop(Mix_Music* music)
 			//this->printMatrice();
 			t=0;
 		}
-		TetrisLinesUpdate(&score);
+		d=TetrisLinesUpdate(&score);
+		//if(d==1) Mix_PlayMusic(line, 0);
+		//else if(d>1) Mix_PlayMusic(lines, 0);
 
 
 		if(score-ScoreOld>500) {
@@ -661,9 +668,6 @@ void Tetris::CopyLine(int i, int decalage, int factore) {
 	}
 
 	SDL_SetRenderTarget(renderer, texture);
-	//SDL_RenderCopy(SDL_Renderer* renderer, SDL_Texture* texture,
-		//const SDL_Rect* srcrect, const SDL_Rect* dstrect)
-		//srcrect rect dans la texture
 
 	copytext.w= factor*BLOCSX;
 	copytext.x=0 + sizeTetris.x;

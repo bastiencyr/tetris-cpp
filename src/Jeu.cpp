@@ -34,7 +34,7 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris){
 		 printf("%s", Mix_GetError());
 	 }
 	//Mix_VolumeMusic(MIX_MAX_VOLUME / 2); //Mettre le volume à la moitié
-	Mix_Music* music = Mix_LoadMUS("bin/tetris.mp3");
+	Mix_Music* music = Mix_LoadMUS("sfx/tetris.mp3");
 
 	if (music == nullptr)
 	{
@@ -43,12 +43,12 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris){
 	    SDL_Quit();
 	    return;
 	}
-	
+
 	if(Mix_PlayMusic(music, -1)==-1) {
     	printf("Mix_PlayMusic: %s\n", Mix_GetError());
 		// well, there's no music, but most games don't break without music...
 	}
-	
+
 	if(TTF_Init() == -1)
 	{
 		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
@@ -59,7 +59,7 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris){
 	tetris.init(music);
 	SDL_RenderPresent(tetris.get_renderer());
 	tetris.loop(music);
-	
+
 	Mix_FreeMusic(music); //Libération de la musique
    	Mix_CloseAudio(); //Fermeture de l'API
 	TTF_Quit();
