@@ -636,7 +636,7 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 		best_piece.dst[i].y = init_piece.dst[i].y;
 	}
 	
-	int bestScore = -1000, rotation = 0, score =0;
+	int bestScore = -10000, rotation = 0, score =0;
 	while(rotation < 5){
 		
 		for(int step =0; step< BLOCSX; step++){
@@ -664,7 +664,7 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 				
 				//on veut minimiser le score
 				//on regarde dabord si ca elimine une ligne -> meilleur cas
-				score += best_piece.nbFullLine(matTemp)*1000;
+				score += best_piece.nbFullLine(matTemp)*30;
 				
 				//on regarde mnt la hauteur occasionnée
 				for (int i=0; i<4; i++){
@@ -674,12 +674,37 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 				//on regarde le nombre de trou:
 				for (int i= 0; i< BLOCSX; i++){
 					for (int j= 0; j< BLOCSY; j++){
-						if (j+1 < BLOCSY and matTemp[i][j] and !matTemp[i][j+1])
-							score -=5;
+						if (matTemp[i][j]){
+							while(j+1 < BLOCSY and !matTemp[i][j+1]){
+								score -=6;
+								j++;
+							}
+						}
+						
 					}
 				}
 				
-				if (score > bestScore){best_piece.affiche_coord(false, true);
+				// on regarde les big wall -> très fortement pénalisant
+				
+				int vect[BLOCSX];
+				
+				for (int i=0; i<BLOCSX; i++){
+					vect[i]=0;
+					int j=0;
+					while(j<BLOCSY and !matTemp[i][j]){
+						vect[i]=BLOCSY - j;
+						j++;
+					}
+				}
+				
+				for(int i=0; i<BLOCSX-1; i++){
+					if (vect[i+1]-vect[i] >=0)
+						score-=(vect[i+1]-vect[i]+1);
+					else
+						score-=(vect[i]-vect[i+1]+1);
+				}
+
+				if (score > bestScore){
 					for (int i= 0; i<4; i++){
 						this->dst[i].x = best_piece.dst[i].x;
 						this->dst[i].y = best_piece.dst[i].y;
