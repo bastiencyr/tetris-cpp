@@ -615,21 +615,33 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 			matTemp[i][j] = mat[i][j];
 		}
 	}
+	
+	//get minimum x of a piece
+	int minX =20;
+	for (int i=0 ; i<4; i++){
+		if (this->dst[i].x < minX)
+			minX = this->dst[i].x;
+	}
 
 	Piece best_piece(locTetris);
+	Piece init_piece(locTetris);
 	
 	for (int i =0 ; i<4; i++){
-		best_piece.dst[i].x = this->dst[i].x;
-		best_piece.dst[i].y = this->dst[i].y;
+		init_piece.dst[i].x = this->dst[i].x - minX;
+		init_piece.dst[i].y = this->dst[i].y;
+		best_piece.dst[i].x = init_piece.dst[i].x;
+		best_piece.dst[i].y = init_piece.dst[i].y;
 	}
 	
 	int bestScore = -1000;
+	int step = 1;
 	
-	do{
+	
+	while (best_piece.isLegalPosition(&best_piece, matTemp).NO_ERROR){
 		int score =0;
 		//on regarde où elle va en bas
 		best_piece.holdPiece(matTemp);
-		
+		best_piece.affiche_coord(false, true);
 		
 		//on veut minimiser le score
 		//on regarde dabord si ca elimine une ligne -> meilleur cas
@@ -654,6 +666,7 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 		}
 		
 		
+		
 		// on réinitialise la matrice
 		for (int i= 0; i< BLOCSX; i++){
 			for (int j= 0; j< BLOCSY; j++){
@@ -668,9 +681,15 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 			}
 			bestScore = score;
 		}
-		best_piece.right(false);
+		//on réinitialise best_piece et on décale
+		for (int i = 0; i<4 ; i++){
+			best_piece.dst[i].x = init_piece.dst[i].x +step;
+			best_piece.dst[i].y = init_piece.dst[i].y ;
+		}
+		step +=1;
+		std::cout << "score " << score << std::endl;
 	}
-	while (best_piece.isLegalRight(matTemp).NO_ERROR);
+	std::cout << bestScore << std::endl;
 	
 	for(int i = 0; i < 4; i++)
 		mat[this->getx(i)][this->gety(i)]=true;
