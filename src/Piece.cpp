@@ -602,13 +602,13 @@ void Piece::holdPiece(bool mat[BLOCSX][BLOCSY]){
 
 void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 	
-	//on conserve les données actuelles
+	//on déplace la dest dans la source pour  draw
 	for (int i = 0; i< 4; i++){
 		this->src[i].x = this->dst[i].x  ;
 		this->src[i].y = this->dst[i].y ;
 	}
 	
-	
+	//on copie la matrice
 	bool matTemp[BLOCSX][BLOCSY];
 	for (int i= 0; i< BLOCSX; i++){
 		for (int j= 0; j< BLOCSY; j++){
@@ -622,7 +622,7 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 		if (this->dst[i].x < minX)
 			minX = this->dst[i].x;
 	}
-
+	
 	Piece best_piece(locTetris);
 	Piece init_piece(locTetris);
 	
@@ -638,56 +638,65 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 	
 	
 	while (best_piece.isLegalPosition(&best_piece, matTemp).NO_ERROR){
-		int score =0;
-		//on regarde où elle va en bas
-		best_piece.holdPiece(matTemp);
-		best_piece.affiche_coord(false, true);
-		
-		//on veut minimiser le score
-		//on regarde dabord si ca elimine une ligne -> meilleur cas
-		
-		int decalage = 0;
-		for(int i = BLOCSY-1; i>=0; i--) {
-			int compt = 0;
-			for(int j = 0; j<BLOCSX; j++) {
-				if(matTemp[j][i]) compt++;
+		int rotation = 0;
+		while(rotation < 4){
+			int score =0;
+			//on regarde où elle va en bas
+			if (best_piece.isLegalRotateRight(matTemp).NO_ERROR){
+				best_piece.rotateRight();
 			}
-			if(compt==BLOCSX) //ligne pleine
-			{
-				decalage++;
+			rotation +=1;
+			
+			best_piece.holdPiece(matTemp);
+			best_piece.affiche_coord(false, true);
+			
+			//on veut minimiser le score
+			//on regarde dabord si ca elimine une ligne -> meilleur cas
+			
+			int decalage = 0;
+			for(int i = BLOCSY-1; i>=0; i--) {
+				int compt = 0;
+				for(int j = 0; j<BLOCSX; j++) {
+					if(matTemp[j][i]) compt++;
+				}
+				if(compt==BLOCSX) //ligne pleine
+				{
+					decalage++;
+				}
 			}
+			
+			score += decalage*100;
+			
+			//on regarde mnt la hauteur minimum occasionnée
+			for (int i=0; i<4; i++){
+				score -= BLOCSY - best_piece.dst[i].y;
+			}
+			
+			
+			
+			// on réinitialise la matrice
+			for (int i= 0; i< BLOCSX; i++){
+				for (int j= 0; j< BLOCSY; j++){
+					matTemp[i][j] = mat[i][j];
+				}
+			}
+			
+			if (score > bestScore){
+				for (int i= 0; i<4; i++){
+					this->dst[i].x = best_piece.dst[i].x;
+					this->dst[i].y = best_piece.dst[i].y;
+				}
+				bestScore = score;
+			}
+			std::cout << "score " << score << std::endl;
 		}
 		
-		score += decalage*100;
-		
-		//on regarde mnt la hauteur minimum occasionnée
-		for (int i=0; i<4; i++){
-			score -= BLOCSY - best_piece.dst[i].y;
-		}
-		
-		
-		
-		// on réinitialise la matrice
-		for (int i= 0; i< BLOCSX; i++){
-			for (int j= 0; j< BLOCSY; j++){
-				matTemp[i][j] = mat[i][j];
-			}
-		}
-		
-		if (score > bestScore){
-			for (int i= 0; i<4; i++){
-				this->dst[i].x = best_piece.dst[i].x;
-				this->dst[i].y = best_piece.dst[i].y;
-			}
-			bestScore = score;
-		}
+		step +=1;
 		//on réinitialise best_piece et on décale
 		for (int i = 0; i<4 ; i++){
 			best_piece.dst[i].x = init_piece.dst[i].x +step;
 			best_piece.dst[i].y = init_piece.dst[i].y ;
 		}
-		step +=1;
-		std::cout << "score " << score << std::endl;
 	}
 	std::cout << bestScore << std::endl;
 	
