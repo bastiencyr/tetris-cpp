@@ -568,10 +568,9 @@ void Piece::DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen) {
 	}
 }
 
-void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
+void Piece::holdPiece(bool mat[BLOCSX][BLOCSY]){
+	
 	Error e;
-
-	int score_min = 0;
 
 	Piece temp(locTetris);
 	for (int i=0 ; i <4 ; i++){
@@ -598,48 +597,84 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 
 	for(int i = 0; i < 4; i++)
 		mat[this->getx(i)][this->gety(i)]=true;
+	
+}
 
-
-	Piece best_piece(locTetris);
-
-	//on veut minimiser le score
-
-	for (int i=0 ; i <4 ; i++){
-		temp.dst[i].y = this->dst[i].y;
-		temp.dst[i].x = this->dst[i].x;
+void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
+	
+	//on conserve les données actuelles
+	for (int i = 0; i< 4; i++){
+		this->src[i].x = this->dst[i].x  ;
+		this->src[i].y = this->dst[i].y ;
+	}
+	
+	
+	bool matTemp[BLOCSX][BLOCSY];
+	for (int i= 0; i< BLOCSX; i++){
+		for (int j= 0; j< BLOCSY; j++){
+			matTemp[i][j] = mat[i][j];
+		}
 	}
 
-//	while(this->isLegalPosition(&temp, mat).NO_ERROR){
-//		int score = 0;
-//		temp.right();
-//
-//		//mat_temp = temp.matRight(mat);
-//
-//		for (int y= 0 ; y < BLOCSY ; y++ ){
-//			bool is_full_line = true;
-//			for (int x=0 : x < BLOCSY ; x++){
-//				if (mat[x][y] = false)
-//					is_full_line = false;
-//			}
-//			if (is_full_line)
-//				score -= 100;
-//		}
-//
-//		int hauteur_sum =0;
-//		for (int x= 0 ; x < BLOCSX ; x++ ){
-//			for (int y=0 ; y < BLOCSY ; y++){
-//				while(mat[x][y]== false)
-//					score+=10;
-//			}
-//		}
-//		if (score < score_min){
-//			fir (int i= 0 ; i <4 ; i++){
-//				best_piece.dst[i].x = temp.dst[i].x;
-//				best_piece.dst[i].y = temp.dst[i].y;
-//			}
-//		}
-//
-//	}
+	Piece best_piece(locTetris);
+	
+	for (int i =0 ; i<4; i++){
+		best_piece.dst[i].x = this->dst[i].x;
+		best_piece.dst[i].y = this->dst[i].y;
+	}
+	
+	int bestScore = -1000;
+	
+	do{
+		int score =0;
+		//on regarde où elle va en bas
+		best_piece.holdPiece(matTemp);
+		
+		
+		//on veut minimiser le score
+		//on regarde dabord si ca elimine une ligne -> meilleur cas
+		
+		int decalage = 0;
+		for(int i = BLOCSY-1; i>=0; i--) {
+			int compt = 0;
+			for(int j = 0; j<BLOCSX; j++) {
+				if(matTemp[j][i]) compt++;
+			}
+			if(compt==BLOCSX) //ligne pleine
+			{
+				decalage++;
+			}
+		}
+		
+		score += decalage*100;
+		
+		//on regarde mnt la hauteur minimum occasionnée
+		for (int i=0; i<4; i++){
+			score -= BLOCSY - best_piece.dst[i].y;
+		}
+		
+		
+		// on réinitialise la matrice
+		for (int i= 0; i< BLOCSX; i++){
+			for (int j= 0; j< BLOCSY; j++){
+				matTemp[i][j] = mat[i][j];
+			}
+		}
+		
+		if (score > bestScore){
+			for (int i= 0; i<4; i++){
+				this->dst[i].x = best_piece.dst[i].x;
+				this->dst[i].y = best_piece.dst[i].y;
+			}
+			bestScore = score;
+		}
+		best_piece.right(false);
+	}
+	while (best_piece.isLegalRight(matTemp).NO_ERROR);
+	
+	for(int i = 0; i < 4; i++)
+		mat[this->getx(i)][this->gety(i)]=true;
+	
 
 }
 /*############################################################################
