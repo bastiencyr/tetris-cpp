@@ -33,15 +33,20 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris){
 			SDL_TEXTUREACCESS_TARGET, w, h);
 	menu = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
-
+	
 	//mat[BLOCSX][BLOCSY];
-	for(int i = 0; i < BLOCSX; i++) {
-		for(int j = 0; j < BLOCSY; j++) {
-			mat[i][j] = false;
-		}
+	for(auto &raw : mat){
+		for(auto &el : raw)
+			el = false;
 	}
-
-	std::cout << "L'état initial de la matrice est : " << std::endl;
+	
+//	std::cout << "L'état initial de la matrice est : " << std::endl;
+//	for(auto &raw : mat){
+//		for(auto &el : raw)
+//			el == true ? std::cout << "--0--" : std::cout << "--1--";
+//		std::cout << std::endl;
+//	}
+	
 	for(int j = 0; j< BLOCSY; j++) {
 		for(int i = 0; i< BLOCSX; i++) {
 			if (mat[i][j]==true)
@@ -162,7 +167,7 @@ void Tetris::ListePieceInit(Piece * Liste[7]) {
 	Liste[4] = new JTetri(sizeTetris);
 	Liste[5] = new ITetri(sizeTetris);
 	Liste[6] = new STetri(sizeTetris);
-
+	Liste[0]->initStaticMembers(sizeTetris);
 	for(int i = 0; i<7; i++)
 		Liste[i]->update();
 }
@@ -214,6 +219,7 @@ void Tetris::loop(Mix_Music* music)
 
 	Piece * PiecGhosts[7];
 	ListePieceInit(PiecGhosts);
+	
 	for(int i = 0; i<7; i++)
 		PiecGhosts[i]->adjust(PiecList[i]);
 
@@ -298,6 +304,13 @@ void Tetris::loop(Mix_Music* music)
 				/* Check the SDLKey values and move change the coords */
 				switch( event.key.keysym.sym ){
 					//si lutilisateur appuie sur la flèche droite du clavier:
+				
+				case SDLK_SPACE:
+					piece->holdPiece(mat);
+					piece->draw(renderer,blank,texture);
+					cont = false;
+					break;
+					
 				case SDLK_F1:
 					piece->cheat(mat);
 					piece->draw(renderer,blank,texture);

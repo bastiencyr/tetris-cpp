@@ -14,7 +14,7 @@
 #include "../include/Error.hpp"
 #include "../include/tetris.hpp"
 
-
+SDL_Rect Piece::locTetris;
 
 Piece::Piece(SDL_Rect sizeTetris) {
 	this->color[0]=0;
@@ -22,6 +22,8 @@ Piece::Piece(SDL_Rect sizeTetris) {
 	this->color[2]=255;
 	//au début la position de la source na pas dimportance, on peut linitialiser à
 	// des paramètres quelconque
+	
+
 	for(int i = 0; i<4; i++) {
 	    this->src[i].x=floor(BLOCSX/2);
 		this->src[i].y=i;
@@ -35,14 +37,14 @@ Piece::Piece(SDL_Rect sizeTetris) {
 		this->dst[i].w=1;
 		this->dst[i].h=1;
 	}
+}
+
+void Piece::initStaticMembers(SDL_Rect sizeTetris){
 	locTetris.w = sizeTetris.w;
 	locTetris.h = locTetris.w*2;
 	locTetris.x = sizeTetris.x;
 	locTetris.y = sizeTetris.y;
 }
-
-
-
 Piece::~Piece() {
 }
 
@@ -643,6 +645,7 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 			
 			score = 0;
 			// on réinitialise matTemp
+				
 			for (int i= 0; i< BLOCSX; i++){
 				for (int j= 0; j< BLOCSY; j++){
 					matTemp[i][j] = mat[i][j];
@@ -668,7 +671,7 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 				
 				//on regarde mnt la hauteur occasionnée
 				for (int i=0; i<4; i++){
-					score -= BLOCSY - best_piece.dst[i].y;
+					score -= BLOCSY - best_piece.dst[i].y ;
 				}
 				
 				//on regarde le nombre de trou:
