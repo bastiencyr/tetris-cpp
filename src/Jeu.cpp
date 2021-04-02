@@ -64,33 +64,38 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 }
 
 void Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
+
 	SDL_Window* pWindow = SDL_CreateWindow("Une fenetre SDL" , SDL_WINDOWPOS_CENTERED ,
 				SDL_WINDOWPOS_CENTERED , w , h , SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_SOFTWARE);
+
 	Tetris tetris(w,h, sizeTetris,renderer, true);
-	//SDL_Renderer* renderer= tetris.get_renderer();
-	SDL_Texture* menu = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
+
+	SDL_Texture* startmenu = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
 
-
+	SDL_SetRenderTarget(renderer, startmenu);
 	TTF_Font *police = TTF_OpenFont("src/Tetris.ttf", 65);
 	if(!police){
 		std::cout << TTF_GetError()<< std::endl;
 	}
 
-	SDL_SetRenderTarget(renderer, menu);
 	SDL_Color textColor = {255, 255, 255};
 	SDL_Surface * text_surface = TTF_RenderText_Blended(police,"Tetris", textColor);
 	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 
+	//on remplit le fond
 	SDL_SetRenderTarget(renderer, text_texture);
-	SDL_SetRenderDrawColor(renderer,63,63,63,255);
+	SDL_SetRenderDrawColor(renderer,17,17,52,255);
 	SDL_RenderFillRect(renderer, NULL);
-	SDL_SetRenderTarget(renderer, menu);
 
-	SDL_Rect dstrect = { sizeTetris.w/2-50, sizeTetris.h/4, 200, 40 };
-	SDL_Rect cadrect = { sizeTetris.w/2-50-25, sizeTetris.h/4, 200+50, 40};
+	//SDL_SetRenderTarget(renderer, startmenu);
+	SDL_SetRenderDrawColor(renderer,0,0,0,255);
+	SDL_Rect dstrect = { w/2-100, h/4, 200, 40 };
+	SDL_Rect cadrect = { w/2-100-25, h/4, 200+50, 40};
 
+
+	//SDL_SetRenderTarget(renderer, menu);
 	//on copie le text sur le menu
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 	SDL_SetRenderDrawColor(renderer,0,0,0,255);
@@ -100,8 +105,8 @@ void Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 
 	text_surface = TTF_RenderText_Blended(police,"Jouer", textColor);
 	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-	dstrect.y = sizeTetris.h/2;
-	cadrect.y = sizeTetris.h/2;
+	dstrect.y = h/2;
+	cadrect.y = h/2;
 	SDL_RenderFillRect(renderer, &cadrect);
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 
@@ -115,7 +120,7 @@ void Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 
 	//troisième texte
-	text_surface = TTF_RenderText_Blended(police,"Paramètres", textColor);
+	text_surface = TTF_RenderText_Blended(police,"Parametres", textColor);
 	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 	dstrect.y += 80;
 	cadrect.y += 80;
@@ -135,14 +140,16 @@ void Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 
 	//on dessine le cadre du texte
 	SDL_SetRenderDrawColor(renderer,255,255,255,255);
-	SDL_Rect cadre ={sizeTetris.w/2-50-25, sizeTetris.h/2, 250, 40};
+	SDL_Rect cadre ={w/2-100-25, h/2, 250, 40};
 	SDL_RenderDrawRect(renderer, &cadre);
 
 
 
 	//on revient sur le renderer
 	SDL_SetRenderTarget(renderer, NULL);
-	SDL_RenderCopy(renderer, menu, NULL, NULL);
+	SDL_RenderCopy(renderer, startmenu, NULL, NULL);
+	SDL_RenderDrawLine(renderer,w/2-100-25,h/4-10,w/2+125,h/4-10);
+	SDL_RenderDrawLine(renderer,w/2-100-25,h/4+50,w/2+125,h/4+50);
 
 	SDL_RenderPresent(renderer);
 
@@ -171,12 +178,11 @@ void Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 			case SDLK_DOWN:
 				choiceMenu+=1;
 				choiceMenu = choiceMenu % numberChoice ;
-
 				SDL_SetRenderDrawColor(renderer,0,0,0,255);
 				SDL_RenderDrawRect(renderer, &cadre);
 
 				SDL_SetRenderDrawColor(renderer,255,255,255,255);
-				cadre.y =sizeTetris.h/2 +80 *choiceMenu ;
+				cadre.y =h/2 +80 *choiceMenu ;
 				SDL_RenderDrawRect(renderer, &cadre);
 
 				SDL_RenderPresent(renderer);
@@ -191,7 +197,7 @@ void Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 				SDL_RenderDrawRect(renderer, &cadre);
 
 				SDL_SetRenderDrawColor(renderer,255,255,255,255);
-				cadre.y = sizeTetris.h/2 + 80*choiceMenu;
+				cadre.y = h/2 + 80*choiceMenu;
 				SDL_RenderDrawRect(renderer, &cadre);
 
 				SDL_RenderPresent(renderer);
@@ -203,7 +209,7 @@ void Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 				//lancer le jeu
 				if (choiceMenu == 0){
 					tetris.init(music, true);
-					SDL_RenderPresent(tetris.get_renderer());
+					SDL_RenderPresent(renderer);
 					tetris.loop(music);
 					quit_menu=true;
 				}
