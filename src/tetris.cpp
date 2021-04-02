@@ -168,9 +168,6 @@ void Tetris::ListePieceInit(Piece * Liste[7]) {
 	Liste[5] = new ITetri;
 	Liste[6] = new STetri;
 	
-	//TOUTES LES MEMBRES STATIQUES DE PIECES SONT INITIALIS2ES ICI
-	//A CHANGER
-	Liste[0]->initStaticMembers(sizeTetris);
 	for(int i = 0; i<7; i++)
 		Liste[i]->update();
 }
@@ -194,6 +191,8 @@ void Tetris::NouvPiece(Piece * oldp, Piece * newp, Piece * Liste[7]) {
 
 void Tetris::loop(Mix_Music* music)
 {
+	Piece::initStaticMembers(sizeTetris);
+	
 	Mix_Music* rotate = Mix_LoadMUS("sfx/SFX_PieceRotateLR.ogg");
 	Mix_Music* drop = Mix_LoadMUS("sfx/SFX_PieceSoftDrop.ogg");
 	Mix_Music* line = Mix_LoadMUS("sfx/SFX_SpecialLineClearSingle.ogg");
