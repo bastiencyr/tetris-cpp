@@ -38,7 +38,6 @@ public:
 
 	//il faudrait aussi quune pièce ait une couleur.
 public :
-    Piece(SDL_Rect locTetris);
 	Piece();
 	void initStaticMembers(SDL_Rect sizeTetris);
 

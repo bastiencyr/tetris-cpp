@@ -16,29 +16,6 @@
 
 SDL_Rect Piece::locTetris;
 
-Piece::Piece(SDL_Rect sizeTetris) {
-	this->color[0]=0;
-	this->color[1]=255;
-	this->color[2]=255;
-	//au début la position de la source na pas dimportance, on peut linitialiser à
-	// des paramètres quelconque
-	
-
-	for(int i = 0; i<4; i++) {
-	    this->src[i].x=floor(BLOCSX/2);
-		this->src[i].y=i;
-		this->src[i].w=1;
-		this->src[i].h=1;
-
-		//Le constructeur par défaut de pièce devra faire apparitre une pièce
-		//au hasard. C'est donc dst.x qui doit être choisi au hasard
-		this->dst[i].x=floor(BLOCSX/2);
-		this->dst[i].y=i;
-		this->dst[i].w=1;
-		this->dst[i].h=1;
-	}
-}
-
 Piece::Piece() {
 	this->color[0]=0;
 	this->color[1]=255;
@@ -515,7 +492,7 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 	SDL_SetRenderTarget(renderer, NULL);
 
 
-	Piece * temp = new Piece(locTetris);
+	Piece * temp = new Piece;
 	temp->adjust(this);
 	int a =  locTetris.w/(2*factor) +2;
 	int b = locTetris.h/(2*factor);
@@ -652,8 +629,8 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 			minX = this->dst[i].x;
 	}
 	
-	Piece best_piece(locTetris);
-	Piece init_piece(locTetris);
+	Piece best_piece;
+	Piece init_piece;
 	
 	for (int i =0 ; i<4; i++){
 		init_piece.dst[i].x = this->dst[i].x - minX;
