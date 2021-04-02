@@ -17,15 +17,15 @@
 #define OPAC 70
 
 
-Tetris::Tetris(int w, int h, SDL_Rect locTetris){
+Tetris::Tetris(int w, int h, SDL_Rect locTetris, SDL_Renderer* renderer){
 	this->w=w;
 	this->h=h;
 
 	timer=0;
-
-	pWindow = SDL_CreateWindow("Une fenetre SDL" , SDL_WINDOWPOS_CENTERED ,
-			SDL_WINDOWPOS_CENTERED , w , h , SDL_WINDOW_SHOWN);
-	renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_SOFTWARE);
+	this->renderer = renderer;
+//	pWindow = SDL_CreateWindow("Une fenetre SDL" , SDL_WINDOWPOS_CENTERED ,
+//			SDL_WINDOWPOS_CENTERED , w , h , SDL_WINDOW_SHOWN);
+	//renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_SOFTWARE);
 
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
@@ -33,20 +33,20 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris){
 			SDL_TEXTUREACCESS_TARGET, w, h);
 	menu = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
-	
+
 	//mat[BLOCSX][BLOCSY];
 	for(auto &raw : mat){
 		for(auto &el : raw)
 			el = false;
 	}
-	
+
 //	std::cout << "L'état initial de la matrice est : " << std::endl;
 //	for(auto &raw : mat){
 //		for(auto &el : raw)
 //			el == true ? std::cout << "--0--" : std::cout << "--1--";
 //		std::cout << std::endl;
 //	}
-	
+
 	for(int j = 0; j< BLOCSY; j++) {
 		for(int i = 0; i< BLOCSX; i++) {
 			if (mat[i][j]==true)
@@ -66,8 +66,8 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris){
 Tetris::~Tetris(){
 	SDL_DestroyTexture(blank);
 	SDL_DestroyTexture(texture);
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(pWindow);
+	//SDL_DestroyRenderer(renderer);
+	//SDL_DestroyWindow(pWindow);
 }
 
 void Tetris::init(Mix_Music* music){
@@ -167,19 +167,19 @@ void Tetris::ListePieceInit(Piece * Liste[7]) {
 	Liste[4] = new JTetri;
 	Liste[5] = new ITetri;
 	Liste[6] = new STetri;
-	
+
 	for(int i = 0; i<7; i++)
 		Liste[i]->update();
 }
 
-void Tetris::NouvPiece(Piece * oldp, Piece * newp, Piece * Liste[7]) {
+void Tetris::NouvPiece(Piece * & oldp, Piece *& newp, Piece * Liste[7]) {
 	oldp = newp;
 	oldp->update();
 
 	int randn = rand() % 7;
 	newp = Liste[randn];
 	newp->update();
-	newp->printNextPiece(renderer, texture);
+	newp->printNextPiece2(renderer, blank, texture);
 
 	if(!oldp->isLegalPosition(oldp, mat).NO_ERROR) {
 		quit=true;
@@ -192,7 +192,7 @@ void Tetris::NouvPiece(Piece * oldp, Piece * newp, Piece * Liste[7]) {
 void Tetris::loop(Mix_Music* music)
 {
 	Piece::initStaticMembers(sizeTetris);
-	
+
 	Mix_Music* rotate = Mix_LoadMUS("sfx/SFX_PieceRotateLR.ogg");
 	Mix_Music* drop = Mix_LoadMUS("sfx/SFX_PieceSoftDrop.ogg");
 	Mix_Music* line = Mix_LoadMUS("sfx/SFX_SpecialLineClearSingle.ogg");
@@ -221,7 +221,7 @@ void Tetris::loop(Mix_Music* music)
 
 	Piece * PiecGhosts[7];
 	ListePieceInit(PiecGhosts);
-	
+
 	for(int i = 0; i<7; i++)
 		PiecGhosts[i]->adjust(PiecList[i]);
 
@@ -254,29 +254,11 @@ void Tetris::loop(Mix_Music* music)
 
 
 		if(!cont) {
-		//	NouvPiece(piece, newPiece, PiecList);
-		//	cont = true;
-
-			//Mix_PlayMusic(drop, 0);
-
-			piece = newPiece;
-			piece->update();
-
-			randn = rand() % 7;
-			newPiece = PiecList[randn];
-			newPiece->update();
-			//newPiece->printNextPiece(renderer, texture);
-			newPiece->printNextPiece2(renderer, blank, texture);
-
-
+			NouvPiece(piece, newPiece, PiecList);
 			cont = true;
-			if(!piece->isLegalPosition(piece, mat).NO_ERROR) {
-				quit=true;
-				std::cout<< "Game Over" << std::endl << "Score : " << score << std::endl;
-			}
-			else{
-				piece->draw(renderer,blank,texture);
-			}
+			/*
+			//Mix_PlayMusic(drop, 0);
+			*/
 
 			ghost->adjust(piece);
 			ghost->DownGhost(mat,piece,1);
@@ -306,13 +288,13 @@ void Tetris::loop(Mix_Music* music)
 				/* Check the SDLKey values and move change the coords */
 				switch( event.key.keysym.sym ){
 					//si lutilisateur appuie sur la flèche droite du clavier:
-				
+
 				case SDLK_SPACE:
 					piece->holdPiece(mat);
 					piece->draw(renderer,blank,texture);
 					cont = false;
 					break;
-					
+
 				case SDLK_F1:
 					piece->cheat(mat);
 					piece->draw(renderer,blank,texture);
