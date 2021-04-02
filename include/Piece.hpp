@@ -39,6 +39,7 @@ public:
 	//il faudrait aussi quune pièce ait une couleur.
 public :
     Piece(SDL_Rect locTetris);
+	Piece();
 	void initStaticMembers(SDL_Rect sizeTetris);
 
     virtual ~Piece(); // destructor
@@ -162,26 +163,26 @@ public :
 
 class JTetri : public Piece {
 	public:
-		JTetri(SDL_Rect sizeTetris);
+		JTetri();
 		void update() override;
 };
 
 class LTetri : public Piece {
 	public:
-		LTetri(SDL_Rect sizeTetris);
+		LTetri();
 		void update();
 };
 
 class ITetri : public Piece {
 	public:
-		ITetri(SDL_Rect sizeTetris);
+		ITetri();
 		void update() override;
 };
 
 
 class OTetri : public Piece {
 	public:
-		OTetri(SDL_Rect sizeTetris);
+		OTetri();
 		void update();
 		void rotateRight(bool moveSource=true);
 		Error isLegalRotateRight(bool mat[BLOCSX][BLOCSY]);
@@ -190,21 +191,21 @@ class OTetri : public Piece {
 
 class TTetri : public Piece {
 	public:
-		TTetri(SDL_Rect sizeTetris);
+		TTetri();
 		void update();
 };
 
 
 class ZTetri : public Piece {
 	public:
-		ZTetri(SDL_Rect sizeTetris);
+		ZTetri();
 		void update();
 };
 
 
 class STetri : public Piece {
 	public:
-		STetri(SDL_Rect sizeTetris);
+		STetri();
 		void update();
 };
 #endif

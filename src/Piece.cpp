@@ -39,6 +39,30 @@ Piece::Piece(SDL_Rect sizeTetris) {
 	}
 }
 
+Piece::Piece() {
+	this->color[0]=0;
+	this->color[1]=255;
+	this->color[2]=255;
+	//au début la position de la source na pas dimportance, on peut linitialiser à
+	// des paramètres quelconque
+	
+
+	for(int i = 0; i<4; i++) {
+	    this->src[i].x=floor(BLOCSX/2);
+		this->src[i].y=i;
+		this->src[i].w=1;
+		this->src[i].h=1;
+
+		//Le constructeur par défaut de pièce devra faire apparitre une pièce
+		//au hasard. C'est donc dst.x qui doit être choisi au hasard
+		this->dst[i].x=floor(BLOCSX/2);
+		this->dst[i].y=i;
+		this->dst[i].w=1;
+		this->dst[i].h=1;
+	}
+}
+
+
 void Piece::initStaticMembers(SDL_Rect sizeTetris){
 	locTetris.w = sizeTetris.w;
 	locTetris.h = locTetris.w*2;
@@ -229,7 +253,7 @@ void Piece::up(bool moveSource){
  */
 void Piece::rotateLeft(bool moveSource){
 
-	Piece temp(locTetris);
+	Piece temp;
 	for(int i = 0; i<4; i++) {
 		temp.src[i].x=this->dst[i].x;
 		temp.src[i].y=this->dst[i].y;
@@ -256,7 +280,7 @@ void Piece::rotateLeft(bool moveSource){
  */
 void Piece::rotateRight(bool moveSource){
 
-	Piece temp(locTetris);
+	Piece temp;
 	for(int i = 0; i<4; i++) {
 		temp.src[i].x=this->dst[i].x;
 		temp.src[i].y=this->dst[i].y;
@@ -294,7 +318,7 @@ bool Piece::onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,
 }
 
 Error Piece::isLegalTranslate(int a, int b, bool mat[BLOCSX][BLOCSY]){
-	Piece temp(locTetris);
+	Piece temp;
 	for (int i=0; i< 4; i++){
 		temp.dst[i].x=this->dst[i].x + a;
 		temp.dst[i].y=this->dst[i].y + b;
@@ -363,7 +387,7 @@ Error Piece::isLegalUp(bool mat[BLOCSX][BLOCSY]){
  */
 Error Piece::isLegalRotateLeft(bool mat[BLOCSX][BLOCSY]){
 
-	Piece temp(locTetris);
+	Piece temp;
 
 	for(int i = 0; i<4; i++) {
 		temp.dst[i].x = this->dst[i].y - this->dst[1].y + this->dst[1].x;
@@ -379,7 +403,7 @@ Error Piece::isLegalRotateLeft(bool mat[BLOCSX][BLOCSY]){
  */
 Error Piece::isLegalRotateRight(bool mat[BLOCSX][BLOCSY]){
 
-	Piece temp(locTetris);
+	Piece temp;
 
 	for(int i = 0; i<4; i++) {
 		temp.dst[i].x = this->dst[1].y - this->dst[i].y + this->dst[1].x;
@@ -539,7 +563,7 @@ void Piece::printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture){
 }
 
 void Piece::DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen) {
-	Piece temp(locTetris);
+	Piece temp;
 	for (int i=0 ; i <4 ; i++){
 		temp.dst[i].x = ref->dst[i].x;
 		temp.dst[i].y = ref->dst[i].y;
@@ -574,7 +598,7 @@ void Piece::holdPiece(bool mat[BLOCSX][BLOCSY]){
 	
 	Error e;
 
-	Piece temp(locTetris);
+	Piece temp;
 	for (int i=0 ; i <4 ; i++){
 		temp.dst[i].x = this->dst[i].x;
 		temp.dst[i].y = this->dst[i].y;
@@ -735,7 +759,7 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
  ########################          LEFT L         #############################
  ############################################################################*/
 
-JTetri::JTetri(SDL_Rect sizeTetris) : Piece(sizeTetris){
+JTetri::JTetri() : Piece(){
 	this->color[0]=0;
 	this->color[1]=90;
 	this->color[2]=157;
@@ -767,7 +791,7 @@ void JTetri::update() {
 	this->dst[3].y=2;
 }
 
-LTetri::LTetri(SDL_Rect sizeTetris) : Piece(sizeTetris){
+LTetri::LTetri() : Piece(){
 	this->color[0]=248;
 	this->color[1]=150;
 	this->color[2]=34;
@@ -807,7 +831,7 @@ void LTetri::update(){
 
 }
 
-OTetri::OTetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
+OTetri::OTetri() : Piece() {
 	this->color[0]=253;
 	this->color[1]=225;
 	this->color[2]=0;
@@ -848,7 +872,7 @@ Error OTetri::isLegalRotateRight(bool mat[BLOCSX][BLOCSY]){
 void OTetri::rotateRight(bool moveSource){
 }
 
-ITetri::ITetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
+ITetri::ITetri() : Piece() {
 	this->color[0]=43;
 	this->color[1]=172;
 	this->color[2]=226;
@@ -881,7 +905,7 @@ void ITetri::update() {
 }
 
 
-TTetri::TTetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
+TTetri::TTetri() : Piece() {
 	this->color[0]=146;
 	this->color[1]=43;
 	this->color[2]=140;
@@ -914,7 +938,7 @@ void TTetri::update() {
 	this->dst[3].y=1;
 }
 
-ZTetri::ZTetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
+ZTetri::ZTetri() : Piece() {
 	this->color[0]=238;
 	this->color[1]=39;
 	this->color[2]=51;
@@ -947,7 +971,7 @@ void ZTetri::update() {
 }
 
 
-STetri::STetri(SDL_Rect sizeTetris) : Piece(sizeTetris) {
+STetri::STetri() : Piece() {
 	this->color[0]=78;
 	this->color[1]=183;
 	this->color[2]=72;

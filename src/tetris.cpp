@@ -160,13 +160,16 @@ void Tetris::init(Mix_Music* music){
 }
 
 void Tetris::ListePieceInit(Piece * Liste[7]) {
-	Liste[0] = new LTetri(sizeTetris);
-	Liste[1] = new OTetri(sizeTetris);
-	Liste[2] = new TTetri(sizeTetris);
-	Liste[3] = new ZTetri(sizeTetris);
-	Liste[4] = new JTetri(sizeTetris);
-	Liste[5] = new ITetri(sizeTetris);
-	Liste[6] = new STetri(sizeTetris);
+	Liste[0] = new LTetri;
+	Liste[1] = new OTetri;
+	Liste[2] = new TTetri;
+	Liste[3] = new ZTetri;
+	Liste[4] = new JTetri;
+	Liste[5] = new ITetri;
+	Liste[6] = new STetri;
+	
+	//TOUTES LES MEMBRES STATIQUES DE PIECES SONT INITIALIS2ES ICI
+	//A CHANGER
 	Liste[0]->initStaticMembers(sizeTetris);
 	for(int i = 0; i<7; i++)
 		Liste[i]->update();
@@ -211,7 +214,7 @@ void Tetris::loop(Mix_Music* music)
 	srand(time(0));
 	randn = rand() % 7;
 
-	Piece *piece = new Piece(sizeTetris);
+	Piece *piece = new Piece;
 	piece = PiecList[randn];
 	piece->draw(renderer,blank,texture);
 
@@ -223,7 +226,7 @@ void Tetris::loop(Mix_Music* music)
 	for(int i = 0; i<7; i++)
 		PiecGhosts[i]->adjust(PiecList[i]);
 
-	Piece *ghost = new Piece(sizeTetris);
+	Piece *ghost = new Piece;
 	ghost=PiecGhosts[randn];
 	ghost->adjust(piece);
 	ghost->DownGhost(mat,piece,1);
@@ -231,7 +234,7 @@ void Tetris::loop(Mix_Music* music)
 
 	//new piec
 	randn = rand() % 7;
-	Piece *newPiece = new Piece(sizeTetris);
+	Piece *newPiece = new Piece;
 	newPiece = PiecList[randn];
 	newPiece->update();
 	//newPiece->printNextPiece(renderer, texture);
@@ -357,7 +360,7 @@ void Tetris::loop(Mix_Music* music)
 
 					}
 					else if (piece->isLegalRotateRight(mat).OVER_X){
-						Piece temp(sizeTetris);
+						Piece temp;
 						for (int i=0 ; i<4 ; i++){
 							temp.dst[i].x=piece->dst[i].x;
 							temp.dst[i].y=piece->dst[i].y;
