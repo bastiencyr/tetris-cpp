@@ -149,8 +149,9 @@ public :
 	bool onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,SDL_Texture* blank,
 	SDL_Texture* texture);
 
-	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture, int alpha = 255, bool erase=false);
-	void printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture);
+	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture, 
+	int alpha = 255, bool erase=false, int shift = 0);
+	
 	void printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture);
 
 

@@ -21,7 +21,7 @@
 
 
 
-void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris){
+void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) // Initialisation de la SDL
 	{
@@ -55,8 +55,9 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris){
 		exit(EXIT_FAILURE);
 	}
 
-	Tetris tetris(w,h, sizeTetris);
-	tetris.init(music);
+	Tetris tetris(w,h, sizeTetris, true);
+	
+	tetris.init(music, true);
 	SDL_RenderPresent(tetris.get_renderer());
 	tetris.loop(music);
 
@@ -68,12 +69,12 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris){
 
 int main(int argc, char** argv)
 {
-	int h=SIZE_BLOC*BLOCSY+200;
-	int w=SIZE_BLOC*BLOCSX + 200;
+	int h=SIZE_BLOC*BLOCSY;
+	int w=SIZE_BLOC*BLOCSX + 500;
 	SDL_Rect sizeTetris;
 	sizeTetris.w=310;
-	sizeTetris.x=30;
-	sizeTetris.y=30;
+	sizeTetris.x=0;
+	sizeTetris.y=0;
 	Jeu jeu;
-	jeu.startTetris(h,w, sizeTetris);
+	jeu.startTetris(h,w, sizeTetris, true);
 }

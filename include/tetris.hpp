@@ -30,6 +30,7 @@ protected:
 	//Piece *piece;
 
 	SDL_Rect sizeTetris;
+	SDL_Rect sizeTetris2;
 	int w;
     int h;
     double timer;
@@ -37,14 +38,15 @@ protected:
 	int score;
 
 	bool mat[BLOCSX][BLOCSY];
+	bool matIA[BLOCSX][BLOCSY];
 
 //    SDL_Rect src;
 //    SDL_Rect dest;
 
 public :
-	Tetris(int w, int h, SDL_Rect sizeTetris);
+	Tetris(int w, int h, SDL_Rect sizeTetris, bool multiplayer = false);
 
-    void init(Mix_Music* music);
+    void init(Mix_Music* music, bool multiplayer = false);
 	void ListePieceInit(Piece * Liste[7]);
     void keyboard(const Uint8* keys);
 

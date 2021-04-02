@@ -17,7 +17,7 @@
 #define OPAC 70
 
 
-Tetris::Tetris(int w, int h, SDL_Rect locTetris){
+Tetris::Tetris(int w, int h, SDL_Rect locTetris, bool multiplayer){
 	this->w=w;
 	this->h=h;
 
@@ -36,6 +36,10 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris){
 	
 	//mat[BLOCSX][BLOCSY];
 	for(auto &raw : mat){
+		for(auto &el : raw)
+			el = false;
+	}
+	for(auto &raw : matIA){
 		for(auto &el : raw)
 			el = false;
 	}
@@ -61,6 +65,14 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris){
 	sizeTetris.h = sizeTetris.w*2;
 	sizeTetris.x = locTetris.x;
 	sizeTetris.y = locTetris.y;
+	
+	int sizeCase = locTetris.w/BLOCSX;
+	if (multiplayer){
+		sizeTetris2.w = locTetris.w;
+		sizeTetris2.h = sizeTetris.w*2;
+		sizeTetris2.x = locTetris.x + locTetris.w + sizeCase * 7;
+		sizeTetris2.y = locTetris.y;
+	}
 }
 
 Tetris::~Tetris(){
@@ -70,7 +82,7 @@ Tetris::~Tetris(){
 	SDL_DestroyWindow(pWindow);
 }
 
-void Tetris::init(Mix_Music* music){
+void Tetris::init(Mix_Music* music, bool multiplayer){
 
 
 
@@ -100,10 +112,7 @@ void Tetris::init(Mix_Music* music){
 	}
 	SDL_RenderClear(renderer);
 
-	// À présent, occupons nous des lignes
-	// On ne peut pas utiliser la fonction SDL_RenderDrawLines
-	// car celle-ci ne permet pas de créer des lignes indépendantes comme nous voulons le faire mais des chemins
-
+	//Les lignes
 	SDL_SetRenderDrawColor(renderer,0,0,0,255);
 	if(ACCESS) SDL_SetRenderDrawColor(renderer, 0,255,4, 100);
 	else if(PASTEL) SDL_SetRenderDrawColor(renderer,0,0,0,80);
@@ -111,7 +120,7 @@ void Tetris::init(Mix_Music* music){
 
 	// Lignes horizontales
 	ligne_depart.x = sizeTetris.x;
-	ligne_arrivee.x = sizeTetris.w + sizeTetris.x; //h
+	ligne_arrivee.x = w + sizeTetris.x; //h
 	ligne_depart.y = sizeTetris.y ;
 
 	while(ligne_depart.y<sizeTetris.h + sizeTetris.y ) //h
@@ -126,7 +135,7 @@ void Tetris::init(Mix_Music* music){
 	ligne_depart.y = sizeTetris.y ;
 	ligne_arrivee.y = sizeTetris.h + sizeTetris.y ; //h
 
-	while(ligne_depart.x<sizeTetris.w + sizeTetris.x ){ //h
+	while(ligne_depart.x< w + sizeTetris.x ){ //h
 		ligne_depart.x += size_bloc;
 		ligne_arrivee.x = ligne_depart.x;
 		SDL_RenderDrawLine(renderer,ligne_depart.x, ligne_depart.y,ligne_arrivee.x,ligne_arrivee.y);
@@ -134,9 +143,15 @@ void Tetris::init(Mix_Music* music){
 
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_RenderCopy(renderer, blank, &sizeTetris, &sizeTetris);
-
+	
+	if(multiplayer)
+		SDL_RenderCopy(renderer, blank, &sizeTetris, &sizeTetris2);
+	
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderCopy(renderer, texture, &sizeTetris, &sizeTetris);
+	
+	if(multiplayer)
+		SDL_RenderCopy(renderer, texture, &sizeTetris, &sizeTetris2);
 
 
 	//affichage du texte
@@ -157,6 +172,7 @@ void Tetris::init(Mix_Music* music){
 
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
+	
 }
 
 void Tetris::ListePieceInit(Piece * Liste[7]) {
@@ -179,7 +195,7 @@ void Tetris::NouvPiece(Piece * oldp, Piece * newp, Piece * Liste[7]) {
 	int randn = rand() % 7;
 	newp = Liste[randn];
 	newp->update();
-	newp->printNextPiece(renderer, texture);
+	//newp->printNextPiece(renderer, texture);
 
 	if(!oldp->isLegalPosition(oldp, mat).NO_ERROR) {
 		quit=true;
@@ -208,7 +224,10 @@ void Tetris::loop(Mix_Music* music)
 
 	Piece * PiecList[7];
 	ListePieceInit(PiecList);
-
+	
+	Piece * PiecListIA[7];
+	ListePieceInit(PiecListIA);
+ 
 	int randn=0;
 	srand(time(0));
 	randn = rand() % 7;
@@ -216,7 +235,6 @@ void Tetris::loop(Mix_Music* music)
 	Piece *piece = new Piece;
 	piece = PiecList[randn];
 	piece->draw(renderer,blank,texture);
-
 
 
 	Piece * PiecGhosts[7];
@@ -234,12 +252,14 @@ void Tetris::loop(Mix_Music* music)
 	//new piec
 	randn = rand() % 7;
 	Piece *newPiece = new Piece;
+	
 	newPiece = PiecList[randn];
 	newPiece->update();
-	//newPiece->printNextPiece(renderer, texture);
 	newPiece->printNextPiece2(renderer, blank, texture);
 
-
+	//pour l'ia
+	Piece *pieceIA = new Piece;
+	
 	quit = false;
 	bool cont = true;
 	double t=0;
@@ -265,7 +285,6 @@ void Tetris::loop(Mix_Music* music)
 			randn = rand() % 7;
 			newPiece = PiecList[randn];
 			newPiece->update();
-			//newPiece->printNextPiece(renderer, texture);
 			newPiece->printNextPiece2(renderer, blank, texture);
 
 
@@ -394,10 +413,18 @@ void Tetris::loop(Mix_Music* music)
 		now = SDL_GetPerformanceCounter();
 		delta_t = static_cast<double>((now - prev)/
 				static_cast<float>(SDL_GetPerformanceFrequency()));
-
+		
 		t+=delta_t;
 		if(t>=difficulte[sc]) {
-
+			
+			//debut IA
+			randn = rand() % 7;
+			pieceIA = PiecListIA[randn];
+			pieceIA->update();
+			pieceIA->cheat(matIA);
+			pieceIA->draw(renderer,blank,texture, 255, false, 17);
+			//fin IA
+			
 			cont = piece->onDown(mat, cont, renderer,
 					blank,texture);
 			//this->printMatrice();
@@ -659,9 +686,8 @@ void Tetris::FillEmpty(int i,int factore) {
 	SDL_RenderCopy(renderer, blank, &line, &line);
 	SDL_SetRenderTarget(renderer, NULL);
 
-	for(int j = 0; j<BLOCSX; j++) {
-		mat[j][i]=false;
-	}
+	for (auto &row : mat)
+		row[i]=false;
 }
 
 void Tetris::CopyLine(int i, int decalage, int factore) {

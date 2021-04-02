@@ -59,11 +59,11 @@ Piece::~Piece() {
  */
 
 void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  texture,
-		int alpha, bool erase){
+		int alpha, bool erase, int shift){
 	//pour que la transparence soit prise en compte
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
-
+	
 	int factor = locTetris.w/BLOCSX;
 
 	SDL_Rect src_r[4];
@@ -74,31 +74,31 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1], this->color[2], alpha); /* On dessine en violet */
 	for(int i = 0; i < 4; i++) {
-		src_r[i].x=this->src[i].x*factor + locTetris.x +1;
+		src_r[i].x=(this->src[i].x+shift)*factor + locTetris.x +1 ;
 		src_r[i].y=((this->src[i].y))*factor + locTetris.y+1;
 		src_r[i].w=this->src[i].w*factor;
 		src_r[i].h=this->src[i].h*factor;
 
-		dst_r[i].x=this->dst[i].x*factor + locTetris.x+1;
+		dst_r[i].x=(this->dst[i].x + shift)*factor + locTetris.x+1;
 		dst_r[i].y=((this->dst[i].y))*factor + locTetris.y+1;
 		dst_r[i].w=this->dst[i].w*factor-1;
 		dst_r[i].h=this->dst[i].h*factor-1;
 
 		if(ACCESS || CLASSIC || MILIEU) {
-			blanc[i].x=this->dst[i].x*factor + locTetris.x + 0.2*factor+1;
+			blanc[i].x=(this->dst[i].x+shift)*factor + locTetris.x + 0.2*factor+1;
 			blanc[i].y=((this->dst[i].y))*factor + locTetris.y + 0.2*factor+1;
 			blanc[i].w=this->dst[i].w*factor - 0.4*factor-1;
 			blanc[i].h=this->dst[i].h*factor - 0.4*factor-1;
 		}
 		else {
-			blanc[i].x=this->dst[i].x*factor + locTetris.x + 0.1*factor+1;
+			blanc[i].x=(this->dst[i].x+shift)*factor + locTetris.x + 0.1*factor+1;
 			blanc[i].y=((this->dst[i].y))*factor + locTetris.y + 0.1*factor+1;
 			blanc[i].w=this->dst[i].w*factor - 0.3*factor-1;;
 			blanc[i].h=this->dst[i].h*factor - 0.3*factor;-1;
 		}
 
 		if(EYES) {
-			eyes[i][0].x=this->dst[i].x*factor + locTetris.x + 0.25*factor+1;
+			eyes[i][0].x=(this->dst[i].x+shift)*factor + locTetris.x + 0.25*factor+1;
 			eyes[i][0].y=((this->dst[i].y))*factor + locTetris.y + 0.7*factor+1;
 			eyes[i][0].w=this->dst[i].w*factor*0.15-1;;
 			eyes[i][0].h=this->dst[i].h*factor*0.15-1;;
@@ -108,7 +108,6 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 			eyes[i][1].w=this->dst[i].w*factor*0.15-1;
 			eyes[i][1].h=this->dst[i].h*factor*0.15-1;
 		}
-
 
 		if(src[i].y!=-1) SDL_RenderCopy(renderer, blank, &src_r[i], &src_r[i]);
 	}
@@ -492,41 +491,6 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 }
 
 
-void Piece::printNextPiece(SDL_Renderer* renderer, SDL_Texture* texture){
-
-
-	int factor = locTetris.w/BLOCSX;
-	SDL_Rect temp;
-
-	SDL_SetRenderTarget(renderer, texture);
-
-	//dessiner le contour
-	SDL_SetRenderDrawColor(renderer, 0,0,0, 255);
-	temp.x = locTetris.w +locTetris.x ;
-	temp.y = locTetris.h / 2 - factor + locTetris.y;
-	temp.h = 5*factor;
-	temp.w = 4*factor;
-	SDL_RenderFillRect(renderer,&temp);
-
-	SDL_SetRenderDrawColor(renderer, 255,255,255, 255);
-	SDL_RenderDrawRect(renderer,&temp);
-
-	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1] , this->color[2], 255);
-	for (int i=0; i<4; i++){
-		temp.x = this->dst[i].x * factor + locTetris.w / 2 + factor + locTetris.x;
-		std::cout << "x" << i << ": " << temp.x << std::endl;
-		temp.y = this->dst[i].y * factor + locTetris.h / 2 + locTetris.y;
-		std::cout << "y" << i << ": " << temp.y << std::endl;
-
-		temp.h = factor * 0.8;
-		temp.w = factor * 0.8 ;
-		SDL_RenderFillRect(renderer,&temp);
-	}
-	SDL_SetRenderTarget(renderer, NULL);
-	SDL_RenderCopy(renderer, texture, NULL, NULL);
-	SDL_RenderPresent(renderer);
-}
-
 void Piece::DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen) {
 	Piece temp;
 	for (int i=0 ; i <4 ; i++){
@@ -599,7 +563,7 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 	bool matTemp[BLOCSX][BLOCSY];
 	
 	//get minimum x of a piece
-	int minX =20;
+	int minX =40;
 	for (int i=0 ; i<4; i++){
 		if (this->dst[i].x < minX)
 			minX = this->dst[i].x;
