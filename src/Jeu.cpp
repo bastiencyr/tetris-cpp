@@ -54,8 +54,9 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
 		exit(EXIT_FAILURE);
 	}
-
-	Jeu::MenuLancement(h,w,music, sizeTetris);
+	bool quitgame = false;
+	while(!quitgame)
+		quitgame = Jeu::MenuLancement(h,w,music, sizeTetris);
 
 //	Mix_FreeMusic(music); //Libération de la musique
    	Mix_CloseAudio(); //Fermeture de l'API
@@ -63,9 +64,9 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 	SDL_Quit();
 }
 
-void Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
+bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 
-	SDL_Window* pWindow = SDL_CreateWindow("Une fenetre SDL" , SDL_WINDOWPOS_CENTERED ,
+	SDL_Window* pWindow = SDL_CreateWindow("TETRIS" , SDL_WINDOWPOS_CENTERED ,
 				SDL_WINDOWPOS_CENTERED , w , h , SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_SOFTWARE);
 
@@ -75,13 +76,18 @@ void Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 			SDL_TEXTUREACCESS_TARGET, w, h);
 
 	SDL_SetRenderTarget(renderer, startmenu);
-	TTF_Font *police = TTF_OpenFont("src/Tetris.ttf", 65);
+	TTF_Font * policetetris = TTF_OpenFont("src/Tetris.ttf", 65);
+	if(!policetetris){
+		std::cout << TTF_GetError()<< std::endl;
+	}
+
+	TTF_Font * police = TTF_OpenFont("src/RetroGaming.ttf", 65);
 	if(!police){
 		std::cout << TTF_GetError()<< std::endl;
 	}
 
 	SDL_Color textColor = {255, 255, 255};
-	SDL_Surface * text_surface = TTF_RenderText_Blended(police,"Tetris", textColor);
+	SDL_Surface * text_surface = TTF_RenderText_Blended(policetetris,"Tetris", textColor);
 	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 
 	//on remplit le fond
@@ -233,6 +239,7 @@ void Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 	}
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(pWindow);
+	return tetris.getquit();
 }
 
 int main(int argc, char** argv)

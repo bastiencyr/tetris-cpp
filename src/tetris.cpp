@@ -23,6 +23,7 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris, SDL_Renderer* renderer, bool mu
 
 	timer=0;
 	this->renderer = renderer;
+	quitgame = true;
 //	pWindow = SDL_CreateWindow("Une fenetre SDL" , SDL_WINDOWPOS_CENTERED ,
 //			SDL_WINDOWPOS_CENTERED , w , h , SDL_WINDOW_SHOWN);
 	//renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_SOFTWARE);
@@ -39,12 +40,12 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris, SDL_Renderer* renderer, bool mu
 		for(auto &el : raw)
 			el = false;
 	}
-	
+
 	for(auto &raw : matIA){
 		for(auto &el : raw)
 			el = false;
 	}
-	
+
 //	std::cout << "L'état initial de la matrice est : " << std::endl;
 //	for(auto &raw : mat){
 //		for(auto &el : raw)
@@ -66,7 +67,7 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris, SDL_Renderer* renderer, bool mu
 	sizeTetris.h = sizeTetris.w*2;
 	sizeTetris.x = locTetris.x;
 	sizeTetris.y = locTetris.y;
-	
+
 	int sizeCase = locTetris.w/BLOCSX;
 	if (multiplayer){
 		sizeTetris2.w = locTetris.w;
@@ -144,13 +145,13 @@ void Tetris::init(Mix_Music* music, bool multiplayer){
 
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_RenderCopy(renderer, blank, &sizeTetris, &sizeTetris);
-	
+
 	if(multiplayer)
 		SDL_RenderCopy(renderer, blank, &sizeTetris, &sizeTetris2);
-	
+
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderCopy(renderer, texture, &sizeTetris, &sizeTetris);
-	
+
 	if(multiplayer)
 		SDL_RenderCopy(renderer, texture, &sizeTetris, &sizeTetris2);
 
@@ -173,7 +174,7 @@ void Tetris::init(Mix_Music* music, bool multiplayer){
 
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
-	
+
 }
 
 void Tetris::ListePieceInit(Piece * Liste[7]) {
@@ -206,7 +207,7 @@ void Tetris::NouvPiece(Piece * & oldp, Piece *& newp, Piece * Liste[7]) {
 		oldp->draw(renderer,blank,texture);
 }
 
-void Tetris::loop(Mix_Music* music)
+bool Tetris::loop(Mix_Music* music)
 {
 	Piece::initStaticMembers(sizeTetris);
 
@@ -225,10 +226,10 @@ void Tetris::loop(Mix_Music* music)
 
 	Piece * PiecList[7];
 	ListePieceInit(PiecList);
-	
+
 	Piece * PiecListIA[7];
 	ListePieceInit(PiecListIA);
- 
+
 	int randn=0;
 	srand(time(0));
 	randn = rand() % 7;
@@ -253,14 +254,14 @@ void Tetris::loop(Mix_Music* music)
 	//new piec
 	randn = rand() % 7;
 	Piece *newPiece = new Piece;
-	
+
 	newPiece = PiecList[randn];
 	newPiece->update();
 	newPiece->printNextPiece2(renderer, blank, texture);
 
 	//pour l'ia
 	Piece *pieceIA = new Piece;
-	
+
 	quit = false;
 	bool cont = true;
 	double t=0;
@@ -398,10 +399,10 @@ void Tetris::loop(Mix_Music* music)
 		now = SDL_GetPerformanceCounter();
 		delta_t = static_cast<double>((now - prev)/
 				static_cast<float>(SDL_GetPerformanceFrequency()));
-		
+
 		t+=delta_t;
 		if(t>=difficulte[sc]) {
-			
+
 			//debut IA
 			randn = rand() % 7;
 			pieceIA = PiecListIA[randn];
@@ -409,7 +410,7 @@ void Tetris::loop(Mix_Music* music)
 			pieceIA->cheat(matIA);
 			pieceIA->draw(renderer,blank,texture, 255, false, 17);
 			//fin IA
-			
+
 			cont = piece->onDown(mat, cont, renderer,
 					blank,texture);
 			//this->printMatrice();
@@ -431,8 +432,8 @@ void Tetris::loop(Mix_Music* music)
 		}
 
 		SDL_RenderPresent(renderer);
-
 	}
+	return quitgame;
 }
 
 bool Tetris::printMenu(){
@@ -591,9 +592,10 @@ bool Tetris::printMenu(){
 					quit = false;
 				}
 
-				else if (choiceMenu == 3){
+				else if (choiceMenu == 3 || choiceMenu == 2){
 					quit_menu = true;
 					quit = true;
+					if(choiceMenu == 2) this->quitgame = false;
 				}
 				break;
 

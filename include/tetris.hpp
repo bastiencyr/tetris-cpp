@@ -35,7 +35,9 @@ protected:
     int h;
     double timer;
 	bool quit;
+	bool quitgame;
 	int score;
+
 
 	bool mat[BLOCSX][BLOCSY];
 	bool matIA[BLOCSX][BLOCSY];
@@ -50,7 +52,7 @@ public :
 	void ListePieceInit(Piece * Liste[7]);
     void keyboard(const Uint8* keys);
 
-    void loop(Mix_Music* music);
+    bool loop(Mix_Music* music);
 	void NouvPiece(Piece *& oldp, Piece *& newp, Piece * Liste[7]);
 
 	void printMatrice();
@@ -60,6 +62,7 @@ public :
 	void CopyLine(int i, int decalage, int factor);
 	bool printMenu();
 
+	bool getquit() {return quitgame;};
 	SDL_Renderer* get_renderer() {return renderer;};
 	SDL_Window* get_pWindow() {return pWindow;};
 	SDL_Texture* get_menu() {return menu;};

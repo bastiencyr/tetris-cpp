@@ -10,7 +10,7 @@ class Jeu
 {
 public:
 	void startTetris(int h, int w, SDL_Rect sizeTetris, bool multiplayer = false);
-	void MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris);
+	bool MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris);
 
 private:
 
