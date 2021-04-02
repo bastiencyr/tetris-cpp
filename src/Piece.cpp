@@ -22,7 +22,7 @@ Piece::Piece() {
 	this->color[2]=255;
 	//au début la position de la source na pas dimportance, on peut linitialiser à
 	// des paramètres quelconque
-	
+
 
 	for(int i = 0; i<4; i++) {
 	    this->src[i].x=floor(BLOCSX/2);
@@ -188,7 +188,7 @@ void Piece::mvDstToSrc(Piece &pieceDst){
 bool Piece::translate(int a, int b, bool moveSource){
 	if (moveSource)
 		this->mvDstToSrc(*this);
-		
+
 	for(int i = 0; i < 4; i++) {
 		this->dst[i].x+=a;
 		this->dst[i].y+=b;
@@ -233,10 +233,10 @@ void Piece::rotateLeft(bool moveSource){
 
 	Piece temp;
 	temp.mvDstToSrc(*this);
-	
+
 	if(moveSource)
 		this->mvDstToSrc(*this);
-		
+
 	//ATTENTION, il faut bien séparer les deux boucles !!
 	for(int i = 0; i<4; i++) {
 		this->dst[i].x = temp.src[i].y - temp.src[1].y + temp.src[1].x;
@@ -253,7 +253,7 @@ void Piece::rotateRight(bool moveSource){
 
 	Piece temp;
 	temp.mvDstToSrc(*this);
-	
+
 	if(moveSource)
 		this->mvDstToSrc(*this);
 
@@ -473,7 +473,8 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 	tour.w = 5*factor;
 	SDL_RenderFillRect(renderer,&tour);
 
-	SDL_SetRenderDrawColor(renderer, 255,255,255, 255);
+	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1], this->color[2], 255);
+	//SDL_SetRenderDrawColor(renderer, 255,255,255, 255);
 	SDL_RenderDrawRect(renderer,&tour);
 
 	SDL_SetRenderTarget(renderer, NULL);
@@ -503,7 +504,7 @@ void Piece::DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen) {
 	while (temp.isLegalDown(mat).NO_ERROR)
 		for (int i=0 ; i <4 ; i++)
 			temp.dst[i].y ++;
-	
+
 	for (int i=0 ; i <4 ; i++){
 			this->src[i].y = this->dst[i].y;
 			this->src[i].x = this->dst[i].x;
@@ -515,7 +516,7 @@ void Piece::DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen) {
 }
 
 void Piece::holdPiece(bool mat[BLOCSX][BLOCSY]){
-	
+
 	Error e;
 
 	Piece temp;
@@ -537,7 +538,7 @@ void Piece::holdPiece(bool mat[BLOCSX][BLOCSY]){
 
 	for(int i = 0; i < 4; i++)
 		mat[this->getx(i)][this->gety(i)]=true;
-	
+
 }
 
 int Piece::nbFullLine(bool mat[BLOCSX][BLOCSY]){
@@ -551,70 +552,70 @@ int Piece::nbFullLine(bool mat[BLOCSX][BLOCSY]){
 		{
 			decalage++;
 		}
-	}	
+	}
 	return decalage;
 }
 
 void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
-	
+
 	//on déplace la dest dans la source pour  draw
 	this->mvDstToSrc(*this);
-	
+
 	bool matTemp[BLOCSX][BLOCSY];
-	
+
 	//get minimum x of a piece
 	int minX =40;
 	for (int i=0 ; i<4; i++){
 		if (this->dst[i].x < minX)
 			minX = this->dst[i].x;
 	}
-	
+
 	Piece best_piece;
 	Piece init_piece;
-	
+
 	for (int i =0 ; i<4; i++){
 		init_piece.dst[i].x = this->dst[i].x - minX;
 		init_piece.dst[i].y = this->dst[i].y;
 		best_piece.dst[i].x = init_piece.dst[i].x;
 		best_piece.dst[i].y = init_piece.dst[i].y;
 	}
-	
+
 	int bestScore = -10000, rotation = 0, score =0;
 	while(rotation < 5){
-		
+
 		for(int step =0; step< BLOCSX; step++){
-			
+
 			score = 0;
 			// on réinitialise matTemp
-				
+
 			for (int i= 0; i< BLOCSX; i++){
 				for (int j= 0; j< BLOCSY; j++){
 					matTemp[i][j] = mat[i][j];
 				}
 			}
 			score = 0;
-			
+
 			//on décale best_piece
 			for (int i = 0; i<4 ; i++){
 				best_piece.dst[i].x = init_piece.dst[i].x +step;
 				best_piece.dst[i].y = init_piece.dst[i].y +2 ;
 			}
 			//best_piece.affiche_coord(false, true);
-			
+
 			//on vérifie que la position est légale avant dutiliser holsPiece
 			if (best_piece.isLegalPosition(&best_piece, matTemp).NO_ERROR){
 				// on descend la pièce
 				best_piece.holdPiece(matTemp);
-				
+
 				//on veut minimiser le score
 				//on regarde dabord si ca elimine une ligne -> meilleur cas
 				score += best_piece.nbFullLine(matTemp)*30;
-				
+
 				//on regarde mnt la hauteur occasionnée
 				for (int i=0; i<4; i++){
 					score -= BLOCSY - best_piece.dst[i].y ;
 				}
-				
+
 				//on regarde le nombre de trou:
 				for (int i= 0; i< BLOCSX; i++){
 					for (int j= 0; j< BLOCSY; j++){
@@ -624,14 +625,14 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 								j++;
 							}
 						}
-						
+
 					}
 				}
-				
+
 				// on regarde les big wall -> très fortement pénalisant
-				
+
 				int vect[BLOCSX];
-				
+
 				for (int i=0; i<BLOCSX; i++){
 					vect[i]=0;
 					int j=0;
@@ -640,7 +641,7 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 						j++;
 					}
 				}
-				
+
 				for(int i=0; i<BLOCSX-1; i++){
 					if (vect[i+1]-vect[i] >=0)
 						score-=(vect[i+1]-vect[i]+1);
@@ -656,19 +657,19 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 					bestScore = score;
 					//std::cout << "best" << bestScore << std::endl;
 //					best_piece.affiche_coord(false, true);
-					
+
 				}
 			}
 		}
 		init_piece.rotateRight();
 		rotation++;
-		
+
 	}
-	
+
 	//on update la matrice de this avec les coorconnées de best piece
 	for(int i = 0; i < 4; i++)
 		mat[this->getx(i)][this->gety(i)]=true;
-	
+
 	std::cout << "END" <<std::endl;
 
 }

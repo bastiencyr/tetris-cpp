@@ -44,14 +44,14 @@ protected:
 //    SDL_Rect dest;
 
 public :
-	Tetris(int w, int h, SDL_Rect sizeTetris, bool multiplayer = false);
+	Tetris(int w, int h, SDL_Rect sizeTetris, SDL_Renderer *renderer, bool multiplayer = false);
 
     void init(Mix_Music* music, bool multiplayer = false);
 	void ListePieceInit(Piece * Liste[7]);
     void keyboard(const Uint8* keys);
 
     void loop(Mix_Music* music);
-	void NouvPiece(Piece * oldp, Piece * newp, Piece * Liste[7]);
+	void NouvPiece(Piece *& oldp, Piece *& newp, Piece * Liste[7]);
 
 	void printMatrice();
 
@@ -62,6 +62,7 @@ public :
 
 	SDL_Renderer* get_renderer() {return renderer;};
 	SDL_Window* get_pWindow() {return pWindow;};
+	SDL_Texture* get_menu() {return menu;};
 
     ~Tetris(); // destructor
 
