@@ -39,7 +39,7 @@ public:
 	//il faudrait aussi quune pièce ait une couleur.
 public :
 	Piece();
-	void initStaticMembers(SDL_Rect sizeTetris);
+	static void initStaticMembers(SDL_Rect sizeTetris);
 
     virtual ~Piece(); // destructor
 
@@ -48,6 +48,8 @@ public :
 	void verif(Piece * ref);
 	void DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen=false);
 
+	void mvDstToSrc(Piece &pieceDst);
+	
 	int getx(int i);
 	int gety(int i);
 

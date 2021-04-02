@@ -179,15 +179,17 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 	SDL_RenderPresent(renderer);
 
 }
+void Piece::mvDstToSrc(Piece &pieceDst){
+	for(int i = 0; i < 4; i++) {
+		this->src[i].x=pieceDst.dst[i].x;
+		this->src[i].y=pieceDst.dst[i].y;
+	}
+}
 
 bool Piece::translate(int a, int b, bool moveSource){
-	if (moveSource){
-		for(int i = 0; i < 4; i++) {
-			this->src[i].x=this->dst[i].x;
-			this->src[i].y=this->dst[i].y;
-		}
-
-	}
+	if (moveSource)
+		this->mvDstToSrc(*this);
+		
 	for(int i = 0; i < 4; i++) {
 		this->dst[i].x+=a;
 		this->dst[i].y+=b;
@@ -231,18 +233,11 @@ void Piece::up(bool moveSource){
 void Piece::rotateLeft(bool moveSource){
 
 	Piece temp;
-	for(int i = 0; i<4; i++) {
-		temp.src[i].x=this->dst[i].x;
-		temp.src[i].y=this->dst[i].y;
-	}
-
-	if(moveSource){
-		for(int i = 0; i<4; i++) {
-			this->src[i].x=this->dst[i].x;
-			this->src[i].y=this->dst[i].y;
-		}
-	}
-
+	temp.mvDstToSrc(*this);
+	
+	if(moveSource)
+		this->mvDstToSrc(*this);
+		
 	//ATTENTION, il faut bien séparer les deux boucles !!
 	for(int i = 0; i<4; i++) {
 		this->dst[i].x = temp.src[i].y - temp.src[1].y + temp.src[1].x;
@@ -258,17 +253,10 @@ void Piece::rotateLeft(bool moveSource){
 void Piece::rotateRight(bool moveSource){
 
 	Piece temp;
-	for(int i = 0; i<4; i++) {
-		temp.src[i].x=this->dst[i].x;
-		temp.src[i].y=this->dst[i].y;
-	}
-
-	if(moveSource){
-		for(int i = 0; i<4; i++) {
-			this->src[i].x=this->dst[i].x;
-			this->src[i].y=this->dst[i].y;
-		}
-	}
+	temp.mvDstToSrc(*this);
+	
+	if(moveSource)
+		this->mvDstToSrc(*this);
 
 	//ATTENTION, il faut bien séparer les deux boucles !!
 	for(int i = 0; i<4; i++) {
@@ -548,16 +536,10 @@ void Piece::DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen) {
 	//	temp.src[i].y = ref->dst[i].y;
 	}
 
-	while (this->isLegalPosition(&temp, mat).NO_ERROR){
-		for (int i=0 ; i <4 ; i++){
-			temp.dst[i].y += 1;
-		}
-	}
-
-	for (int i=0 ; i <4 ; i++){
-		temp.dst[i].y -= 1;
-	}
-
+	while (temp.isLegalDown(mat).NO_ERROR)
+		for (int i=0 ; i <4 ; i++)
+			temp.dst[i].y ++;
+	
 	for (int i=0 ; i <4 ; i++){
 			this->src[i].y = this->dst[i].y;
 			this->src[i].x = this->dst[i].x;
@@ -565,10 +547,7 @@ void Piece::DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen) {
 			this->dst[i].y = temp.dst[i].y;
 	}
 	if(gen)
-		for (int i=0 ; i <4 ; i++){
-			this->src[i].y = this->dst[i].y;
-			this->src[i].x = this->dst[i].x;
-	}
+		this->mvDstToSrc(*this);
 }
 
 void Piece::holdPiece(bool mat[BLOCSX][BLOCSY]){
@@ -615,10 +594,7 @@ int Piece::nbFullLine(bool mat[BLOCSX][BLOCSY]){
 void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 	
 	//on déplace la dest dans la source pour  draw
-	for (int i = 0; i< 4; i++){
-		this->src[i].x = this->dst[i].x  ;
-		this->src[i].y = this->dst[i].y ;
-	}
+	this->mvDstToSrc(*this);
 	
 	bool matTemp[BLOCSX][BLOCSY];
 	
