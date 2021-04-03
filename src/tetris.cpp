@@ -267,7 +267,7 @@ bool Tetris::loop(Mix_Music* music)
 	double t=0;
 	score = 0;
 	int ScoreOld=score;
-	int d=0;
+	int d=0, dia = 0;
 
 	//BOUCLE
 	while (!quit)
@@ -417,6 +417,7 @@ bool Tetris::loop(Mix_Music* music)
 			t=0;
 		}
 		d=TetrisLinesUpdate(&score);
+		dia = TetrisLinesUpdate(&dia, true);
 		//if(d==1) Mix_PlayMusic(line, 0);
 		//else if(d>1) Mix_PlayMusic(lines, 0);
 
@@ -617,24 +618,35 @@ bool Tetris::printMenu(){
 
 }
 
-int Tetris::TetrisLinesUpdate(int *score) {
+int Tetris::TetrisLinesUpdate(int *score, bool player2) {
 
 	int decalage = 0;
 	for(int i = BLOCSY-1; i>=0; i--) {
+
 		int compt = 0;
 		for(int j = 0; j<BLOCSX; j++) {
-			if(mat[j][i]) compt++;
+			if(player2 and matIA[j][i]) compt++;
+			if(!player2 and mat[j][i]) compt++;
 		}
 		if(compt==BLOCSX) //ligne pleine
 		{
 			decalage++;
-			FillEmpty(i,SIZE_BLOC);
+			if (player2)
+				FillEmpty(i,SIZE_BLOC, player2);
+			else 
+				FillEmpty(i,SIZE_BLOC);
 		}
-
+		
 		else if(compt < BLOCSX && compt != 0 && decalage!=0)
 		{
-			CopyLine(i, decalage, SIZE_BLOC);
-			FillEmpty(i,SIZE_BLOC);
+			if (player2){
+				CopyLine(i, decalage, SIZE_BLOC, player2);
+				FillEmpty(i,SIZE_BLOC, player2);
+			}
+			else {
+				CopyLine(i, decalage, SIZE_BLOC, player2);
+				FillEmpty(i,SIZE_BLOC, player2);
+			}
 		}
 		//else
 		//	break;
@@ -662,22 +674,31 @@ int Tetris::TetrisLinesUpdate(int *score) {
 	return decalage;
 }
 
-void Tetris::FillEmpty(int i,int factore) {
+void Tetris::FillEmpty(int i,int factore, bool player2) {
 	int factor = sizeTetris.w/BLOCSX;
 	SDL_Rect line;
 	line.x= 0 + sizeTetris.x;
+	if (player2)
+		line.x= 0 + sizeTetris2.x;
+	
 	line.y= i*factor+ sizeTetris.y;
 	line.h= 1*factor;
 	line.w= BLOCSX*factor;
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_RenderCopy(renderer, blank, &line, &line);
 	SDL_SetRenderTarget(renderer, NULL);
-
-	for (auto &row : mat)
-		row[i]=false;
+	
+	if (player2){
+		for (auto &row : matIA)
+			row[i]=false;
+	}
+	else {
+		for (auto &row : mat)
+			row[i]=false;
+	}
 }
 
-void Tetris::CopyLine(int i, int decalage, int factore) {
+void Tetris::CopyLine(int i, int decalage, int factore, bool player2) {
 	int factor = sizeTetris.w/BLOCSX;
 	SDL_Texture* temp = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, this->w, this->h);
@@ -692,18 +713,28 @@ void Tetris::CopyLine(int i, int decalage, int factore) {
 	copyline.w= factor*BLOCSX;
 	copyline.y= (i+decalage)*factor+ sizeTetris.y;
 	copyline.x= 0 + sizeTetris.x;
+	if (player2)
+		copyline.x= 0 + sizeTetris2.x;
 
 	copytext.h= factor;
 	copytext.w= factor;
 	copytext.y= i*factor+ sizeTetris.y;
 	copytext.x= 0 + sizeTetris.x;
+	if (player2)
+		copytext.x= 0 + sizeTetris2.x;
 
 	for(int j = 0; j < BLOCSX; j++) {
-		if(mat[j][i]) {
+		if(!player2 and mat[j][i]) {
 			copytext.x=j*factor + sizeTetris.x;
 			SDL_RenderCopy(renderer, texture, &copytext, &copytext);
 			mat[j][i+decalage]=mat[j][i];
 			mat[j][i]=0;
+		}
+		if(player2 and matIA[j][i]) {
+			copytext.x=j*factor + sizeTetris2.x;
+			SDL_RenderCopy(renderer, texture, &copytext, &copytext);
+			matIA[j][i+decalage]=matIA[j][i];
+			matIA[j][i]=0;
 		}
 	}
 
@@ -711,6 +742,9 @@ void Tetris::CopyLine(int i, int decalage, int factore) {
 
 	copytext.w= factor*BLOCSX;
 	copytext.x=0 + sizeTetris.x;
+	if (player2)
+		copytext.x=0 + sizeTetris2.x;
+	
 	SDL_RenderCopy(renderer, temp, &copytext, &copyline);
 
 	SDL_SetRenderTarget(renderer, NULL);
