@@ -57,9 +57,9 @@ public :
 
 	void printMatrice();
 
-	int TetrisLinesUpdate(int* score);
-	void FillEmpty(int i, int factor);
-	void CopyLine(int i, int decalage, int factor);
+	int TetrisLinesUpdate(int* score, bool player2 = false);
+	void FillEmpty(int i, int factor, bool player2 = false);
+	void CopyLine(int i, int decalage, int factor, bool player2 = false);
 	bool printMenu();
 
 	bool getquit() {return quitgame;};
