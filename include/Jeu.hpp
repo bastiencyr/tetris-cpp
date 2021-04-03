@@ -14,6 +14,7 @@ public:
 	void parametresmain(SDL_Renderer* renderer, Tetris tetris, TTF_Font * P1, TTF_Font * P2);
 	void parametresaudio(SDL_Renderer* renderer, Tetris tetris, TTF_Font * P1, TTF_Font * P2);
 private:
+	Mix_Music* music;
 
 };
 

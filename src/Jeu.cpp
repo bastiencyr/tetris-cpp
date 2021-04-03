@@ -34,7 +34,7 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 		 printf("%s", Mix_GetError());
 	 }
 	//Mix_VolumeMusic(MIX_MAX_VOLUME / 2); //Mettre le volume à la moitié
-	Mix_Music* music = Mix_LoadMUS("sfx/tetris.mp3");
+	this->music = Mix_LoadMUS("sfx/tetris.mp3");
 
 	if (music == nullptr)
 	{
@@ -43,6 +43,8 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 	    SDL_Quit();
 	    return;
 	}
+
+	Mix_VolumeMusic(MIX_MAX_VOLUME/2);
 
 	if(Mix_PlayMusic(music, -1)==-1) {
     	printf("Mix_PlayMusic: %s\n", Mix_GetError());
@@ -57,7 +59,6 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 	bool quitgame = false;
 	while(!quitgame)
 		quitgame = Jeu::MenuLancement(h,w,music, sizeTetris);
-
 //	Mix_FreeMusic(music); //Libération de la musique
    	Mix_CloseAudio(); //Fermeture de l'API
 	TTF_Quit();
@@ -71,6 +72,7 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 	SDL_Renderer* renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_SOFTWARE);
 
 	Tetris tetris(w,h, sizeTetris,renderer, true);
+	Mix_Volume(-1,tetris.getvolume());
 
 	SDL_Texture* startmenu = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
@@ -221,6 +223,8 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 
 				else if (choiceMenu == 2){
 					parametresmain(renderer, tetris, policetetris,police);
+					SDL_RenderCopy(renderer, startmenu, NULL, NULL);
+					SDL_RenderPresent(renderer);
 				}
 
 				else if (choiceMenu == 3){
@@ -385,6 +389,8 @@ void Jeu::parametresmain(SDL_Renderer* renderer, Tetris tetris, TTF_Font * P1, T
 				//lancer le jeu
 				if (choiceMenu == 0){
 					parametresaudio(renderer, tetris, P1,P2);
+					SDL_RenderCopy(renderer, startmenu, NULL, NULL);
+					SDL_RenderPresent(renderer);
 				}
 
 
@@ -450,7 +456,7 @@ void Jeu::parametresaudio(SDL_Renderer* renderer, Tetris tetris, TTF_Font * P1, 
 	cadrect.y += 50;
 	cadrect.h = 10;
 	SDL_RenderFillRect(renderer, &cadrect);
-	cadrect.w = cadrect.w/2;
+	cadrect.w = (tetris.getvolume()*250)/MIX_MAX_VOLUME;
 	cadrect.h = 10;
 	SDL_SetRenderDrawColor(renderer,100,100,100,255);
 	SDL_RenderFillRect(renderer, &cadrect);
@@ -514,10 +520,12 @@ void Jeu::parametresaudio(SDL_Renderer* renderer, Tetris tetris, TTF_Font * P1, 
 				if(choiceMenu == 0)  {
 					cadre.x = w/2-100-25;
 					cadre.y =h/2+50;
-					cadre.w = 125;}
+					//cadre.w = 250;
+					cadre.h = 10;}
 				else {
 					cadre.y =7*h/8 ;
 					cadre.x = 3*w/4-45;
+					cadre.h=40;
 				}
 				SDL_SetRenderDrawColor(renderer,255,255,255,255);
 				SDL_RenderDrawRect(renderer, &cadre);
@@ -534,28 +542,50 @@ void Jeu::parametresaudio(SDL_Renderer* renderer, Tetris tetris, TTF_Font * P1, 
 				SDL_RenderDrawRect(renderer, &cadre);
 
 				SDL_SetRenderDrawColor(renderer,255,255,255,255);
-				if(choiceMenu < 2)  {
+				if(choiceMenu == 0)  {
 					cadre.x = w/2-100-25;
-					cadre.y =h/2 +80 *choiceMenu ;}
+					cadre.y =h/2+50;
+					//cadre.w = 250;
+					cadre.h = 10;}
 				else {
 					cadre.y =7*h/8 ;
 					cadre.x = 3*w/4-45;
+					cadre.h=40;
 				}
 				SDL_RenderDrawRect(renderer, &cadre);
 
 				SDL_RenderPresent(renderer);
 				break;
 
+			case SDLK_LEFT:
+				if(choiceMenu==0) {
+					Mix_VolumeMusic(tetris.downvolume());
+					SDL_SetRenderDrawColor(renderer,0,0,0,255);
+					cadrect = { w/2-100-25, h/2+50, 200+50, 10};
+					SDL_RenderFillRect(renderer, &cadrect);
+					cadrect.w = (tetris.getvolume()*250)/MIX_MAX_VOLUME;
+					SDL_SetRenderDrawColor(renderer,100,100,100,255);
+					SDL_RenderFillRect(renderer, &cadrect);
+					SDL_RenderPresent(renderer);
+				}
+				break;
+
+			case SDLK_RIGHT:
+				if(choiceMenu==0) {
+					Mix_VolumeMusic(tetris.upvolume());
+					SDL_SetRenderDrawColor(renderer,0,0,0,255);
+					cadrect = { w/2-100-25, h/2+50, 200+50, 10};
+					SDL_RenderFillRect(renderer, &cadrect);
+					cadrect.w = (tetris.getvolume()*250)/MIX_MAX_VOLUME;
+					SDL_SetRenderDrawColor(renderer,100,100,100,255);
+					SDL_RenderFillRect(renderer, &cadrect);
+					SDL_RenderPresent(renderer);
+				}
+				break;
+
 			case SDLK_RETURN:
 
-
-				//lancer le jeu
-				if (choiceMenu == 0){
-
-				}
-
-
-				else if (choiceMenu == 2){
+				if (choiceMenu == 1){
 					quit_menu = true;
 				}
 				break;
