@@ -63,6 +63,8 @@ public :
 	bool printMenu();
 
 	bool getquit() {return quitgame;};
+	int geth() {return h;};
+	int getw() {return w;};
 	SDL_Renderer* get_renderer() {return renderer;};
 	SDL_Window* get_pWindow() {return pWindow;};
 	SDL_Texture* get_menu() {return menu;};
