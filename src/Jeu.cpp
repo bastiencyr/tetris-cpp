@@ -225,6 +225,7 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 					parametresmain(renderer, tetris, policetetris,police);
 					SDL_RenderCopy(renderer, startmenu, NULL, NULL);
 					SDL_RenderPresent(renderer);
+					choiceMenu = 0;
 				}
 
 				else if (choiceMenu == 3){
@@ -385,12 +386,11 @@ void Jeu::parametresmain(SDL_Renderer* renderer, Tetris tetris, TTF_Font * P1, T
 
 			case SDLK_RETURN:
 
-
-				//lancer le jeu
 				if (choiceMenu == 0){
 					parametresaudio(renderer, tetris, P1,P2);
 					SDL_RenderCopy(renderer, startmenu, NULL, NULL);
 					SDL_RenderPresent(renderer);
+					choiceMenu = 0;
 				}
 
 
