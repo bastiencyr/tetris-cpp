@@ -26,6 +26,7 @@ protected:
 	SDL_Texture *blank;
     SDL_Texture *texture;
 	SDL_Texture *menu;
+	int volume;
 
 	//Piece *piece;
 
@@ -63,9 +64,14 @@ public :
 	bool printMenu();
 
 	bool getquit() {return quitgame;};
+	int geth() {return h;};
+	int getw() {return w;};
 	SDL_Renderer* get_renderer() {return renderer;};
 	SDL_Window* get_pWindow() {return pWindow;};
 	SDL_Texture* get_menu() {return menu;};
+	int getvolume() {return volume;};
+	int upvolume() {if(volume<MIX_MAX_VOLUME) volume++; return volume;};
+	int downvolume() {if(volume >0) volume --; return volume;};
 
     ~Tetris(); // destructor
 

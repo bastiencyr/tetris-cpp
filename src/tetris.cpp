@@ -24,6 +24,7 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris, SDL_Renderer* renderer, bool mu
 	timer=0;
 	this->renderer = renderer;
 	quitgame = true;
+	this-> volume = MIX_MAX_VOLUME/2;
 //	pWindow = SDL_CreateWindow("Une fenetre SDL" , SDL_WINDOWPOS_CENTERED ,
 //			SDL_WINDOWPOS_CENTERED , w , h , SDL_WINDOW_SHOWN);
 	//renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_SOFTWARE);
@@ -634,10 +635,10 @@ int Tetris::TetrisLinesUpdate(int *score, bool player2) {
 			decalage++;
 			if (player2)
 				FillEmpty(i,SIZE_BLOC, player2);
-			else 
+			else
 				FillEmpty(i,SIZE_BLOC);
 		}
-		
+
 		else if(compt < BLOCSX && compt != 0 && decalage!=0)
 		{
 			if (player2){
@@ -681,14 +682,14 @@ void Tetris::FillEmpty(int i,int factore, bool player2) {
 	line.x= 0 + sizeTetris.x;
 	if (player2)
 		line.x= 0 + sizeTetris2.x;
-	
+
 	line.y= i*factor+ sizeTetris.y;
 	line.h= 1*factor;
 	line.w= BLOCSX*factor;
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_RenderCopy(renderer, blank, &line, &line);
 	SDL_SetRenderTarget(renderer, NULL);
-	
+
 	if (player2){
 		for (auto &row : matIA)
 			row[i]=false;
@@ -745,7 +746,7 @@ void Tetris::CopyLine(int i, int decalage, int factore, bool player2) {
 	copytext.x=0 + sizeTetris.x;
 	if (player2)
 		copytext.x=0 + sizeTetris2.x;
-	
+
 	SDL_RenderCopy(renderer, temp, &copytext, &copyline);
 
 	SDL_SetRenderTarget(renderer, NULL);
