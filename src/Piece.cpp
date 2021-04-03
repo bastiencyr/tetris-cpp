@@ -557,21 +557,65 @@ int Piece::nbFullLine(bool mat[BLOCSX][BLOCSY]){
 }
 
 void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
-
+	
+	//define some functions. This functions are useful to calculate 
+	//the score of a position piece
+	auto sumHauteur = [&] (Piece best_piece)  
+	{   
+		int sumHauteur = 0;
+		for (int i=0; i<4; i++)
+			sumHauteur += BLOCSY - best_piece.dst[i].y ;
+		return sumHauteur;
+	};
+	
+	//return the number of "trou" in a matrice
+	auto nbTrou = [&] ( bool matTemp[BLOCSX][BLOCSY]){
+		int nbTrou =0;
+		for (int i= 0; i< BLOCSX; i++){
+			for (int j= 0; j< BLOCSY; j++){
+				if (matTemp[i][j]){
+					while(j+1 < BLOCSY and !matTemp[i][j+1]){
+						nbTrou+=1;
+						j++;
+					}
+				}
+			}
+		}
+		return nbTrou;
+	};
+	
+	auto diffHauteurs = [&] ( bool matTemp[BLOCSX][BLOCSY]){
+		int totDiff = 0;
+		
+		int maxHauteur[BLOCSX];
+		for (int i=0; i<BLOCSX; i++){
+			maxHauteur[i]=0;
+			int j=0;
+			while(j<BLOCSY and !matTemp[i][j]){
+				maxHauteur[i]=BLOCSY - j;
+				j++;
+			}
+		}
+		
+		for(int i=0; i<BLOCSX-1; i++){
+			if (maxHauteur[i+1]-maxHauteur[i] >=0)
+				totDiff+=(maxHauteur[i+1]-maxHauteur[i]+1);
+			else
+				totDiff+=(maxHauteur[i]-maxHauteur[i+1]+1);
+		}
+		return totDiff;
+	};
+	
 	//on déplace la dest dans la source pour  draw
 	this->mvDstToSrc(*this);
-
 	bool matTemp[BLOCSX][BLOCSY];
-
+	
 	//get minimum x of a piece
 	int minX =40;
-	for (int i=0 ; i<4; i++){
-		if (this->dst[i].x < minX)
-			minX = this->dst[i].x;
-	}
-
-	Piece best_piece;
-	Piece init_piece;
+	for (auto & rect : this->dst )
+		minX = rect.x < minX ? rect.x : minX;
+	
+	Piece best_piece, init_piece;
 
 	for (int i =0 ; i<4; i++){
 		init_piece.dst[i].x = this->dst[i].x - minX;
@@ -587,67 +631,23 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 
 			score = 0;
 			// on réinitialise matTemp
-
-			for (int i= 0; i< BLOCSX; i++){
-				for (int j= 0; j< BLOCSY; j++){
+			for (int i= 0; i< BLOCSX; i++)
+				for (int j= 0; j< BLOCSY; j++)
 					matTemp[i][j] = mat[i][j];
-				}
-			}
-			score = 0;
 
 			//on décale best_piece
 			for (int i = 0; i<4 ; i++){
 				best_piece.dst[i].x = init_piece.dst[i].x +step;
 				best_piece.dst[i].y = init_piece.dst[i].y +2 ;
 			}
-			//best_piece.affiche_coord(false, true);
 
 			//on vérifie que la position est légale avant dutiliser holsPiece
 			if (best_piece.isLegalPosition(&best_piece, matTemp).NO_ERROR){
-				// on descend la pièce
 				best_piece.holdPiece(matTemp);
-
-				//on veut minimiser le score
-				//on regarde dabord si ca elimine une ligne -> meilleur cas
 				score += best_piece.nbFullLine(matTemp)*30;
-
-				//on regarde mnt la hauteur occasionnée
-				for (int i=0; i<4; i++){
-					score -= BLOCSY - best_piece.dst[i].y ;
-				}
-
-				//on regarde le nombre de trou:
-				for (int i= 0; i< BLOCSX; i++){
-					for (int j= 0; j< BLOCSY; j++){
-						if (matTemp[i][j]){
-							while(j+1 < BLOCSY and !matTemp[i][j+1]){
-								score -=6;
-								j++;
-							}
-						}
-
-					}
-				}
-
-				// on regarde les big wall -> très fortement pénalisant
-
-				int vect[BLOCSX];
-
-				for (int i=0; i<BLOCSX; i++){
-					vect[i]=0;
-					int j=0;
-					while(j<BLOCSY and !matTemp[i][j]){
-						vect[i]=BLOCSY - j;
-						j++;
-					}
-				}
-
-				for(int i=0; i<BLOCSX-1; i++){
-					if (vect[i+1]-vect[i] >=0)
-						score-=(vect[i+1]-vect[i]+1);
-					else
-						score-=(vect[i]-vect[i+1]+1);
-				}
+				score -= sumHauteur(best_piece);
+				score -= nbTrou(matTemp) * 6 ;
+				score -= diffHauteurs(mat);
 
 				if (score > bestScore){
 					for (int i= 0; i<4; i++){
@@ -655,23 +655,15 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 						this->dst[i].y = best_piece.dst[i].y;
 					}
 					bestScore = score;
-					//std::cout << "best" << bestScore << std::endl;
-//					best_piece.affiche_coord(false, true);
-
 				}
 			}
 		}
 		init_piece.rotateRight();
 		rotation++;
-
 	}
-
-	//on update la matrice de this avec les coorconnées de best piece
+	//update matrice 
 	for(int i = 0; i < 4; i++)
 		mat[this->getx(i)][this->gety(i)]=true;
-
-	std::cout << "END" <<std::endl;
-
 }
 /*############################################################################
  ########################          LEFT L         #############################
