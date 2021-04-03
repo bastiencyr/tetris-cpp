@@ -265,7 +265,8 @@ bool Tetris::loop(Mix_Music* music)
 	quit = false;
 	bool cont = true;
 	double t=0;
-	score = 0;
+	score = 0 ;
+	int scoreIA = 0;
 	int ScoreOld=score;
 	int d=0, dia = 0;
 
@@ -417,7 +418,7 @@ bool Tetris::loop(Mix_Music* music)
 			t=0;
 		}
 		d=TetrisLinesUpdate(&score);
-		dia = TetrisLinesUpdate(&dia, true);
+		dia = TetrisLinesUpdate(&scoreIA, true);
 		//if(d==1) Mix_PlayMusic(line, 0);
 		//else if(d>1) Mix_PlayMusic(lines, 0);
 
