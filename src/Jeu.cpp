@@ -264,7 +264,7 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 	return tetris.getquit();
 }
 
-void Jeu::parametresmain(SDL_Renderer* renderer, Tetris tetris, TTF_Font * P1, TTF_Font * P2) {
+void Jeu::parametresmain(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1, TTF_Font * P2) {
 	SDL_Color textColor = {255, 255, 255};
 	int h= tetris.geth();
 	int w= tetris.getw();
@@ -408,6 +408,7 @@ void Jeu::parametresmain(SDL_Renderer* renderer, Tetris tetris, TTF_Font * P1, T
 
 
 				else if (choiceMenu == 2){
+					SDL_SetRenderTarget(renderer, NULL);
 					quit_menu = true;
 				}
 				break;
@@ -423,10 +424,11 @@ void Jeu::parametresmain(SDL_Renderer* renderer, Tetris tetris, TTF_Font * P1, T
 		default :break;
 		}
 	}
-
+	SDL_DestroyTexture(startmenu);
+	SDL_DestroyTexture(text_texture);
 }
 
-void Jeu::parametresaudio(SDL_Renderer* renderer, Tetris tetris, TTF_Font * P1, TTF_Font * P2) {
+void Jeu::parametresaudio(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1, TTF_Font * P2) {
 	SDL_Color textColor = {255, 255, 255};
 	int h= tetris.geth();
 	int w= tetris.getw();
@@ -614,7 +616,8 @@ void Jeu::parametresaudio(SDL_Renderer* renderer, Tetris tetris, TTF_Font * P1, 
 		default :break;
 		}
 	}
-
+	SDL_DestroyTexture(startmenu);
+	SDL_DestroyTexture(text_texture);
 }
 
 int main(int argc, char** argv)
