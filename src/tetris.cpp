@@ -382,9 +382,8 @@ bool Tetris::loop(Mix_Music* music)
 		dia = TetrisLinesUpdate(&scoreIA, true);
 		//if(d==1) Mix_PlayMusic(line, 0);
 		//else if(d>1) Mix_PlayMusic(lines, 0);
-		if (dia >= 1){
-			this->addLineToPlayer(dia, piece, ghost);
-		}
+		if (dia >= 1) this->addLineToPlayer(dia, piece, ghost);
+		if (d >= 1) this->addLineToPlayer(dia, piece, ghost, true);
 		
 		if(score-ScoreOld>500) {
 			ScoreOld=score;
@@ -409,11 +408,18 @@ void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool p
 	int factor = sizeTetris.w/BLOCSX;
 	//ajouter une ligne à player1
 	for (int i = 0; i< BLOCSY ; i++)
-		CopyLine(i, -1, 0);
+		CopyLine(i, -1, 0, player2);
 	
-	for(int j=0 ; j< BLOCSX ; j++)
-		mat[j][BLOCSY-1] = true;
-	mat[randn][BLOCSY-1] = false;
+	if (player2){
+		for(int j=0 ; j< BLOCSX ; j++)
+			matIA[j][BLOCSY-1] = true;
+		matIA[randn][BLOCSY-1] = false;
+	}
+	else {
+		for(int j=0 ; j< BLOCSX ; j++)
+			mat[j][BLOCSY-1] = true;
+		mat[randn][BLOCSY-1] = false;
+	}
 	
 	for(int j = 0; j< BLOCSX ; j++){
 		SDL_SetRenderTarget(renderer, texture);
@@ -424,6 +430,7 @@ void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool p
 			factor,
 			factor,
 		};
+		if (player2) line.x = sizeTetris2.x + j*factor;
 		SDL_RenderCopy(renderer, blank, &line, &line);	
 		
 		if(j!=randn){
@@ -431,7 +438,7 @@ void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool p
 			line.y= (BLOCSY-1)*factor+ sizeTetris.y + 5;
 			line.h= factor - 10;
 			line.w= factor - 10;
-			
+			if (player2) line.x= sizeTetris2.x + j*factor + 5;
 			
 			SDL_RenderFillRect(renderer, &line);
 			SDL_SetRenderTarget(renderer, NULL);
@@ -441,11 +448,13 @@ void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool p
 	piece->up();
 	piece->mvDstToSrc(*piece);
 	
-	ghost->up(); 
-	ghost->DownGhost(mat,piece);
-	ghost->verif(piece);
-	
-	ghost->draw(renderer,blank,texture,OPAC);
+	if(!player2){
+		ghost->up(); 
+		ghost->DownGhost(mat,piece);
+		ghost->verif(piece);
+		
+		ghost->draw(renderer,blank,texture,OPAC);
+	}
 	piece->draw(renderer,blank,texture);
 	SDL_RenderPresent(renderer);
 	this->printMatrice();
