@@ -67,6 +67,9 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 
 bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 
+	int numberChoice = 4;
+	int sizeBetweenText = 80, xShift = 100;
+
 	SDL_Window* pWindow = SDL_CreateWindow("TETRIS" , SDL_WINDOWPOS_CENTERED ,
 				SDL_WINDOWPOS_CENTERED , w , h , SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_SOFTWARE);
@@ -78,6 +81,12 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 			SDL_TEXTUREACCESS_TARGET, w, h);
 
 	SDL_SetRenderTarget(renderer, startmenu);
+	SDL_SetRenderDrawColor(renderer,17,17,52,255);
+	SDL_RenderFillRect(renderer, NULL);
+
+	tetris.printGenericMenu(startmenu,xShift,sizeBetweenText,numberChoice, "Tetris", "Jouer", "Leaderboard", "Parametres", "Quitter");
+
+	//SDL_SetRenderTarget(renderer, startmenu);
 	TTF_Font * policetetris = TTF_OpenFont("src/Tetris.ttf", 65);
 	if(!policetetris){
 		std::cout << TTF_GetError()<< std::endl;
@@ -87,6 +96,10 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 	if(!police){
 		std::cout << TTF_GetError()<< std::endl;
 	}
+
+
+
+	/*
 
 	SDL_Color textColor = {255, 255, 255};
 	SDL_Surface * text_surface = TTF_RenderText_Blended(policetetris,"Tetris", textColor);
@@ -145,7 +158,7 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 	SDL_RenderFillRect(renderer, &cadrect);
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 
-
+	*/
 	//on dessine le cadre du texte
 	SDL_SetRenderDrawColor(renderer,255,255,255,255);
 	SDL_Rect cadre ={w/2-100-25, h/2, 250, 40};
@@ -156,8 +169,6 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 	//on revient sur le renderer
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderCopy(renderer, startmenu, NULL, NULL);
-	SDL_RenderDrawLine(renderer,w/2-100-25,h/4-10,w/2+125,h/4-10);
-	SDL_RenderDrawLine(renderer,w/2-100-25,h/4+50,w/2+125,h/4+50);
 
 	SDL_RenderPresent(renderer);
 
@@ -166,7 +177,6 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 
 	int choiceMenu = 0;
 	//UODATE CETTE VARIABLE SI CHANGEMENT
-	int numberChoice = 4;
 
 	bool quit_menu = false;
 	SDL_Event event;
@@ -189,7 +199,8 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 				SDL_RenderDrawRect(renderer, &cadre);
 
 				SDL_SetRenderDrawColor(renderer,255,255,255,255);
-				cadre.y =h/2 +80 *choiceMenu ;
+				cadre.y =h/2 - (numberChoice * sizeBetweenText)/2
+						+ (choiceMenu+1) * sizeBetweenText ;
 				SDL_RenderDrawRect(renderer, &cadre);
 
 				SDL_RenderPresent(renderer);
@@ -204,7 +215,8 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 				SDL_RenderDrawRect(renderer, &cadre);
 
 				SDL_SetRenderDrawColor(renderer,255,255,255,255);
-				cadre.y = h/2 + 80*choiceMenu;
+				cadre.y = h/2 - (numberChoice * sizeBetweenText)/2
+						+ (choiceMenu+1) * sizeBetweenText ;
 				SDL_RenderDrawRect(renderer, &cadre);
 
 				SDL_RenderPresent(renderer);
@@ -215,6 +227,7 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 
 				//lancer le jeu
 				if (choiceMenu == 0){
+					SDL_RenderClear(renderer);
 					tetris.init(music, true);
 					SDL_RenderPresent(renderer);
 					tetris.loop(music);
@@ -244,7 +257,7 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 		default :break;
 		}
 	}
-	TTF_CloseFont(police);
+	//TTF_CloseFont(police);
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(pWindow);

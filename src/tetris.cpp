@@ -208,13 +208,13 @@ void Tetris::NouvPiece(Piece * & oldp, Piece *& newp, Piece * Liste[7]) {
 
 bool Tetris::loop(Mix_Music* music)
 {
-	auto ghostVerifDraw = [&] (Piece *ghost, Piece *piece, bool gen =false)  
-	{   
+	auto ghostVerifDraw = [&] (Piece *ghost, Piece *piece, bool gen =false)
+	{
 		ghost->DownGhost(mat,piece,gen);
 		ghost->verif(piece);
 		ghost->draw(renderer,blank,texture,OPAC);
 	};
-	
+
 	Piece::initStaticMembers(sizeTetris);
 
 	Mix_Music* rotate = Mix_LoadMUS("sfx/SFX_PieceRotateLR.ogg");
@@ -227,7 +227,7 @@ bool Tetris::loop(Mix_Music* music)
 	Uint64 prev, now = SDL_GetPerformanceCounter(); // timers
 	double difficulte[18]={1.,0.9,0.82,0.72,0.61,0.52,0.45,0.4,0.37,0.35,0.34,0.33,0.32,0.31,0.3,0.29,0.28,0.27}; //difficulté
 	int sc=0; //niveau de difficulté actuel
-	
+
 	quit = false;
 	score = 0 ;
 	bool cont = true;
@@ -242,12 +242,12 @@ bool Tetris::loop(Mix_Music* music)
 
 	srand(time(0));
 	int randn= rand() % 7;;
-	
+
 	Piece *piece, *newPiece, *pieceIA, *ghost = new Piece;
 	newPiece = PiecList[randn];
 	piece = PiecList[randn];
 	NouvPiece(piece, newPiece, PiecList) ;
-	
+
 	for(int i = 0; i<7; i++)
 		PiecGhosts[i]->adjust(PiecList[i]);
 
@@ -399,37 +399,46 @@ bool Tetris::loop(Mix_Music* music)
 	return quitgame;
 }
 
-bool Tetris::printGenericMenu(SDL_Texture * menu, int xShift, 
+bool Tetris::printGenericMenu(SDL_Texture * menu, int xShift,
 		int sizeBetweenText, int numItem,...) {
-	
-	TTF_Font *police = TTF_OpenFont("src/Tetris.ttf", 65);
+
+	TTF_Font *policetetris = TTF_OpenFont("src/Tetris.ttf", 65);
+	if(!policetetris){
+		std::cout << TTF_GetError()<< std::endl;
+	}
+
+	TTF_Font * police = TTF_OpenFont("src/RetroGaming.ttf", 65);
 	if(!police){
 		std::cout << TTF_GetError()<< std::endl;
 	}
-	
+
 	SDL_Color textColor = {255, 255, 255};
-	
+
 	va_list valist;
 	va_start(valist, numItem); //initialize valist for num number of arguments
 	int numberChoice = numItem--;
 	//write title
-	SDL_Surface * text_surface = TTF_RenderText_Blended(police,va_arg(valist, char *), textColor);
+	SDL_Surface * text_surface = TTF_RenderText_Blended(policetetris,va_arg(valist, char *), textColor);
 	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 
 	SDL_SetRenderTarget(renderer, menu);
-	
-	SDL_Rect dstrect = { sizeTetris.w/2-xShift, 0, 200, 40 };
-	dstrect.y =sizeTetris.h/2 - (numberChoice * sizeBetweenText)/2;
+
+	SDL_Rect dstrect = { w/2-xShift, 0, 200, 40 };
+	dstrect.y = h/2 - (numberChoice * sizeBetweenText)/2;
 	//dstrect.y = sizeTetris.h/2 - ((numberChoice+1) * sizeBetweenText)/2;
-	SDL_Rect cadrect = { sizeTetris.w/2-xShift-25, sizeTetris.h/4, 200+50, 40};
-	
+	SDL_Rect cadrect = { w/2-xShift-25, h/4, 200+50, 40};
+
+	SDL_SetRenderDrawColor(renderer,255,255,255,255);
+	SDL_RenderDrawLine(renderer,w/2-xShift-25,h/2 - (numberChoice * sizeBetweenText)/2-10,w/2+xShift+25,h/2 - (numberChoice * sizeBetweenText)/2-10);
+	SDL_RenderDrawLine(renderer,w/2-xShift-25,h/2 - (numberChoice * sizeBetweenText)/2+50,w/2+xShift+25,h/2 - (numberChoice * sizeBetweenText)/2+50);
+
 	//on copie le text sur le menu
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 	SDL_SetRenderDrawColor(renderer,0,0,0,255);
-	
+
 	auto printTextBellow = [&] (const char * str,SDL_Surface *text_surface,
-			SDL_Texture *text_texture,SDL_Rect &dstrect,SDL_Rect &cadrect)  
-	{   
+			SDL_Texture *text_texture,SDL_Rect &dstrect,SDL_Rect &cadrect)
+	{
 		text_surface = TTF_RenderText_Blended(police,str, textColor);
 		text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 		dstrect.y += sizeBetweenText;
@@ -437,21 +446,21 @@ bool Tetris::printGenericMenu(SDL_Texture * menu, int xShift,
 		SDL_RenderFillRect(renderer, &cadrect);
 		SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 	};
-	
-	dstrect.y = sizeTetris.h/2 - (numberChoice * sizeBetweenText)/2;
+
+	dstrect.y = h/2 - (numberChoice * sizeBetweenText)/2;
 	cadrect.y = dstrect.y;
-	
+
 	while(numberChoice > 0){
 		printTextBellow(va_arg(valist, char *),
 				text_surface, text_texture, dstrect, cadrect);
 		numberChoice--;
 	}
-	
+
 	va_end(valist); //clean memory reserved for valist
-	
+
 	SDL_RenderCopy(renderer, menu, NULL, NULL);
 	TTF_CloseFont(police);
-	
+
 	return true;
 }
 
@@ -465,26 +474,26 @@ bool Tetris::printMenu(){
 	SDL_SetRenderDrawColor(renderer,63,63,63,200);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderFillRect(renderer, NULL);
-	
-	printGenericMenu(menu, xShift, sizeBetweenText ,numberChoice, "Tetris", "Reprendre le jeu", 
+
+	printGenericMenu(menu, xShift, sizeBetweenText ,numberChoice, "Tetris", "Reprendre le jeu",
 			"Recommencer", "Aller au menu", "Quitter");
-	
-	
+
+
 	//on dessine le cadre du texte
 	SDL_SetRenderDrawColor(renderer,255,255,255,255);
 	SDL_Rect cadre ={sizeTetris.w/2-xShift-25,0, 250, 40};
 	cadre.y = sizeTetris.h/2 - (numberChoice * sizeBetweenText)/2 + sizeBetweenText ;
 	SDL_RenderDrawRect(renderer, &cadre);
-	
+
 	//on revient sur le renderer
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderCopy(renderer, menu, NULL, NULL);
-	
+
 	SDL_RenderPresent(renderer);
-	
+
 	//free(text_surface);
 	//free(text_texture);
-	
+
 	int choiceMenu = 0;
 	bool quit_menu = false;
 	SDL_Event event;
@@ -495,49 +504,49 @@ bool Tetris::printMenu(){
 			quit_menu = true;
 			quit = true;
 			break;
-			
+
 		case SDL_KEYDOWN:
-			
+
 			switch( event.key.keysym.sym ){
-				
+
 			case SDLK_DOWN:
 				choiceMenu+=1;
 				choiceMenu = choiceMenu % numberChoice ;
-				
+
 				SDL_SetRenderDrawColor(renderer,0,0,0,255);
 				SDL_RenderDrawRect(renderer, &cadre);
-				
+
 				SDL_SetRenderDrawColor(renderer,255,255,255,255);
-				cadre.y = sizeTetris.h/2 - (numberChoice * sizeBetweenText)/2 
+				cadre.y = sizeTetris.h/2 - (numberChoice * sizeBetweenText)/2
 						+ (choiceMenu+1) * sizeBetweenText ;
 				SDL_RenderDrawRect(renderer, &cadre);
-				
+
 				SDL_RenderPresent(renderer);
-				
+
 				break;
-				
+
 			case SDLK_UP:
 				choiceMenu-=1 - numberChoice;
 				choiceMenu = choiceMenu % numberChoice ;
-				
+
 				SDL_SetRenderDrawColor(renderer,0,0,0,255);
 				SDL_RenderDrawRect(renderer, &cadre);
-				
+
 				SDL_SetRenderDrawColor(renderer,255,255,255,255);
-				cadre.y = sizeTetris.h/2 - (numberChoice * sizeBetweenText)/2 
+				cadre.y = sizeTetris.h/2 - (numberChoice * sizeBetweenText)/2
 						+ (choiceMenu+1) * sizeBetweenText ;
 				SDL_RenderDrawRect(renderer, &cadre);
-				
+
 				SDL_RenderPresent(renderer);
 				break;
-				
+
 			case SDLK_RETURN:
-				
+
 				if (choiceMenu == 0){
 					quit_menu = true;
 					quit = false;
 				}
-				
+
 				//recommencer
 				if (choiceMenu == 1){
 					score = 0 ;
@@ -551,24 +560,24 @@ bool Tetris::printMenu(){
 					quit_menu = true;
 					quit = false;
 				}
-				
+
 				else if (choiceMenu == 3 || choiceMenu == 2){
 					quit_menu = true;
 					quit = true;
 					if(choiceMenu == 2) this->quitgame = false;
 				}
 				break;
-				
+
 			case SDLK_ESCAPE:
 				quit_menu = true;
 				quit = false;
 				break;
-				
+
 			default:
 				break;
 			}
-			
-			
+
+
 		default :break;
 		}
 	}
