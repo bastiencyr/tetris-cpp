@@ -227,6 +227,7 @@ bool Tetris::loop(Mix_Music* music)
 	Uint64 prev, now = SDL_GetPerformanceCounter(); // timers
 	double difficulte[18]={1.,0.9,0.82,0.72,0.61,0.52,0.45,0.4,0.37,0.35,0.34,0.33,0.32,0.31,0.3,0.29,0.28,0.27}; //difficulté
 	int sc=0; //niveau de difficulté actuel
+	int scIA = 0;
 
 	quit = false;
 	score = 0 ;
@@ -382,8 +383,39 @@ bool Tetris::loop(Mix_Music* music)
 		dia = TetrisLinesUpdate(&scoreIA, true);
 		//if(d==1) Mix_PlayMusic(line, 0);
 		//else if(d>1) Mix_PlayMusic(lines, 0);
-
-
+		if (dia >= 1){
+			SDL_SetRenderDrawColor(renderer,255,0,0,255);
+			
+			int factor = sizeTetris.w/BLOCSX;
+			//ajouter une ligne à player1
+			for (int i = 0; i< BLOCSY ; i++)
+				CopyLine(i, -1, 0);
+			
+			mat[0][BLOCSY-1] = false;
+			for(int j=1 ; j< BLOCSX ; j++)
+				mat[j][BLOCSY-1] = true;
+						
+			for(int j = 1; j< BLOCSX ; j++){
+				SDL_Rect line;
+				line.x= sizeTetris.x + j*factor;
+				line.y= (BLOCSY-1)*factor+ sizeTetris.y;
+				line.h= factor;
+				line.w= factor;
+				SDL_SetRenderTarget(renderer, texture);
+				SDL_RenderFillRect(renderer, &line);
+				SDL_SetRenderTarget(renderer, NULL);
+				SDL_RenderCopy(renderer, texture, &line, &line);
+			}
+			piece->up();
+			ghost->up();
+			piece->draw(renderer,blank,texture);
+			ghost->draw(renderer,blank,texture,OPAC);
+			this->printMatrice();
+			SDL_RenderPresent(renderer);
+			SDL_Delay(1000);
+		
+		}
+		
 		if(score-ScoreOld>500) {
 			ScoreOld=score;
 			if(sc!=17) {
@@ -466,7 +498,7 @@ bool Tetris::printGenericMenu(SDL_Texture * menu, int xShift,
 
 bool Tetris::printMenu(){
 	int numberChoice = 4;
-	int sizeBetweenText = 80, xShift = 50;
+	int sizeBetweenText = 80, xShift = 100;
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
 	//on copie la texture de fond sur le menu
