@@ -432,7 +432,7 @@ bool Tetris::loop(Mix_Music* music)
 }
 
 bool Tetris::printGenericMenu(SDL_Texture * menu, int xShift,
-		int sizeBetweenText, int numItem,...) {
+		int sizeBetweenText, bool retour, int numItem,...) {
 
 	TTF_Font *policetetris = TTF_OpenFont("src/Tetris.ttf", 65);
 	if(!policetetris){
@@ -455,16 +455,18 @@ bool Tetris::printGenericMenu(SDL_Texture * menu, int xShift,
 
 	SDL_SetRenderTarget(renderer, menu);
 
-	SDL_Rect dstrect = { w/2-xShift, 0, 200, 40 };
+	SDL_Rect dstrect = { w/2-xShift, 0, 2*xShift, 40 };
 	dstrect.y = h/2 - (numberChoice * sizeBetweenText)/2;
-	//dstrect.y = sizeTetris.h/2 - ((numberChoice+1) * sizeBetweenText)/2;
-	SDL_Rect cadrect = { w/2-xShift-25, h/4, 200+50, 40};
+	SDL_Rect cadrect = { w/2-xShift-25, h/2 - (numberChoice * sizeBetweenText)/2, 2*xShift+50, 40};
+	SDL_Rect cadre = { w/2-xShift-25, h/2 - (numberChoice * sizeBetweenText)/2+sizeBetweenText, 2*xShift+50, 40};
 
 	SDL_SetRenderDrawColor(renderer,255,255,255,255);
-	SDL_RenderDrawLine(renderer,w/2-xShift-25,h/2 - (numberChoice * sizeBetweenText)/2-10,w/2+xShift+25,h/2 - (numberChoice * sizeBetweenText)/2-10);
-	SDL_RenderDrawLine(renderer,w/2-xShift-25,h/2 - (numberChoice * sizeBetweenText)/2+50,w/2+xShift+25,h/2 - (numberChoice * sizeBetweenText)/2+50);
+	SDL_RenderDrawLine(renderer,w/2-xShift-25,h/2 - (numberChoice * sizeBetweenText)/2-10, w/2+xShift+25, h/2 - (numberChoice * sizeBetweenText)/2-10);
+	SDL_RenderDrawLine(renderer,w/2-xShift-25,h/2 - (numberChoice * sizeBetweenText)/2+50, w/2+xShift+25, h/2 - (numberChoice * sizeBetweenText)/2+50);
 
 	//on copie le text sur le menu
+	//on dessine le cadre du texte
+
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 	SDL_SetRenderDrawColor(renderer,0,0,0,255);
 
@@ -482,18 +484,78 @@ bool Tetris::printGenericMenu(SDL_Texture * menu, int xShift,
 	dstrect.y = h/2 - (numberChoice * sizeBetweenText)/2;
 	cadrect.y = dstrect.y;
 
-	while(numberChoice > 0){
+	while(numberChoice > retour){
 		printTextBellow(va_arg(valist, char *),
 				text_surface, text_texture, dstrect, cadrect);
 		numberChoice--;
 	}
 
+	if(retour) {
+		text_surface = TTF_RenderText_Blended(police,"Retour", textColor);
+		text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+		dstrect.x = 3*w/4-20;
+		cadrect.x = 3*w/4-45;
+		dstrect.y = 7*h/8;
+		cadrect.y = 7*h/8;
+		SDL_RenderFillRect(renderer, &cadrect);
+		SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
+	}
+
+	//on dessine le cadre du premier texte
+	SDL_SetRenderDrawColor(renderer,255,255,255,255);
+	SDL_RenderDrawRect(renderer, &cadre);
+
 	va_end(valist); //clean memory reserved for valist
 
 	SDL_RenderCopy(renderer, menu, NULL, NULL);
 	TTF_CloseFont(police);
+	SDL_DestroyTexture(text_texture);
 
 	return true;
+}
+
+void Tetris::UpDownCasesLoopMenu(int retour, int way, int & choiceMenu ,
+	int numberChoice, int sizeBetweenText, int xShift,SDL_Rect & cadre, bool vol) {
+
+	//way = 1 is down
+	if(way) {
+		choiceMenu+=1;
+
+	}
+	else {
+		choiceMenu-=1 - numberChoice;
+	}
+	choiceMenu = choiceMenu % numberChoice ;
+
+	SDL_SetRenderDrawColor(renderer,0,0,0,255);
+	SDL_RenderDrawRect(renderer, &cadre);
+
+	SDL_SetRenderDrawColor(renderer,255,255,255,255);
+	cadre.y = h/2 - ((numberChoice) * sizeBetweenText)/2
+			+ (choiceMenu+1) * sizeBetweenText ;
+	if(retour) {
+		if(choiceMenu==numberChoice-1) {
+			cadre.y =7*h/8 ;
+			cadre.x = 3*w/4-45;
+		}
+		else
+			cadre.x = w/2-xShift-25;
+	}
+	if(vol) {
+		if(choiceMenu==0) {
+			cadre.x = w/2-100-25;
+			cadre.y =h/2+50;
+			cadre.h = 10;
+		}
+		else {
+			cadre.h=40;
+			cadre.w=2*xShift+50;
+		}
+
+	}
+	SDL_RenderDrawRect(renderer, &cadre);
+
+	SDL_RenderPresent(renderer);
 }
 
 bool Tetris::printMenu(){
@@ -507,7 +569,7 @@ bool Tetris::printMenu(){
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderFillRect(renderer, NULL);
 
-	printGenericMenu(menu, xShift, sizeBetweenText ,numberChoice, "Tetris", "Reprendre le jeu",
+	printGenericMenu(menu, xShift, sizeBetweenText ,false, numberChoice, "Tetris", "Reprendre le jeu",
 			"Recommencer", "Aller au menu", "Quitter");
 
 
