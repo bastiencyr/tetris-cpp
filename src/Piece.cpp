@@ -423,7 +423,6 @@ int Piece::getpastel(int i) {
 	return this->pastel[i];
 }
 void Piece::update(){
-	puts("update de la classe mère!!!");
 }
 
 void Piece::verif(Piece * ref) {
@@ -493,14 +492,8 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 
 
 void Piece::DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen) {
-	Piece temp;
-	for (int i=0 ; i <4 ; i++){
-		temp.dst[i].x = ref->dst[i].x;
-		temp.dst[i].y = ref->dst[i].y;
-	//	temp.src[i].x = ref->dst[i].x;
-	//	temp.src[i].y = ref->dst[i].y;
-	}
-
+	Piece temp = *ref;
+	
 	while (temp.isLegalDown(mat).NO_ERROR)
 		for (int i=0 ; i <4 ; i++)
 			temp.dst[i].y ++;
@@ -511,24 +504,19 @@ void Piece::DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen) {
 			this->dst[i].x = temp.dst[i].x;
 			this->dst[i].y = temp.dst[i].y;
 	}
+	
 	if(gen)
 		this->mvDstToSrc(*this);
+	
 }
 
 void Piece::holdPiece(bool mat[BLOCSX][BLOCSY]){
 
 	Error e;
 
-	Piece temp;
-	for (int i=0 ; i <4 ; i++){
-		temp.dst[i].x = this->dst[i].x;
-		temp.dst[i].y = this->dst[i].y;
-	}
-
+	Piece temp = *this;
 	while (temp.isLegalDown(mat).NO_ERROR)
-		for (int i=0 ; i <4 ; i++){
-			temp.dst[i].y += 1;
-		}
+		for (int i=0 ; i <4 ; i++) temp.dst[i].y += 1; 
 
 	for (int i=0 ; i <4 ; i++){
 		this->src[i].y = this->dst[i].y;

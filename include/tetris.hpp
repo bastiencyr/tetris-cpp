@@ -61,6 +61,8 @@ public :
 	int TetrisLinesUpdate(int* score, bool player2 = false);
 	void FillEmpty(int i, int factor, bool player2 = false);
 	void CopyLine(int i, int decalage, int factor, bool player2 = false);
+	void addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2 = false);
+
 	bool printMenu();
 
 	bool printGenericMenu(SDL_Texture * text_texture, int xShift,
