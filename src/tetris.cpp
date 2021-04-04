@@ -242,7 +242,7 @@ bool Tetris::loop(Mix_Music* music)
 	ListePieceInit(PiecGhosts);
 
 	srand(time(0));
-	int randn= rand() % 7;;
+	int randn= rand() % 7;
 
 	Piece *piece, *newPiece, *pieceIA, *ghost = new Piece;
 	newPiece = PiecList[randn];
@@ -268,7 +268,6 @@ bool Tetris::loop(Mix_Music* music)
 			/*
 			//Mix_PlayMusic(drop, 0);
 			*/
-
 			ghost->adjust(piece);
 			ghostVerifDraw(ghost, piece, true);
 		}
@@ -295,47 +294,47 @@ bool Tetris::loop(Mix_Music* music)
 					piece->draw(renderer,blank,texture);
 					cont = false;
 					break;
-
+					
 				case SDLK_F1:
 					piece->cheat(mat);
 					piece->draw(renderer,blank,texture);
 					cont = false;
 					break;
-
+					
 				case SDLK_ESCAPE:
 					this->printMenu();
 					break;
-
+					
 				case SDLK_RIGHT:
 					if (piece->isLegalRight(mat).NO_ERROR){
 						piece->right();
 						piece->draw(renderer,blank,texture);
 						//Mix_PlayMusic(rotate, 0);
-
+						
 						ghostVerifDraw(ghost, piece);
 					}
 					break;
-
+					
 				case SDLK_LEFT:
 					if (piece->isLegalLeft(mat).NO_ERROR){
 						piece->left();
 						piece->draw(renderer,blank,texture);
 						//Mix_PlayMusic(rotate, 0);
-
+						
 						ghostVerifDraw(ghost, piece);
 					}
 					break;
-
+					
 				case SDLK_DOWN:
 					cont = piece->onDown(mat, cont, renderer, blank,
 							texture);
 					break;
-
+					
 				case SDLK_UP:
 					if (piece->isLegalRotateRight(mat).NO_ERROR){
 						piece->rotateRight();
 						piece->draw(renderer,blank,texture);
-
+						
 					}
 					else if (piece->isLegalRotateRight(mat).OVER_X){
 						Piece temp = *piece;
@@ -346,26 +345,26 @@ bool Tetris::loop(Mix_Music* music)
 							piece->translate(shift, 0, false);
 							piece->draw(renderer,blank,texture);
 						}
-
+						
 					}
 					ghostVerifDraw(ghost, piece);
 					break;
 				}
-
+				
 			default: break;
 			}
-
+			
 			//this->printMatrice();
 		}
-
+		
 		prev = now;
 		now = SDL_GetPerformanceCounter();
 		delta_t = static_cast<double>((now - prev)/
 				static_cast<float>(SDL_GetPerformanceFrequency()));
-
+		
 		t+=delta_t;
 		if(t>=difficulte[sc]) {
-
+			
 			//debut IA
 			randn = rand() % 7;
 			pieceIA = PiecListIA[randn];
@@ -373,7 +372,7 @@ bool Tetris::loop(Mix_Music* music)
 			pieceIA->cheat(matIA);
 			pieceIA->draw(renderer,blank,texture, 255, false, 17);
 			//fin IA
-
+			
 			cont = piece->onDown(mat, cont, renderer,
 					blank,texture);
 			//this->printMatrice();
@@ -384,36 +383,7 @@ bool Tetris::loop(Mix_Music* music)
 		//if(d==1) Mix_PlayMusic(line, 0);
 		//else if(d>1) Mix_PlayMusic(lines, 0);
 		if (dia >= 1){
-			SDL_SetRenderDrawColor(renderer,255,0,0,255);
-			
-			int factor = sizeTetris.w/BLOCSX;
-			//ajouter une ligne à player1
-			for (int i = 0; i< BLOCSY ; i++)
-				CopyLine(i, -1, 0);
-			
-			mat[0][BLOCSY-1] = false;
-			for(int j=1 ; j< BLOCSX ; j++)
-				mat[j][BLOCSY-1] = true;
-						
-			for(int j = 1; j< BLOCSX ; j++){
-				SDL_Rect line;
-				line.x= sizeTetris.x + j*factor;
-				line.y= (BLOCSY-1)*factor+ sizeTetris.y;
-				line.h= factor;
-				line.w= factor;
-				SDL_SetRenderTarget(renderer, texture);
-				SDL_RenderFillRect(renderer, &line);
-				SDL_SetRenderTarget(renderer, NULL);
-				SDL_RenderCopy(renderer, texture, &line, &line);
-			}
-			piece->up();
-			ghost->up();
-			piece->draw(renderer,blank,texture);
-			ghost->draw(renderer,blank,texture,OPAC);
-			this->printMatrice();
-			SDL_RenderPresent(renderer);
-			SDL_Delay(1000);
-		
+			this->addLineToPlayer(dia, piece, ghost);
 		}
 		
 		if(score-ScoreOld>500) {
@@ -425,15 +395,65 @@ bool Tetris::loop(Mix_Music* music)
 			}
 			//std::cout << "		Score :" << score << std::endl << std::endl;
 		}
-
+		
 		SDL_RenderPresent(renderer);
 	}
 	return quitgame;
 }
 
+void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2){
+	SDL_SetRenderDrawColor(renderer,100,100,100,255);
+	srand(time(0));
+	int randn= rand() % 10;
+	
+	int factor = sizeTetris.w/BLOCSX;
+	//ajouter une ligne à player1
+	for (int i = 0; i< BLOCSY ; i++)
+		CopyLine(i, -1, 0);
+	
+	for(int j=0 ; j< BLOCSX ; j++)
+		mat[j][BLOCSY-1] = true;
+	mat[randn][BLOCSY-1] = false;
+	
+	for(int j = 0; j< BLOCSX ; j++){
+		SDL_SetRenderTarget(renderer, texture);
+		
+		SDL_Rect line = {
+			sizeTetris.x + j*factor,
+			(BLOCSY-1)*factor+ sizeTetris.y,
+			factor,
+			factor,
+		};
+		SDL_RenderCopy(renderer, blank, &line, &line);	
+		
+		if(j!=randn){
+			line.x= sizeTetris.x + j*factor + 5;
+			line.y= (BLOCSY-1)*factor+ sizeTetris.y + 5;
+			line.h= factor - 10;
+			line.w= factor - 10;
+			
+			
+			SDL_RenderFillRect(renderer, &line);
+			SDL_SetRenderTarget(renderer, NULL);
+			SDL_RenderCopy(renderer, texture, &line, &line);
+		}
+	}
+	piece->up();
+	piece->mvDstToSrc(*piece);
+	
+	ghost->up(); 
+	ghost->DownGhost(mat,piece);
+	ghost->verif(piece);
+	
+	ghost->draw(renderer,blank,texture,OPAC);
+	piece->draw(renderer,blank,texture);
+	SDL_RenderPresent(renderer);
+	this->printMatrice();
+}
+
 bool Tetris::printGenericMenu(SDL_Texture * menu, int xShift,
 		int sizeBetweenText, bool retour, int numItem,...) {
-
+	
 	TTF_Font *policetetris = TTF_OpenFont("src/Tetris.ttf", 65);
 	if(!policetetris){
 		std::cout << TTF_GetError()<< std::endl;
