@@ -10,7 +10,7 @@ X - afficher les pièces "fantômes"
 X - ajouter la musique
 - ajouter des effets sonores
 X - faire un menu pause
-- faire un menu de lancement
-- faire un vrai "hard drop"
-- utiliser la fonction draw pour la pièce sur le côté
+X - faire un menu de lancement
+X - faire un vrai "hard drop"
+X - utiliser la fonction draw pour la pièce sur le côté
 (gros ajout)- mode multi contre l'IA
