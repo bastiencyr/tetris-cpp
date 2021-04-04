@@ -62,7 +62,10 @@ public :
 	void FillEmpty(int i, int factor, bool player2 = false);
 	void CopyLine(int i, int decalage, int factor, bool player2 = false);
 	bool printMenu();
-
+	
+	bool printGenericMenu(SDL_Texture * text_texture, int xShift, 
+	int sizeBetweenText, int numItem,...);
+	
 	bool getquit() {return quitgame;};
 	int geth() {return h;};
 	int getw() {return w;};

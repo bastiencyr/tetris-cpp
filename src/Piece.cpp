@@ -615,14 +615,9 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 	for (auto & rect : this->dst )
 		minX = rect.x < minX ? rect.x : minX;
 	
-	Piece best_piece, init_piece;
-
-	for (int i =0 ; i<4; i++){
+	Piece best_piece = *this, init_piece = *this;
+	for (int i =0 ; i<4; i++)
 		init_piece.dst[i].x = this->dst[i].x - minX;
-		init_piece.dst[i].y = this->dst[i].y;
-		best_piece.dst[i].x = init_piece.dst[i].x;
-		best_piece.dst[i].y = init_piece.dst[i].y;
-	}
 
 	int bestScore = -10000, rotation = 0, score =0;
 	while(rotation < 5){
