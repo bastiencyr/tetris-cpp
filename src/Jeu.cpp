@@ -35,16 +35,25 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 		SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
 	}
 	else{
-		//on optimise l'espace
+		//on optimise l'espace en trouvant la dimension qui fait défaut
+		//le tetris a un rapport de BLOCSX par BLOCSY.
 		int minFactor = dm.w / (3*BLOCSX) < dm.h / BLOCSY ? dm.w / (3*BLOCSX) : dm.h / BLOCSY;
 		w = 3*BLOCSX * minFactor;
 		h = BLOCSY * minFactor;
 		
+		//on prend seulement une partie de lécran
 		w = (int)((float)(w)*(4./5.));
 		h = (int)((float)(h)*(4./5.));
-
-		sizeTetris.w = (w/3)/(w/3/5) * (w/3/5) ;
-		sizeTetris.h = sizeTetris.w * 2;
+		
+		//on passe les paramètres à sizeTetris
+		sizeTetris.w = w/3 ;
+		sizeTetris.w = (sizeTetris.w/10) *10; //sizeTetris.w doit être un multple de BLOCSX = 10
+		sizeTetris.h = sizeTetris.w * 2; 
+		
+		w = sizeTetris.w * 3;
+		h = sizeTetris.h;
+		
+		sizeTetris.x = sizeTetris.w;
 	}
 	
 	if(Mix_OpenAudio(48000, MIX_DEFAULT_FORMAT, 2, 4096) == -1) //Initialisation de l'API Mixer
