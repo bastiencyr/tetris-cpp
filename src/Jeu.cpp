@@ -28,10 +28,28 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 		printf("Erreur d'initialisation de la SDL : %s",SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
+	
+	SDL_DisplayMode dm;
+	
+	if (SDL_GetDesktopDisplayMode(0, &dm) != 0) {
+		SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
+	}
+	else{
+		//on optimise l'espace
+		int minFactor = dm.w / (3*BLOCSX) < dm.h / BLOCSY ? dm.w / (3*BLOCSX) : dm.h / BLOCSY;
+		w = 3*BLOCSX * minFactor;
+		h = BLOCSY * minFactor;
+		
+		w = (int)((float)(w)*(4./5.));
+		h = (int)((float)(h)*(4./5.));
 
+		sizeTetris.w = (w/3)/(w/3/5) * (w/3/5) ;
+		sizeTetris.h = sizeTetris.w * 2;
+	}
+	
 	if(Mix_OpenAudio(48000, MIX_DEFAULT_FORMAT, 2, 4096) == -1) //Initialisation de l'API Mixer
-	 {
-		 printf("%s", Mix_GetError());
+	{
+		printf("%s", Mix_GetError());
 	 }
 	//Mix_VolumeMusic(MIX_MAX_VOLUME / 2); //Mettre le volume à la moitié
 	this->music = Mix_LoadMUS("sfx/tetris.mp3");
@@ -137,9 +155,11 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 				//lancer le jeu
 				if (choiceMenu == 0){
 					SDL_RenderClear(renderer);
-					tetris.init(music, true);
+					//on remet a la bonne taille
+					//SDL_SetWindowSize(pWindow, w, h);
+					tetris.init(music, false); //mettre a true si multiplayer
 					SDL_RenderPresent(renderer);
-					tetris.loop(music);
+					tetris.loop(music, false); //mettre a true si multiplayer
 					quit_menu=true;
 				}
 				else if (choiceMenu == 2){
@@ -364,12 +384,13 @@ void Jeu::parametresaudio(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 
 int main(int argc, char** argv)
 {
-	int h=SIZE_BLOC*BLOCSY;
-	int w=SIZE_BLOC*BLOCSX + 500;
+
+	int h= SIZE_BLOC*BLOCSY;
+	int w= SIZE_BLOC*BLOCSX + 500;
 	SDL_Rect sizeTetris;
 	sizeTetris.w=310;
 	sizeTetris.x=0;
 	sizeTetris.y=0;
 	Jeu jeu;
-	jeu.startTetris(h,w, sizeTetris, true);
+	jeu.startTetris(h,w, sizeTetris);
 }

@@ -53,7 +53,7 @@ public :
 	void ListePieceInit(Piece * Liste[7]);
     void keyboard(const Uint8* keys);
 
-    bool loop(Mix_Music* music);
+    bool loop(Mix_Music* music, bool multiplayer);
 	void NouvPiece(Piece *& oldp, Piece *& newp, Piece * Liste[7]);
 
 	void printMatrice();

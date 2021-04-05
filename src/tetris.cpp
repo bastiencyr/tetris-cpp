@@ -206,7 +206,7 @@ void Tetris::NouvPiece(Piece * & oldp, Piece *& newp, Piece * Liste[7]) {
 		oldp->draw(renderer,blank,texture);
 }
 
-bool Tetris::loop(Mix_Music* music)
+bool Tetris::loop(Mix_Music* music, bool multiplayer)
 {
 	auto ghostVerifDraw = [&] (Piece *ghost, Piece *piece, bool gen =false)
 	{
@@ -366,24 +366,25 @@ bool Tetris::loop(Mix_Music* music)
 		if(t>=difficulte[sc]) {
 			
 			//debut IA
-			randn = rand() % 7;
-			pieceIA = PiecListIA[randn];
-			pieceIA->update();
-			pieceIA->cheat(matIA);
-			pieceIA->draw(renderer,blank,texture, 255, false, 17);
+			if(multiplayer){
+				randn = rand() % 7;
+				pieceIA = PiecListIA[randn];
+				pieceIA->update();
+				pieceIA->cheat(matIA);
+				pieceIA->draw(renderer,blank,texture, 255, false, 17);
+			}
 			//fin IA
 			
 			cont = piece->onDown(mat, cont, renderer,
 					blank,texture);
-			//this->printMatrice();
 			t=0;
 		}
 		d=TetrisLinesUpdate(&score);
 		dia = TetrisLinesUpdate(&scoreIA, true);
 		//if(d==1) Mix_PlayMusic(line, 0);
 		//else if(d>1) Mix_PlayMusic(lines, 0);
-		if (dia >= 1) this->addLineToPlayer(dia, piece, ghost);
-		if (d >= 1) this->addLineToPlayer(dia, piece, ghost, true);
+		if (multiplayer and dia >= 1) this->addLineToPlayer(dia, piece, ghost);
+		if (multiplayer and d >= 1) this->addLineToPlayer(dia, piece, ghost, true);
 		
 		if(score-ScoreOld>500) {
 			ScoreOld=score;
