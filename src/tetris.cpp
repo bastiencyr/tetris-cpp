@@ -88,11 +88,17 @@ Tetris::~Tetris(){
 void Tetris::init(Mix_Music* music, bool multiplayer){
 
 	if (Mix_PlayingMusic() == 0) Mix_PlayMusic(music,-1);
+	
+	int size_bloc = sizeTetris.w/BLOCSX;
+	if (multiplayer){
+		sizeTetris.x = 0;
+		sizeTetris2.x = sizeTetris.w + size_bloc * 7;
+	}
 
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 	//la largeur du tetris doit donc etre un multiple de BLOCSX
 	//la hauteur doit être deux fois plus grande -> respect de lechelle
-	int size_bloc = sizeTetris.w/BLOCSX;
+
 	SDL_Point ligne_depart,ligne_arrivee; // Déclaration du point de départ et du point d'arrivée d'une ligne
 
 	//on colorie le fond. La fonction renderDrawColor permet d'initialiser une

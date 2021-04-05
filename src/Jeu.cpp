@@ -94,7 +94,7 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 
 bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 
-	int numberChoice = 4;
+	int numberChoice = 5;
 	int sizeBetweenText = 80, xShift = 100;
 
 	SDL_Window* pWindow = SDL_CreateWindow("TETRIS" , SDL_WINDOWPOS_CENTERED ,
@@ -113,7 +113,7 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 
 
 	//Impression du menu
-	tetris.printGenericMenu(startmenu,xShift,sizeBetweenText,false,numberChoice, "Tetris", "Jouer", "Leaderboard", "Parametres", "Quitter");
+	tetris.printGenericMenu(startmenu,xShift,sizeBetweenText,false,numberChoice, "Tetris", "Jouer", "MultiJoueur",  "Leaderboard", "Parametres", "Quitter");
 
 	//SDL_SetRenderTarget(renderer, startmenu);
 	TTF_Font * policetetris = TTF_OpenFont("src/Tetris.ttf", 65);
@@ -171,7 +171,16 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 					tetris.loop(music, false); //mettre a true si multiplayer
 					quit_menu=true;
 				}
-				else if (choiceMenu == 2){
+				else if (choiceMenu == 1){
+					SDL_RenderClear(renderer);
+					//on remet a la bonne taille
+					//SDL_SetWindowSize(pWindow, w, h);
+					tetris.init(music, true); //mettre a true si multiplayer
+					SDL_RenderPresent(renderer);
+					tetris.loop(music, true); //mettre a true si multiplayer
+					quit_menu=true;
+				}
+				else if (choiceMenu == 3){
 					parametresmain(renderer, tetris, policetetris,police);
 					SDL_RenderCopy(renderer, startmenu, NULL, NULL);
 					SDL_RenderPresent(renderer);
@@ -179,7 +188,7 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 					cadre ={w/2-xShift-25, h/2- (numberChoice * sizeBetweenText)/2
 							+ sizeBetweenText, 2*xShift+50, 40};
 				}
-				else if (choiceMenu == 3){
+				else if (choiceMenu == 4){
 					quit_menu = true;
 				}
 				break;
