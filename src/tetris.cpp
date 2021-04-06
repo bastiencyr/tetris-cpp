@@ -47,13 +47,6 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris, SDL_Renderer* renderer, bool mu
 			el = false;
 	}
 
-//	std::cout << "L'état initial de la matrice est : " << std::endl;
-//	for(auto &raw : mat){
-//		for(auto &el : raw)
-//			el == true ? std::cout << "--0--" : std::cout << "--1--";
-//		std::cout << std::endl;
-//	}
-
 	for(int j = 0; j< BLOCSY; j++) {
 		for(int i = 0; i< BLOCSX; i++) {
 			if (mat[i][j]==true)
@@ -96,14 +89,9 @@ void Tetris::init(Mix_Music* music, bool multiplayer){
 	}
 
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-	//la largeur du tetris doit donc etre un multiple de BLOCSX
-	//la hauteur doit être deux fois plus grande -> respect de lechelle
-
 	SDL_Point ligne_depart,ligne_arrivee; // Déclaration du point de départ et du point d'arrivée d'une ligne
 
-	//on colorie le fond. La fonction renderDrawColor permet d'initialiser une
-	//couleur. Ainsi, toute fonction suivante utilisant une couleur utilisera
-	//implicitement cette couleur
+	//on colorie le fond
 	SDL_SetRenderTarget(renderer, blank);
 
 	SDL_SetRenderDrawColor(renderer,63,63,63,255);
@@ -232,13 +220,14 @@ bool Tetris::loop(Mix_Music* music, bool multiplayer)
 	if (Mix_PlayingMusic() == 0) Mix_PlayMusic(music,-1);
 	Uint64 prev, now = SDL_GetPerformanceCounter(); // timers
 	double difficulte[18]={1.,0.9,0.82,0.72,0.61,0.52,0.45,0.4,0.37,0.35,0.34,0.33,0.32,0.31,0.3,0.29,0.28,0.27}; //difficulté
+	double difficulteIA[18]={1.,0.9,0.82,0.72,0.61,0.52,0.45,0.4,0.37,0.35,0.34,0.33,0.32,0.31,0.3,0.29,0.28,0.27}; //difficulté
 	int sc=0; //niveau de difficulté actuel
 	int scIA = 0;
 
 	quit = false;
 	score = 0 ;
 	bool cont = true;
-	double t=0, delta_t=0;
+	double t=0, delta_t=0, tIA =0, delta_tIA = 0;
 	int scoreIA = 0, ScoreOld=score;
 	int d=0, dia = 0;
 
@@ -369,9 +358,14 @@ bool Tetris::loop(Mix_Music* music, bool multiplayer)
 				static_cast<float>(SDL_GetPerformanceFrequency()));
 		
 		t+=delta_t;
+		tIA += delta_t;
 		if(t>=difficulte[sc]) {
-			
-			//debut IA
+			cont = piece->onDown(mat, cont, renderer,
+					blank,texture);
+			t=0;
+		}
+		
+		if (multiplayer and tIA>=2 ){
 			if(multiplayer){
 				randn = rand() % 7;
 				pieceIA = PiecListIA[randn];
@@ -379,18 +373,15 @@ bool Tetris::loop(Mix_Music* music, bool multiplayer)
 				pieceIA->cheat(matIA);
 				pieceIA->draw(renderer,blank,texture, 255, false, 17);
 			}
-			//fin IA
-			
-			cont = piece->onDown(mat, cont, renderer,
-					blank,texture);
-			t=0;
+			tIA = 0;
 		}
+		
 		d=TetrisLinesUpdate(&score);
 		dia = TetrisLinesUpdate(&scoreIA, true);
 		//if(d==1) Mix_PlayMusic(line, 0);
 		//else if(d>1) Mix_PlayMusic(lines, 0);
 		if (multiplayer and dia >= 1) this->addLineToPlayer(dia, piece, ghost);
-		if (multiplayer and d >= 1) this->addLineToPlayer(dia, piece, ghost, true);
+		if (multiplayer and d >= 1) this->addLineToPlayer(dia, pieceIA, ghost, true);
 		
 		if(score-ScoreOld>500) {
 			ScoreOld=score;
@@ -408,6 +399,7 @@ bool Tetris::loop(Mix_Music* music, bool multiplayer)
 }
 
 void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2){
+	//player2 = true -> ajouter une ligne à l'IA
 	SDL_SetRenderDrawColor(renderer,100,100,100,255);
 	srand(time(0));
 	int randn= rand() % 10;
@@ -453,16 +445,16 @@ void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool p
 		}
 	}
 	piece->up();
-	piece->mvDstToSrc(*piece);
-	
+//	piece->mvDstToSrc(*piece);
+//	
 	if(!player2){
 		ghost->up(); 
-		ghost->DownGhost(mat,piece);
-		ghost->verif(piece);
-		
-		ghost->draw(renderer,blank,texture,OPAC);
+//		ghost->DownGhost(mat,piece);
+//		ghost->verif(piece);
+//		
+//		ghost->draw(renderer,blank,texture,OPAC);
 	}
-	piece->draw(renderer,blank,texture);
+//	piece->draw(renderer,blank,texture);
 	SDL_RenderPresent(renderer);
 	this->printMatrice();
 }

@@ -113,7 +113,8 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 
 
 	//Impression du menu
-	tetris.printGenericMenu(startmenu,xShift,sizeBetweenText,false,numberChoice, "Tetris", "Jouer", "MultiJoueur",  "Leaderboard", "Parametres", "Quitter");
+	tetris.printGenericMenu(startmenu,xShift,sizeBetweenText,false,numberChoice, 
+			"Tetris", "Jouer", "MultiJoueur",  "Leaderboard", "Parametres", "Quitter");
 
 	//SDL_SetRenderTarget(renderer, startmenu);
 	TTF_Font * policetetris = TTF_OpenFont("src/Tetris.ttf", 65);
@@ -153,11 +154,13 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 			switch( event.key.keysym.sym ){
 
 			case SDLK_DOWN:
-				tetris.UpDownCasesLoopMenu(0,1, choiceMenu, numberChoice, sizeBetweenText, xShift, cadre);
+				tetris.UpDownCasesLoopMenu(0,1, choiceMenu, numberChoice, 
+						sizeBetweenText, xShift, cadre);
 				break;
 
 			case SDLK_UP:
-				tetris.UpDownCasesLoopMenu(0,0, choiceMenu, numberChoice, sizeBetweenText, xShift, cadre);
+				tetris.UpDownCasesLoopMenu(0,0, choiceMenu, numberChoice, 
+						sizeBetweenText, xShift, cadre);
 				break;
 
 			case SDLK_RETURN:
@@ -216,19 +219,18 @@ void Jeu::parametresmain(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1,
 	int w= tetris.getw();
 	SDL_Texture* parammenu = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, tetris.getw(), tetris.geth());
-
+	
 	SDL_SetRenderTarget(renderer, parammenu);
 	SDL_SetRenderDrawColor(renderer,17,17,52,255);
 	SDL_RenderFillRect(renderer, NULL);
 
-	tetris.printGenericMenu(parammenu,xShift,sizeBetweenText,1,numberChoice, "Tetris", "Audio", "Graphiques");
+	tetris.printGenericMenu(parammenu,xShift,sizeBetweenText,1,numberChoice, 
+			"Tetris", "Audio", "Graphiques");
 
 	//on revient sur le renderer
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderCopy(renderer, parammenu, NULL, NULL);
-
 	SDL_RenderPresent(renderer);
-
 
 	int choiceMenu = 0;
 	SDL_Rect cadre ={w/2-xShift-25, h/2- (numberChoice * sizeBetweenText)/2
@@ -248,11 +250,13 @@ void Jeu::parametresmain(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1,
 			switch( event.key.keysym.sym ){
 
 			case SDLK_DOWN:
-				tetris.UpDownCasesLoopMenu(1,1, choiceMenu, numberChoice, sizeBetweenText, xShift, cadre);
+				tetris.UpDownCasesLoopMenu(1,1, choiceMenu, numberChoice, 
+						sizeBetweenText, xShift, cadre);
 				break;
 
 			case SDLK_UP:
-				tetris.UpDownCasesLoopMenu(1,0, choiceMenu, numberChoice, sizeBetweenText, xShift, cadre);
+				tetris.UpDownCasesLoopMenu(1,0, choiceMenu, numberChoice, 
+						sizeBetweenText, xShift, cadre);
 				break;
 
 			case SDLK_RETURN:
@@ -265,7 +269,6 @@ void Jeu::parametresmain(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1,
 					SDL_Rect cadre ={w/2-xShift-25, h/2- (numberChoice * sizeBetweenText)/2
 							+ sizeBetweenText, 2*xShift+50, 40};
 				}
-
 
 				else if (choiceMenu == 2){
 					SDL_SetRenderTarget(renderer, NULL);
@@ -299,11 +302,11 @@ void Jeu::parametresaudio(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 	SDL_SetRenderDrawColor(renderer,17,17,52,255);
 	SDL_RenderFillRect(renderer, NULL);
 
-	tetris.printGenericMenu(audiomenu,xShift,sizeBetweenText,1,numberChoice, "Tetris", "Volume audio");
+	tetris.printGenericMenu(audiomenu,xShift,sizeBetweenText,1,numberChoice, 
+			"Tetris", "Volume audio");
 
 	SDL_Rect cadre ={w/2-125, h/2, 250, 40};
 
-	//on affiche un deuxième texte en dessous
 	SDL_SetRenderDrawColor(renderer,0,0,0,255);
 	//on met en noir le cadre qui aura été fait autour de Volume dans la fonction
 	SDL_RenderDrawRect(renderer, &cadre);
@@ -328,12 +331,9 @@ void Jeu::parametresaudio(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 
 	SDL_RenderPresent(renderer);
 
-	int choiceMenu = 0;
-	//UODATE CETTE VARIABLE SI CHANGEMENT
-
+	int choiceMenu = 0 ;
 	bool quit_menu = false;
 	SDL_Event event;
-
 	while (!quit_menu && SDL_WaitEvent(&event)){
 		switch (event.type)
 		{
@@ -346,11 +346,13 @@ void Jeu::parametresaudio(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 			switch( event.key.keysym.sym ){
 
 			case SDLK_DOWN:
-				tetris.UpDownCasesLoopMenu(1,1, choiceMenu, numberChoice, sizeBetweenText, xShift, cadre, true);
+				tetris.UpDownCasesLoopMenu(1,1, choiceMenu, numberChoice, 
+						sizeBetweenText, xShift, cadre, true);
 				break;
 
 			case SDLK_UP:
-				tetris.UpDownCasesLoopMenu(1,0, choiceMenu, numberChoice, sizeBetweenText, xShift, cadre, true);
+				tetris.UpDownCasesLoopMenu(1,0, choiceMenu, numberChoice, 
+						sizeBetweenText, xShift, cadre, true);
 				break;
 
 			case SDLK_LEFT:
