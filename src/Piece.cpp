@@ -806,6 +806,23 @@ void ITetri::update() {
 	this->dst[3].y=3;
 }
 
+void ITetri::printNextPiece2(SDL_Renderer* renderer, 
+		SDL_Texture*  blank,SDL_Texture* texture){
+	Piece temp = *this;
+	temp.dst[0].x = floor(BLOCSX/2);
+	temp.dst[1].x = floor(BLOCSX/2) + 1;
+	temp.dst[2].x = floor(BLOCSX/2) + 2;
+	temp.dst[3].x = floor(BLOCSX/2) + 3;
+	
+	temp.dst[0].y = 1 ;
+	temp.dst[1].y = 1 ;
+	temp.dst[2].y = 1 ;
+	temp.dst[3].y = 1 ;
+	
+	//temp.mvDstToSrc(temp);
+	
+	temp.Piece::printNextPiece2(renderer, blank, texture);
+}
 
 TTetri::TTetri(unsigned int options) : Piece() {
 	this->opt = options;

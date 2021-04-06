@@ -524,6 +524,9 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 				break;
 
 			case SDLK_RETURN:
+				if(choiceMenu==1) {
+
+				}
 
 				if (choiceMenu == 2){
 					quit_menu = true;

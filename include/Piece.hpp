@@ -154,7 +154,7 @@ public :
 	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture,
 	int alpha = 255, bool erase=false, int shift = 0);
 
-	void printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture);
+	virtual void printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture);
 
 
 	void affiche_coord(bool source, bool dest);
@@ -181,6 +181,9 @@ class ITetri : public Piece {
 	public:
 		ITetri(unsigned int options );
 		void update() override;
+		void printNextPiece2(SDL_Renderer* renderer,
+		SDL_Texture*  blank,SDL_Texture* texture) override;
+
 };
 
 
