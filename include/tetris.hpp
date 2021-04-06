@@ -27,6 +27,7 @@ protected:
     SDL_Texture *texture;
 	SDL_Texture *menu;
 	int volume;
+	unsigned int options;
 
 	//Piece *piece;
 
@@ -69,10 +70,13 @@ public :
 	int sizeBetweenText, bool retour, int numItem,...);
 	void UpDownCasesLoopMenu(int retour, int way, int & choiceMenu ,
 		int numberChoice, int sizeBetweenText, int xShift,SDL_Rect & cadre, bool vol = false) ;
+	void addmenuoptions(SDL_Texture * menu, int xShift, int sizeBetweenText,
+			int numberChoice, int indice, int numItem,const char * str1, const char*str2);
 
 	bool getquit() {return quitgame;};
 	int geth() {return h;};
 	int getw() {return w;};
+	int getopt() {return options;};
 	SDL_Renderer* get_renderer() {return renderer;};
 	SDL_Window* get_pWindow() {return pWindow;};
 	SDL_Texture* get_menu() {return menu;};
@@ -83,6 +87,15 @@ public :
     ~Tetris(); // destructor
 
 
+};
+
+enum Options {
+  EYES = 0x01,
+  MILIEU = 0x02,
+  WHITE_LINED = 0x04,
+  CLASSIC = 0x08,
+  ACCESS = 0x10,
+  PASTEL = 0x20,
 };
 
 #endif

@@ -28,9 +28,9 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 		printf("Erreur d'initialisation de la SDL : %s",SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
-	
+
 	SDL_DisplayMode dm;
-	
+
 	if (SDL_GetDesktopDisplayMode(0, &dm) != 0) {
 		SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
 	}
@@ -40,22 +40,22 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 		int minFactor = dm.w / (3*BLOCSX) < dm.h / BLOCSY ? dm.w / (3*BLOCSX) : dm.h / BLOCSY;
 		w = 3*BLOCSX * minFactor;
 		h = BLOCSY * minFactor;
-		
+
 		//on prend seulement une partie de lécran
 		w = (int)((float)(w)*(4./5.));
 		h = (int)((float)(h)*(4./5.));
-		
+
 		//on passe les paramètres à sizeTetris
 		sizeTetris.w = w/3 ;
 		sizeTetris.w = (sizeTetris.w/10) *10; //sizeTetris.w doit être un multple de BLOCSX = 10
-		sizeTetris.h = sizeTetris.w * 2; 
-		
+		sizeTetris.h = sizeTetris.w * 2;
+
 		w = sizeTetris.w * 3;
 		h = sizeTetris.h;
-		
+
 		sizeTetris.x = sizeTetris.w;
 	}
-	
+
 	if(Mix_OpenAudio(48000, MIX_DEFAULT_FORMAT, 2, 4096) == -1) //Initialisation de l'API Mixer
 	{
 		printf("%s", Mix_GetError());
@@ -222,7 +222,6 @@ void Jeu::parametresmain(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1,
 	SDL_RenderFillRect(renderer, NULL);
 
 	tetris.printGenericMenu(parammenu,xShift,sizeBetweenText,1,numberChoice, "Tetris", "Audio", "Graphiques");
-
 	//on revient sur le renderer
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderCopy(renderer, parammenu, NULL, NULL);
@@ -262,10 +261,18 @@ void Jeu::parametresmain(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1,
 					SDL_RenderCopy(renderer, parammenu, NULL, NULL);
 					SDL_RenderPresent(renderer);
 					choiceMenu = 0;
-					SDL_Rect cadre ={w/2-xShift-25, h/2- (numberChoice * sizeBetweenText)/2
+					cadre ={w/2-xShift-25, h/2- (numberChoice * sizeBetweenText)/2
 							+ sizeBetweenText, 2*xShift+50, 40};
 				}
 
+				if (choiceMenu == 1){
+					parametresgraph(renderer, tetris, P1,P2);
+					SDL_RenderCopy(renderer, parammenu, NULL, NULL);
+					SDL_RenderPresent(renderer);
+					choiceMenu = 0;
+					cadre ={w/2-xShift-25, h/2- (numberChoice * sizeBetweenText)/2
+							+ sizeBetweenText, 2*xShift+50, 40};
+				}
 
 				else if (choiceMenu == 2){
 					SDL_SetRenderTarget(renderer, NULL);
@@ -398,6 +405,143 @@ void Jeu::parametresaudio(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 		}
 	}
 	SDL_DestroyTexture(audiomenu);
+}
+
+void Jeu::DrawCheckboxes(SDL_Renderer* renderer, Tetris tetris) {
+	int h= tetris.geth();
+	int w= tetris.getw();
+	int sizeBetweenText = 80;
+	SDL_Rect checkbox = { w/2-15, h/2 + sizeBetweenText + 15, 30, 30};
+	unsigned int modes[3] = {0x01,0x02,0x04};
+	for(int i = 0; i< 3; i++) {
+		SDL_SetRenderDrawColor(renderer,150,150,150,255);
+		SDL_RenderFillRect(renderer, &checkbox);
+		SDL_SetRenderDrawColor(renderer,255,255,255,255);
+		SDL_RenderDrawRect(renderer, &checkbox);
+		if(tetris.getopt()&modes[i]) {
+			SDL_RenderDrawLine(renderer,checkbox.x,checkbox.y, checkbox.x+checkbox.w, checkbox.y+checkbox.h);
+			SDL_RenderDrawLine(renderer,checkbox.x, checkbox.y+checkbox.h, checkbox.x+checkbox.w,checkbox.y);
+		}
+		if(i==0) checkbox.x+= sizeBetweenText+250;
+		else checkbox.x-= 2*(sizeBetweenText+250);
+	}
+}
+
+void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1, TTF_Font * P2) {
+	int numberChoice = 3;
+	int sizeBetweenText = 80, xShift = 100;
+	int h= tetris.geth();
+	int w= tetris.getw();
+	SDL_Texture* graphmenu = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
+			SDL_TEXTUREACCESS_TARGET, tetris.getw(), tetris.geth());
+
+	SDL_SetRenderTarget(renderer, graphmenu);
+	SDL_SetRenderDrawColor(renderer,17,17,52,255);
+	SDL_RenderFillRect(renderer, NULL);
+
+	tetris.printGenericMenu(graphmenu,xShift,sizeBetweenText,1,numberChoice, "Parametres Graphiques", "Mode", "Lignes Blanches");
+	const char * str1= "Alternatif";
+	const char * str2= "Yeux";
+	tetris.addmenuoptions(graphmenu,xShift,sizeBetweenText,numberChoice, 2, 2, str1, str2);
+	DrawCheckboxes(renderer, tetris);
+
+	SDL_SetRenderTarget(renderer, NULL);
+	SDL_RenderCopy(renderer, graphmenu, NULL, NULL);
+
+	SDL_RenderPresent(renderer);
+
+	SDL_Rect cadre = { w/2-xShift-25, h/2 - (numberChoice * sizeBetweenText)/2+sizeBetweenText, 2*xShift+50, 40};
+
+	//cadre.y += sizeBetweenText;
+	//cadre.x += sizeBetweenText;
+
+	//on affiche les deux autres modes
+
+
+	int choiceMenu = 0;
+	int choiceX = 0;
+
+	bool quit_menu = false;
+	SDL_Event event;
+
+	while (!quit_menu && SDL_WaitEvent(&event)){
+		switch (event.type)
+		{
+		case SDL_QUIT:
+			quit_menu = true;
+			break;
+
+		case SDL_KEYDOWN:
+
+			switch( event.key.keysym.sym ){
+
+			case SDLK_DOWN:
+				if(choiceX!=0) {
+					cadre.x -= choiceX*(sizeBetweenText+xShift+50);
+					choiceX=0;
+				}
+				SDL_SetRenderDrawColor(renderer,0,0,0,255);
+				SDL_RenderDrawRect(renderer, &cadre);
+				tetris.UpDownCasesLoopMenu(1,1, choiceMenu, numberChoice, sizeBetweenText, xShift, cadre);
+				break;
+
+			case SDLK_UP:
+				if(choiceX!=0) {
+					cadre.x -= choiceX*(sizeBetweenText+2*xShift+50);
+					choiceX=0;
+				}
+				SDL_SetRenderDrawColor(renderer,0,0,0,255);
+				SDL_RenderDrawRect(renderer, &cadre);
+				tetris.UpDownCasesLoopMenu(1,0, choiceMenu, numberChoice, sizeBetweenText, xShift, cadre);
+				break;
+
+			case SDLK_LEFT:
+				if(choiceMenu==1) {
+					SDL_SetRenderDrawColor(renderer,0,0,0,255);
+					SDL_RenderDrawRect(renderer, &cadre);
+					SDL_SetRenderDrawColor(renderer,255,255,255,255);
+					if(choiceX>-1) {
+						choiceX--;
+						cadre.x -= sizeBetweenText+2*xShift+50;
+					}
+					SDL_RenderDrawRect(renderer, &cadre);
+					SDL_RenderPresent(renderer);
+				}
+				break;
+
+			case SDLK_RIGHT:
+				if(choiceMenu==1) {
+					SDL_SetRenderDrawColor(renderer,0,0,0,255);
+					SDL_RenderDrawRect(renderer, &cadre);
+					SDL_SetRenderDrawColor(renderer,255,255,255,255);
+					if(choiceX<1) {
+						choiceX++;
+						cadre.x += sizeBetweenText+2*xShift+50;
+					}
+					SDL_RenderDrawRect(renderer, &cadre);
+					SDL_RenderPresent(renderer);
+				}
+				break;
+
+			case SDLK_RETURN:
+
+				if (choiceMenu == 2){
+					quit_menu = true;
+				}
+				break;
+
+			case SDLK_ESCAPE:
+				quit_menu = true;
+				break;
+
+			default:
+				break;
+			}
+
+		default :break;
+		}
+	}
+	SDL_DestroyTexture(graphmenu);
 }
 
 int main(int argc, char** argv)

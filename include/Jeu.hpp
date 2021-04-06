@@ -13,6 +13,9 @@ public:
 	bool MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris);
 	void parametresmain(SDL_Renderer* renderer, Tetris &tetris, TTF_Font * P1, TTF_Font * P2);
 	void parametresaudio(SDL_Renderer* renderer, Tetris &tetris, TTF_Font * P1, TTF_Font * P2);
+	void parametresgraph(SDL_Renderer* renderer, Tetris &tetris, TTF_Font * P1, TTF_Font * P2);
+
+	void DrawCheckboxes(SDL_Renderer* renderer, Tetris tetris);
 private:
 	Mix_Music* music;
 

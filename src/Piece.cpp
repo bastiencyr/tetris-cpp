@@ -16,7 +16,8 @@
 
 SDL_Rect Piece::locTetris;
 
-Piece::Piece() {
+Piece::Piece(unsigned int options) {
+	this->opt = options;
 	this->color[0]=0;
 	this->color[1]=255;
 	this->color[2]=255;
@@ -63,7 +64,7 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 	//pour que la transparence soit prise en compte
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
-	
+
 	int factor = locTetris.w/BLOCSX;
 
 	SDL_Rect src_r[4];
@@ -84,7 +85,7 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 		dst_r[i].w=this->dst[i].w*factor-1;
 		dst_r[i].h=this->dst[i].h*factor-1;
 
-		if(ACCESS || CLASSIC || MILIEU) {
+		if(this->opt & (ACCESS | CLASSIC | MILIEU)) {
 			blanc[i].x=(this->dst[i].x+shift)*factor + locTetris.x + 0.2*factor+1;
 			blanc[i].y=((this->dst[i].y))*factor + locTetris.y + 0.2*factor+1;
 			blanc[i].w=this->dst[i].w*factor - 0.4*factor-1;
@@ -97,7 +98,7 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 			blanc[i].h=this->dst[i].h*factor - 0.3*factor;-1;
 		}
 
-		if(EYES) {
+		if(this->opt & EYES) {
 			eyes[i][0].x=(this->dst[i].x+shift)*factor + locTetris.x + 0.25*factor+1;
 			eyes[i][0].y=((this->dst[i].y))*factor + locTetris.y + 0.7*factor+1;
 			eyes[i][0].w=this->dst[i].w*factor*0.15-1;;
@@ -115,9 +116,9 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 		for(int i=0; i<4; i++) {
 			if(dst[i].y!=-1) {
 			//couleur du carré
-			if(ACCESS || CLASSIC) {
+			if(this->opt & (ACCESS | CLASSIC)) {
 				SDL_SetRenderDrawColor(renderer, 20,20,20, alpha);
-				if(ACCESS)
+				if(this->opt & ACCESS)
 					SDL_SetRenderDrawColor(renderer, 0,255,4, alpha);
 
 				SDL_RenderDrawRect(renderer, &dst_r[i]);
@@ -125,7 +126,7 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 			}
 			else {
 				SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1], this->color[2], alpha);
-				if(PASTEL) {
+				if(this->opt & PASTEL) {
 					SDL_SetRenderDrawColor(renderer, this->pastel[0], this->pastel[1], this->pastel[2], alpha);
 					SDL_RenderFillRect(renderer, &dst_r[i]);
 
@@ -145,7 +146,7 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 			//en noir
 			SDL_SetRenderDrawColor(renderer, 10, 10,10, alpha*0.5);
 			//en blanc
-			if(WHITE_LINED)
+			if(this->opt & WHITE_LINED)
 				SDL_SetRenderDrawColor(renderer, 255, 255,255, alpha*0.5);
 
 
@@ -153,7 +154,7 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 
 
 
-			if(EYES) {
+			if(this->opt & EYES) {
 				//yeux (jsp pourquoi)
 
 				SDL_SetRenderDrawColor(renderer, 0, 0,0, alpha*0.9);
@@ -456,13 +457,13 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 	SDL_SetRenderTarget(renderer, texture);
 
 	SDL_SetRenderDrawColor(renderer,63,63,63,255);
-	if(CLASSIC) {
+	if(this->opt & CLASSIC) {
 		SDL_SetRenderDrawColor(renderer,175,175,135,255);
 	}
-	else if(ACCESS) {
+	else if(this->opt & ACCESS) {
 		SDL_SetRenderDrawColor(renderer,10,10,10,255);
 	}
-	else if(PASTEL) {
+	else if(this->opt & PASTEL) {
 		SDL_SetRenderDrawColor(renderer,212,255,254,255);
 		//SDL_SetRenderDrawColor(renderer,10,10,10,255);
 	}
@@ -479,7 +480,7 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 	SDL_SetRenderTarget(renderer, NULL);
 
 
-	Piece * temp = new Piece;
+	Piece * temp = new Piece(this->opt);
 	temp->adjust(this);
 	int a =  locTetris.w/(2*factor) +2;
 	int b = locTetris.h/(2*factor);
@@ -493,7 +494,7 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 
 void Piece::DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen) {
 	Piece temp = *ref;
-	
+
 	while (temp.isLegalDown(mat).NO_ERROR)
 		for (int i=0 ; i <4 ; i++)
 			temp.dst[i].y ++;
@@ -504,10 +505,10 @@ void Piece::DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen) {
 			this->dst[i].x = temp.dst[i].x;
 			this->dst[i].y = temp.dst[i].y;
 	}
-	
+
 	if(gen)
 		this->mvDstToSrc(*this);
-	
+
 }
 
 void Piece::holdPiece(bool mat[BLOCSX][BLOCSY]){
@@ -516,7 +517,7 @@ void Piece::holdPiece(bool mat[BLOCSX][BLOCSY]){
 
 	Piece temp = *this;
 	while (temp.isLegalDown(mat).NO_ERROR)
-		for (int i=0 ; i <4 ; i++) temp.dst[i].y += 1; 
+		for (int i=0 ; i <4 ; i++) temp.dst[i].y += 1;
 
 	for (int i=0 ; i <4 ; i++){
 		this->src[i].y = this->dst[i].y;
@@ -545,17 +546,17 @@ int Piece::nbFullLine(bool mat[BLOCSX][BLOCSY]){
 }
 
 void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
-	
-	//define some functions. This functions are useful to calculate 
+
+	//define some functions. This functions are useful to calculate
 	//the score of a position piece
-	auto sumHauteur = [&] (Piece best_piece)  
-	{   
+	auto sumHauteur = [&] (Piece best_piece)
+	{
 		int sumHauteur = 0;
 		for (int i=0; i<4; i++)
 			sumHauteur += BLOCSY - best_piece.dst[i].y ;
 		return sumHauteur;
 	};
-	
+
 	//return the number of "trou" in a matrice
 	auto nbTrou = [&] ( bool matTemp[BLOCSX][BLOCSY]){
 		int nbTrou =0;
@@ -571,10 +572,10 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 		}
 		return nbTrou;
 	};
-	
+
 	auto diffHauteurs = [&] ( bool matTemp[BLOCSX][BLOCSY]){
 		int totDiff = 0;
-		
+
 		int maxHauteur[BLOCSX];
 		for (int i=0; i<BLOCSX; i++){
 			maxHauteur[i]=0;
@@ -584,7 +585,7 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 				j++;
 			}
 		}
-		
+
 		for(int i=0; i<BLOCSX-1; i++){
 			if (maxHauteur[i+1]-maxHauteur[i] >=0)
 				totDiff+=(maxHauteur[i+1]-maxHauteur[i]+1);
@@ -593,16 +594,16 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 		}
 		return totDiff;
 	};
-	
+
 	//on déplace la dest dans la source pour  draw
 	this->mvDstToSrc(*this);
 	bool matTemp[BLOCSX][BLOCSY];
-	
+
 	//get minimum x of a piece
 	int minX =40;
 	for (auto & rect : this->dst )
 		minX = rect.x < minX ? rect.x : minX;
-	
+
 	Piece best_piece = *this, init_piece = *this;
 	for (int i =0 ; i<4; i++)
 		init_piece.dst[i].x = this->dst[i].x - minX;
@@ -644,7 +645,7 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 		init_piece.rotateRight();
 		rotation++;
 	}
-	//update matrice 
+	//update matrice
 	for(int i = 0; i < 4; i++)
 		mat[this->getx(i)][this->gety(i)]=true;
 }
@@ -652,7 +653,9 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
  ########################          LEFT L         #############################
  ############################################################################*/
 
-JTetri::JTetri() : Piece(){
+JTetri::JTetri(unsigned int options ) : Piece(options){
+	this->opt = options;
+
 	this->color[0]=0;
 	this->color[1]=90;
 	this->color[2]=157;
@@ -684,7 +687,9 @@ void JTetri::update() {
 	this->dst[3].y=2;
 }
 
-LTetri::LTetri() : Piece(){
+LTetri::LTetri(unsigned int options) : Piece(){
+	this->opt = options;
+
 	this->color[0]=248;
 	this->color[1]=150;
 	this->color[2]=34;
@@ -724,7 +729,9 @@ void LTetri::update(){
 
 }
 
-OTetri::OTetri() : Piece() {
+OTetri::OTetri(unsigned int options) : Piece() {
+	this->opt = options;
+
 	this->color[0]=253;
 	this->color[1]=225;
 	this->color[2]=0;
@@ -765,7 +772,9 @@ Error OTetri::isLegalRotateRight(bool mat[BLOCSX][BLOCSY]){
 void OTetri::rotateRight(bool moveSource){
 }
 
-ITetri::ITetri() : Piece() {
+ITetri::ITetri(unsigned int options) : Piece() {
+	this->opt = options;
+
 	this->color[0]=43;
 	this->color[1]=172;
 	this->color[2]=226;
@@ -798,7 +807,9 @@ void ITetri::update() {
 }
 
 
-TTetri::TTetri() : Piece() {
+TTetri::TTetri(unsigned int options) : Piece() {
+	this->opt = options;
+
 	this->color[0]=146;
 	this->color[1]=43;
 	this->color[2]=140;
@@ -831,7 +842,9 @@ void TTetri::update() {
 	this->dst[3].y=1;
 }
 
-ZTetri::ZTetri() : Piece() {
+ZTetri::ZTetri(unsigned int options) : Piece() {
+	this->opt = options;
+
 	this->color[0]=238;
 	this->color[1]=39;
 	this->color[2]=51;
@@ -864,7 +877,9 @@ void ZTetri::update() {
 }
 
 
-STetri::STetri() : Piece() {
+STetri::STetri(unsigned int options) : Piece() {
+	this->opt = options;
+
 	this->color[0]=78;
 	this->color[1]=183;
 	this->color[2]=72;
