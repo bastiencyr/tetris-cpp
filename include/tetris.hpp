@@ -75,6 +75,7 @@ public :
 	void addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2 = false);
 
 	bool printMenu();
+	void updateAndPrintScore(int& score, int& ScoreOld, int& sc);
 
 	bool printGenericMenu(SDL_Texture * text_texture, int xShift,
 	int sizeBetweenText, bool retour, int numItem,...);

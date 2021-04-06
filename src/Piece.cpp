@@ -104,7 +104,7 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 			eyes[i][0].w=this->dst[i].w*factor*0.15-1;;
 			eyes[i][0].h=this->dst[i].h*factor*0.15-1;;
 
-			eyes[i][1].x=this->dst[i].x*factor + locTetris.x + 0.6*factor+1;
+			eyes[i][1].x=(this->dst[i].x + shift)*factor + locTetris.x + 0.6*factor+1;
 			eyes[i][1].y=((this->dst[i].y))*factor + locTetris.y + 0.7*factor+1;
 			eyes[i][1].w=this->dst[i].w*factor*0.15-1;
 			eyes[i][1].h=this->dst[i].h*factor*0.15-1;
