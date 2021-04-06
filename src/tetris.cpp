@@ -364,7 +364,7 @@ bool Tetris::loop(Mix_Music* music, bool multiplayer)
 					blank,texture);
 			t=0;
 		}
-
+		
 		if (multiplayer and tIA>=2 ){
 			if(multiplayer){
 				randn = rand() % 7;
@@ -376,28 +376,69 @@ bool Tetris::loop(Mix_Music* music, bool multiplayer)
 			}
 			tIA = 0;
 		}
-
+		
 		d=TetrisLinesUpdate(&score);
 		dia = TetrisLinesUpdate(&scoreIA, true);
 		//if(d==1) Mix_PlayMusic(line, 0);
 		//else if(d>1) Mix_PlayMusic(lines, 0);
 		if (multiplayer and dia >= 1) this->addLineToPlayer(dia, piece, ghost);
 		if (multiplayer and d >= 1) this->addLineToPlayer(dia, pieceIA, ghost, true);
-
-		if(score-ScoreOld>500) {
-			ScoreOld=score;
-			if(sc!=17) {
-				sc++;
-				std::cout << "Niveau supérieur !" << std::endl;
-				std::cout << "		Niveau :" << sc << std::endl;
-			}
-			//std::cout << "		Score :" << score << std::endl << std::endl;
-		}
-
+		
+		this->updateAndPrintScore(score, ScoreOld, sc);
+		
 		SDL_RenderPresent(renderer);
 	}
-	this->printMenu();
+	//this->printMenu();
 	return quitgame;
+}
+
+void Tetris::updateAndPrintScore(int& score, int& ScoreOld, int& sc){
+	
+	if (score > ScoreOld){
+		TTF_Font * police = TTF_OpenFont("src/RetroGaming.ttf", 65);
+		if(!police){
+			std::cout << TTF_GetError()<< std::endl;
+		}
+		
+		SDL_Color textColor = {0, 255, 255};
+		SDL_Surface * text_surface = TTF_RenderText_Blended(police, "Score", textColor);
+		SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+		
+		SDL_Rect dstrect = {0, 0, 100, 40 };
+		
+		SDL_SetRenderTarget(renderer, texture);
+		SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
+		SDL_SetRenderTarget(renderer, NULL);
+		SDL_RenderCopy(renderer, texture, &dstrect, &dstrect);
+		
+		std::string scoreStr = std::to_string ( score );
+		char * scoreStrArr = &scoreStr[0];
+		text_surface = TTF_RenderText_Blended(police, scoreStrArr, textColor);
+		text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+		
+		SDL_Rect dstrect2 = {0, 60, 100, 40 };
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); 
+		
+		SDL_SetRenderTarget(renderer, texture);
+		SDL_RenderFillRect(renderer, &dstrect2);
+		
+		SDL_RenderCopy(renderer, text_texture, NULL, &dstrect2);
+		SDL_SetRenderTarget(renderer, NULL);
+		SDL_RenderCopy(renderer, texture, &dstrect2, &dstrect2);
+		
+		SDL_DestroyTexture(text_texture);
+		SDL_FreeSurface(text_surface);
+		TTF_CloseFont(police);
+	}
+	
+	if(score-ScoreOld>500) {
+		ScoreOld=score;
+		if(sc!=17) {
+			sc++;
+			std::cout << "Niveau supérieur !" << std::endl;
+			std::cout << "		Niveau :" << sc << std::endl;
+		}
+	}
 }
 
 void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2){
