@@ -16,6 +16,16 @@
 #define BLOCSX 10
 #define BLOCSY 20
 
+enum Options {
+  EYES = 0x01,
+  MILIEU = 0x02,
+  WHITE_LINED = 0x04,
+  CLASSIC = 0x08,
+  ACCESS = 0x10,
+  PASTEL = 0x20,
+};
+
+
 class Tetris
 {
 protected:
@@ -73,6 +83,7 @@ public :
 	void addmenuoptions(SDL_Texture * menu, int xShift, int sizeBetweenText,
 			int numberChoice, int indice, int numItem,const char * str1, const char*str2);
 	void minimenu(SDL_Texture * menu, SDL_Rect * cadre);
+	void DrawSelected();
 
 	bool getquit() {return quitgame;};
 	int geth() {return h;};
@@ -83,21 +94,14 @@ public :
 	SDL_Texture* get_menu() {return menu;};
 	int getvolume() {return volume;};
 	void setoption(unsigned int opt) {options ^= opt;};
+	void setmodedefault() {options&=~CLASSIC; options&=~ACCESS; options&=~PASTEL;};
+	void setmode(unsigned int opt) {options&=~CLASSIC; options&=~ACCESS; options&=~PASTEL; options|=opt;};
 	int upvolume() {if(volume<MIX_MAX_VOLUME) volume++; return volume;};
 	int downvolume() {if(volume >0) volume --; return volume;};
 
     ~Tetris(); // destructor
 
 
-};
-
-enum Options {
-  EYES = 0x01,
-  MILIEU = 0x02,
-  WHITE_LINED = 0x04,
-  CLASSIC = 0x08,
-  ACCESS = 0x10,
-  PASTEL = 0x20,
 };
 
 #endif

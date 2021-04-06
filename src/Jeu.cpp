@@ -411,7 +411,7 @@ void Jeu::DrawCheckboxes(SDL_Renderer* renderer, Tetris &tetris) {
 	int w= tetris.getw();
 	int sizeBetweenText = 80;
 	SDL_Rect checkbox = { w/2-15, h/2 + sizeBetweenText + 15, 30, 30};
-	unsigned int modes[3] = {WHITE_LINED,ACCESS,EYES};
+	unsigned int modes[3] = {WHITE_LINED,MILIEU,EYES};
 	for(int i = 0; i< 3; i++) {
 		SDL_SetRenderDrawColor(renderer,150,150,150,255);
 		SDL_RenderFillRect(renderer, &checkbox);
@@ -476,22 +476,22 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 			switch( event.key.keysym.sym ){
 
 			case SDLK_DOWN:
-				if(choiceX!=0) {
-					cadre.x -= choiceX*(sizeBetweenText+xShift+50);
-					choiceX=0;
-				}
 				SDL_SetRenderDrawColor(renderer,0,0,0,255);
 				SDL_RenderDrawRect(renderer, &cadre);
+				if(choiceX!=0) {
+					cadre.x = w/2-xShift-25;
+					choiceX=0;
+				}
 				tetris.UpDownCasesLoopMenu(1,1, choiceMenu, numberChoice, sizeBetweenText, xShift, cadre);
 				break;
 
 			case SDLK_UP:
-				if(choiceX!=0) {
-					cadre.x -= choiceX*(sizeBetweenText+2*xShift+50);
-					choiceX=0;
-				}
 				SDL_SetRenderDrawColor(renderer,0,0,0,255);
 				SDL_RenderDrawRect(renderer, &cadre);
+				if(choiceX!=0) {
+					cadre.x = w/2-xShift-25;
+					choiceX=0;
+				}
 				tetris.UpDownCasesLoopMenu(1,0, choiceMenu, numberChoice, sizeBetweenText, xShift, cadre);
 				break;
 
@@ -526,11 +526,15 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 			case SDLK_RETURN:
 				if(choiceMenu==0) {
 					tetris.minimenu(graphmenu, &cadre);
+					cadre = { w/2-xShift-25, h/2 - (numberChoice * sizeBetweenText)/2+sizeBetweenText, 2*xShift+50, 40};
+					SDL_SetRenderDrawColor(renderer,0,0,0,255);
+					SDL_RenderDrawRect(renderer, &cadre);
+					SDL_SetRenderDrawColor(renderer,255,255,255,255);
 				}
 				else if(choiceMenu==1) {
 					if(choiceX==-1) tetris.setoption(EYES);
 					else if(choiceX == 0) tetris.setoption(WHITE_LINED);
-					else tetris.setoption(ACCESS);
+					else tetris.setoption(MILIEU);
 					DrawCheckboxes(renderer, tetris);
 				}
 

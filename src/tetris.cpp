@@ -464,6 +464,35 @@ void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool p
 	this->printMatrice();
 }
 
+void Tetris::DrawSelected() {
+	int sizeBetweenText=40;
+	SDL_Rect checkbox = {w/2+100, h/2 - 60/2, 20, 20};
+	int mode=0;
+	unsigned int modes[3] = {CLASSIC,ACCESS,PASTEL};
+	SDL_SetRenderDrawColor(renderer,150,150,150,255);
+	SDL_RenderFillRect(renderer, &checkbox);
+	for(int i = 0; i< 3; i++) {
+		checkbox.y+= sizeBetweenText;
+		SDL_SetRenderDrawColor(renderer,150,150,150,255);
+		SDL_RenderFillRect(renderer, &checkbox);
+		SDL_SetRenderDrawColor(renderer,255,255,255,255);
+		SDL_RenderDrawRect(renderer, &checkbox);
+		if(this->options&modes[i]) {
+			SDL_RenderDrawLine(renderer,checkbox.x,checkbox.y, checkbox.x+checkbox.w, checkbox.y+checkbox.h);
+			SDL_RenderDrawLine(renderer,checkbox.x, checkbox.y+checkbox.h, checkbox.x+checkbox.w,checkbox.y);
+			mode++;
+		}
+	}
+	if(mode==0) {
+		checkbox.y -= sizeBetweenText*3;
+		SDL_SetRenderDrawColor(renderer,255,255,255,255);
+		SDL_RenderDrawRect(renderer, &checkbox);
+		SDL_RenderDrawLine(renderer,checkbox.x,checkbox.y, checkbox.x+checkbox.w, checkbox.y+checkbox.h);
+		SDL_RenderDrawLine(renderer,checkbox.x, checkbox.y+checkbox.h, checkbox.x+checkbox.w,checkbox.y);
+	}
+	SDL_RenderPresent(renderer);
+}
+
 void Tetris::minimenu(SDL_Texture * menu, SDL_Rect * cadre) {
 	SDL_Texture * temp = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
@@ -495,7 +524,68 @@ void Tetris::minimenu(SDL_Texture * menu, SDL_Rect * cadre) {
 		SDL_RenderCopy(renderer, text_texture, NULL, &texte);
 	}
 	SDL_RenderPresent(renderer);
+
+	DrawSelected();
+	int choiceMenu = 0;
+	int numberChoice = 4, sizeBetweenText = 40, xShift = 100;;
+	bool quit_menu = false;
+	SDL_Event event;
+
+	while (!quit_menu && SDL_WaitEvent(&event)){
+		switch (event.type)
+		{
+		case SDL_QUIT:
+			quit_menu = true;
+			break;
+
+		case SDL_KEYDOWN:
+
+			switch( event.key.keysym.sym ){
+
+			case SDLK_DOWN:
+				this->UpDownCasesLoopMenu(0,1, choiceMenu, numberChoice, sizeBetweenText, xShift, *cadre);
+				break;
+
+			case SDLK_UP:
+				this->UpDownCasesLoopMenu(0,0, choiceMenu, numberChoice, sizeBetweenText, xShift, *cadre);
+				break;
+
+			case SDLK_RETURN:
+				if (choiceMenu == 0){
+					setmodedefault();
+					DrawSelected();
+				}
+
+				else if (choiceMenu == 1){
+					setmode(CLASSIC);
+					DrawSelected();
+				}
+
+				else if (choiceMenu == 2){
+					setmode(ACCESS);
+					DrawSelected();
+				}
+
+				else if (choiceMenu == 3){
+					setmode(PASTEL);
+					DrawSelected();
+				}
+				break;
+
+			case SDLK_ESCAPE:
+				quit_menu = true;
+				break;
+
+			default:
+				break;
+			}
+
+		default :break;
+		}
+	}
+	TTF_CloseFont(police);
 	SDL_RenderCopy(renderer, temp, NULL, NULL);
+	SDL_RenderPresent(renderer);
 }
 
 void Tetris::addmenuoptions(SDL_Texture * menu, int xShift, int sizeBetweenText,
