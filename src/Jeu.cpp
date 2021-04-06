@@ -176,8 +176,6 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 				}
 				else if (choiceMenu == 1){
 					SDL_RenderClear(renderer);
-					//on remet a la bonne taille
-					//SDL_SetWindowSize(pWindow, w, h);
 					tetris.init(music, true); //mettre a true si multiplayer
 					SDL_RenderPresent(renderer);
 					tetris.loop(music, true); //mettre a true si multiplayer

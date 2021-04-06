@@ -63,12 +63,11 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris, SDL_Renderer* renderer, bool mu
 	sizeTetris.y = locTetris.y;
 
 	int sizeCase = locTetris.w/BLOCSX;
-	if (multiplayer){
-		sizeTetris2.w = locTetris.w;
-		sizeTetris2.h = sizeTetris.w*2;
-		sizeTetris2.x = locTetris.x + locTetris.w + sizeCase * 7;
-		sizeTetris2.y = locTetris.y;
-	}
+	
+	sizeTetris2.w = locTetris.w;
+	sizeTetris2.h = sizeTetris.w*2;
+	sizeTetris2.x = sizeTetris2.w; //+ size_bloc * 7;
+	sizeTetris2.y = locTetris.y;
 }
 
 Tetris::~Tetris(){
@@ -85,7 +84,7 @@ void Tetris::init(Mix_Music* music, bool multiplayer){
 	int size_bloc = sizeTetris.w/BLOCSX;
 	if (multiplayer){
 		sizeTetris.x = 0;
-		sizeTetris2.x = sizeTetris.w + size_bloc * 7;
+		sizeTetris2.x = 2 * sizeTetris.w ;
 	}
 
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
@@ -252,6 +251,7 @@ bool Tetris::loop(Mix_Music* music, bool multiplayer)
 	ghost->DownGhost(mat,piece,1);
 	ghost->draw(renderer,blank,texture,OPAC);
 
+	int sizeBloc = sizeTetris.w/BLOCSX;
 	//BOUCLE
 	while (!quit)
 	{
@@ -371,7 +371,8 @@ bool Tetris::loop(Mix_Music* music, bool multiplayer)
 				pieceIA = PiecListIA[randn];
 				pieceIA->update();
 				pieceIA->cheat(matIA);
-				pieceIA->draw(renderer,blank,texture, 255, false, 17);
+				pieceIA->draw(renderer,blank,texture, 255, false, 
+						sizeTetris2.x/sizeBloc);
 			}
 			tIA = 0;
 		}
@@ -395,6 +396,7 @@ bool Tetris::loop(Mix_Music* music, bool multiplayer)
 		
 		SDL_RenderPresent(renderer);
 	}
+	this->printMenu();
 	return quitgame;
 }
 
@@ -445,16 +447,18 @@ void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool p
 		}
 	}
 	piece->up();
-//	piece->mvDstToSrc(*piece);
-//	
+	
+	//A laisser ?
+	piece->mvDstToSrc(*piece);
+		
 	if(!player2){
 		ghost->up(); 
-//		ghost->DownGhost(mat,piece);
-//		ghost->verif(piece);
-//		
-//		ghost->draw(renderer,blank,texture,OPAC);
+		ghost->DownGhost(mat,piece);
+		ghost->verif(piece);
+		
+		ghost->draw(renderer,blank,texture,OPAC);
+		piece->draw(renderer,blank,texture);
 	}
-//	piece->draw(renderer,blank,texture);
 	SDL_RenderPresent(renderer);
 	this->printMatrice();
 }
@@ -582,7 +586,6 @@ void Tetris::UpDownCasesLoopMenu(int retour, int way, int & choiceMenu ,
 
 	}
 	SDL_RenderDrawRect(renderer, &cadre);
-
 	SDL_RenderPresent(renderer);
 }
 
@@ -600,17 +603,12 @@ bool Tetris::printMenu(){
 	printGenericMenu(menu, xShift, sizeBetweenText ,false, numberChoice, "Tetris", "Reprendre le jeu",
 			"Recommencer", "Aller au menu", "Quitter");
 
-
-	//on dessine le cadre du texte
-	SDL_SetRenderDrawColor(renderer,255,255,255,255);
 	SDL_Rect cadre ={w/2-xShift-25,0, 250, 40};
 	cadre.y = sizeTetris.h/2 - (numberChoice * sizeBetweenText)/2 + sizeBetweenText ;
-	SDL_RenderDrawRect(renderer, &cadre);
 
 	//on revient sur le renderer
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderCopy(renderer, menu, NULL, NULL);
-
 	SDL_RenderPresent(renderer);
 
 	//free(text_surface);
