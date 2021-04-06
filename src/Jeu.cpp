@@ -133,7 +133,6 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 
 	SDL_RenderPresent(renderer);
 
-
 	int choiceMenu = 0;
 	//UODATE CETTE VARIABLE SI CHANGEMENT
 	SDL_Rect cadre ={w/2-xShift-25, h/2- (numberChoice * sizeBetweenText)/2
@@ -407,12 +406,12 @@ void Jeu::parametresaudio(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 	SDL_DestroyTexture(audiomenu);
 }
 
-void Jeu::DrawCheckboxes(SDL_Renderer* renderer, Tetris tetris) {
+void Jeu::DrawCheckboxes(SDL_Renderer* renderer, Tetris &tetris) {
 	int h= tetris.geth();
 	int w= tetris.getw();
 	int sizeBetweenText = 80;
 	SDL_Rect checkbox = { w/2-15, h/2 + sizeBetweenText + 15, 30, 30};
-	unsigned int modes[3] = {0x01,0x02,0x04};
+	unsigned int modes[3] = {WHITE_LINED,ACCESS,EYES};
 	for(int i = 0; i< 3; i++) {
 		SDL_SetRenderDrawColor(renderer,150,150,150,255);
 		SDL_RenderFillRect(renderer, &checkbox);
@@ -425,6 +424,7 @@ void Jeu::DrawCheckboxes(SDL_Renderer* renderer, Tetris tetris) {
 		if(i==0) checkbox.x+= sizeBetweenText+250;
 		else checkbox.x-= 2*(sizeBetweenText+250);
 	}
+	SDL_RenderPresent(renderer);
 }
 
 void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1, TTF_Font * P2) {
@@ -433,7 +433,7 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 	int h= tetris.geth();
 	int w= tetris.getw();
 	SDL_Texture* graphmenu = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
-			SDL_TEXTUREACCESS_TARGET, tetris.getw(), tetris.geth());
+			SDL_TEXTUREACCESS_TARGET, w, h);
 
 	SDL_SetRenderTarget(renderer, graphmenu);
 	SDL_SetRenderDrawColor(renderer,17,17,52,255);
@@ -524,11 +524,17 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 				break;
 
 			case SDLK_RETURN:
-				if(choiceMenu==1) {
-
+				if(choiceMenu==0) {
+					tetris.minimenu(graphmenu, &cadre);
+				}
+				else if(choiceMenu==1) {
+					if(choiceX==-1) tetris.setoption(EYES);
+					else if(choiceX == 0) tetris.setoption(WHITE_LINED);
+					else tetris.setoption(ACCESS);
+					DrawCheckboxes(renderer, tetris);
 				}
 
-				if (choiceMenu == 2){
+				else if (choiceMenu == 2){
 					quit_menu = true;
 				}
 				break;

@@ -72,6 +72,7 @@ public :
 		int numberChoice, int sizeBetweenText, int xShift,SDL_Rect & cadre, bool vol = false) ;
 	void addmenuoptions(SDL_Texture * menu, int xShift, int sizeBetweenText,
 			int numberChoice, int indice, int numItem,const char * str1, const char*str2);
+	void minimenu(SDL_Texture * menu, SDL_Rect * cadre);
 
 	bool getquit() {return quitgame;};
 	int geth() {return h;};
@@ -81,6 +82,7 @@ public :
 	SDL_Window* get_pWindow() {return pWindow;};
 	SDL_Texture* get_menu() {return menu;};
 	int getvolume() {return volume;};
+	void setoption(unsigned int opt) {options ^= opt;};
 	int upvolume() {if(volume<MIX_MAX_VOLUME) volume++; return volume;};
 	int downvolume() {if(volume >0) volume --; return volume;};
 

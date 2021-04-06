@@ -464,6 +464,40 @@ void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool p
 	this->printMatrice();
 }
 
+void Tetris::minimenu(SDL_Texture * menu, SDL_Rect * cadre) {
+	SDL_Texture * temp = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
+			SDL_TEXTUREACCESS_TARGET, w, h);
+	SDL_Rect rectcop = {w/2-125, h/2 - (3*80)/2, 250, 160};
+	SDL_Rect texte = {cadre->x, cadre->y, cadre->w-50, cadre->h};
+	SDL_SetRenderTarget(renderer, temp);
+	SDL_RenderCopy(renderer, menu, NULL, NULL);
+	SDL_SetRenderTarget(renderer, NULL);
+
+	TTF_Font * police = TTF_OpenFont("src/RetroGaming.ttf", 65);
+	if(!police){
+		std::cout << TTF_GetError()<< std::endl;
+	}
+	SDL_SetRenderDrawColor(renderer,0,0,0,255);
+	SDL_Color textColor = {255, 255, 255};
+	const char * modes[3] = {"Classic", "Accessible", "Pastel"};
+	//write first option
+	SDL_Surface * text_surface = TTF_RenderText_Blended(police,"Defaut", textColor);
+	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+	SDL_RenderFillRect(renderer, cadre);
+	SDL_RenderCopy(renderer, text_texture, NULL, &texte);
+
+	for(int i = 0; i<3; i++) {
+		text_surface = TTF_RenderText_Blended(police,modes[i], textColor);
+		text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+		cadre->y += 40;
+		texte.y += 40;
+		SDL_RenderFillRect(renderer, cadre);
+		SDL_RenderCopy(renderer, text_texture, NULL, &texte);
+	}
+	SDL_RenderPresent(renderer);
+	SDL_RenderCopy(renderer, temp, NULL, NULL);
+}
+
 void Tetris::addmenuoptions(SDL_Texture * menu, int xShift, int sizeBetweenText,
 	int numberChoice, int indice, int numItem,const char * str1, const char * str2) {
 		TTF_Font * police = TTF_OpenFont("src/RetroGaming.ttf", 65);
@@ -472,8 +506,8 @@ void Tetris::addmenuoptions(SDL_Texture * menu, int xShift, int sizeBetweenText,
 		}
 		SDL_SetRenderDrawColor(renderer,0,0,0,255);
 		SDL_Color textColor = {255, 255, 255};
-		SDL_Rect cadre= { w/2-xShift-25+sizeBetweenText+2*xShift+50, h/2 - ((numberChoice-2*indice) * sizeBetweenText)/2, 2*xShift+50, 40};
-
+		SDL_Rect texte= { w/2-xShift-25+sizeBetweenText+2*xShift+50, h/2 - ((numberChoice-2*indice) * sizeBetweenText)/2, 2*xShift, 40};
+		SDL_Rect cadre = { w/2-xShift-25+sizeBetweenText+2*xShift+50, h/2 - ((numberChoice-2*indice) * sizeBetweenText)/2, 2*xShift+50, 40};
 		//write first option
 		SDL_Surface * text_surface = TTF_RenderText_Blended(police,str1, textColor);
 		SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
@@ -482,10 +516,11 @@ void Tetris::addmenuoptions(SDL_Texture * menu, int xShift, int sizeBetweenText,
 
 		if(numItem>1) {
 			cadre.x -= 2*(sizeBetweenText + 2*xShift+50);
+			texte.x -= 2*(sizeBetweenText + 2*xShift+50);
 			SDL_Surface * text_surface = TTF_RenderText_Blended(police,str2, textColor);
 			SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 			SDL_RenderFillRect(renderer, &cadre);
-			SDL_RenderCopy(renderer, text_texture, NULL, &cadre);
+			SDL_RenderCopy(renderer, text_texture, NULL, &texte);
 		}
 		//SDL_SetRenderTarget(renderer, menu);
 		SDL_RenderCopy(renderer, menu, NULL, NULL);
