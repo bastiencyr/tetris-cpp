@@ -11,6 +11,10 @@ X - ajouter la musique
 - ajouter des effets sonores
 X - faire un menu pause
 X - faire un menu de lancement
+/ - faire des menus:
+X		- paramètres audio
+/		- graphiques (manque juste la prévisualisation)
+  - mettre un random différent (pool de 7 ou 14)
 X - faire un vrai "hard drop"
 X - utiliser la fonction draw pour la pièce sur le côté
-(gros ajout)- mode multi contre l'IA
+X (gros ajout)- mode multi contre l'IA

@@ -21,7 +21,6 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris, SDL_Renderer* renderer, bool mu
 	this->w=w;
 	this->h=h;
 	this->options = 0x0;
-	this->options = this->options | EYES;
 	timer=0;
 	this->renderer = renderer;
 	quitgame = true;
