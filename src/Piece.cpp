@@ -152,8 +152,6 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 
 			SDL_RenderDrawRect(renderer,&dst_r[i]);
 
-
-
 			if(this->opt & EYES) {
 				//yeux (jsp pourquoi)
 
@@ -489,6 +487,8 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 	temp->translate(0,0,true);
 
 	temp->draw(renderer, blank, texture);
+	
+	delete(temp);
 }
 
 

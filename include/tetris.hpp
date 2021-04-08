@@ -30,7 +30,7 @@ class Tetris
 {
 protected:
 
-    SDL_Window* pWindow;
+    //SDL_Window* pWindow;
     SDL_Renderer* renderer;
     //SDL_Renderer* welcome_screen;
 	SDL_Texture *blank;
@@ -58,7 +58,7 @@ protected:
 //    SDL_Rect dest;
 
 public :
-	Tetris(int w, int h, SDL_Rect sizeTetris, SDL_Renderer *renderer, bool multiplayer = false);
+	Tetris(int w, int h, SDL_Rect sizeTetris, SDL_Renderer * &renderer, bool multiplayer = false);
 
     void init(Mix_Music* music, bool multiplayer = false);
 	void ListePieceInit(Piece * Liste[7]);
@@ -91,7 +91,7 @@ public :
 	int getw() {return w;};
 	int getopt() {return options;};
 	SDL_Renderer* get_renderer() {return renderer;};
-	SDL_Window* get_pWindow() {return pWindow;};
+	//SDL_Window* get_pWindow() {return pWindow;};
 	SDL_Texture* get_menu() {return menu;};
 	int getvolume() {return volume;};
 	void setoption(unsigned int opt) {options ^= opt;};

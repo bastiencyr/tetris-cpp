@@ -19,6 +19,12 @@
 #define BLOCSX 10
 #define BLOCSY 20
 
+#define FREE_SURFACE(surface_t) { SDL_FreeSurface(surface_t); surface_t = nullptr;}
+#define FREE_TEXTURE(texture_t) { SDL_DestroyTexture(texture_t); texture_t = nullptr;}
+#define FREE_RENDERER_AND_WINDOW(renderer_t, window_t) { \
+SDL_DestroyRenderer(renderer_t); SDL_DestroyWindow(window_t); \
+renderer_t = nullptr; window_t = nullptr;}
+
 
 
 void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
@@ -67,6 +73,7 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 	{
 	    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Erreur chargement de la musique : %s", Mix_GetError());
 	    Mix_CloseAudio();
+		Mix_Quit();
 	    SDL_Quit();
 	    return;
 	}
@@ -83,12 +90,15 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
 		exit(EXIT_FAILURE);
 	}
+	
 	bool quitgame = false;
 	while(!quitgame)
 		quitgame = Jeu::MenuLancement(h,w,music, sizeTetris);
 //	Mix_FreeMusic(music); //Libération de la musique
+	Mix_FreeMusic(this->music);
    	Mix_CloseAudio(); //Fermeture de l'API
 	TTF_Quit();
+	Mix_Quit();
 	SDL_Quit();
 }
 
@@ -204,8 +214,10 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 		}
 	}
 	//TTF_CloseFont(police);
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(pWindow);
+	FREE_TEXTURE(startmenu);
+	FREE_RENDERER_AND_WINDOW(renderer, pWindow);
+	TTF_CloseFont(police);
+	TTF_CloseFont(policetetris);
 	return tetris.getquit();
 }
 
@@ -290,7 +302,7 @@ void Jeu::parametresmain(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1,
 		default :break;
 		}
 	}
-	SDL_DestroyTexture(parammenu);
+	FREE_TEXTURE(parammenu);
 }
 
 void Jeu::parametresaudio(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1, TTF_Font * P2) {
@@ -403,7 +415,7 @@ void Jeu::parametresaudio(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 		default :break;
 		}
 	}
-	SDL_DestroyTexture(audiomenu);
+	FREE_TEXTURE(audiomenu);
 }
 
 void Jeu::DrawCheckboxes(SDL_Renderer* renderer, Tetris &tetris) {
@@ -555,7 +567,7 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 		default :break;
 		}
 	}
-	SDL_DestroyTexture(graphmenu);
+	FREE_TEXTURE(graphmenu);
 }
 
 int main(int argc, char** argv)
