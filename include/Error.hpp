@@ -42,3 +42,17 @@ public:
 
 
 #endif
+
+#ifndef _RETURN_CODE_HPP_
+#define _RETURN_CODE_HPP_
+
+
+enum class ReturnCodeMenu { 
+	QUIT_MENU,
+	QUIT_GAME,
+	RESTART,
+	GO_TO_MAIN_MENU,
+	INIT,
+	GAME_OVER
+};
+#endif

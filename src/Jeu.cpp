@@ -149,6 +149,7 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 			+ sizeBetweenText, 2*xShift+50, 40};
 
 	bool quit_menu = false;
+	ReturnCodeMenu gameState = ReturnCodeMenu::INIT;
 	SDL_Event event;
 
 	while (!quit_menu && SDL_WaitEvent(&event)){
@@ -156,6 +157,7 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 		{
 		case SDL_QUIT:
 			quit_menu = true;
+			gameState = ReturnCodeMenu::QUIT_GAME;
 			break;
 
 		case SDL_KEYDOWN:
@@ -170,25 +172,29 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 				break;
 
 			case SDLK_RETURN:
-				//lancer le jeu
+				//Play
 				if (choiceMenu == 0){
 					SDL_RenderClear(renderer);
 					//on remet a la bonne taille
 					//SDL_SetWindowSize(pWindow, w, h);
 					tetris.init(music, false); //mettre a true si multiplayer
 					SDL_RenderPresent(renderer);
-					tetris.loop(music, false); //mettre a true si multiplayer
+					gameState = tetris.loop(music, false); //mettre a true si multiplayer
 					quit_menu=true;
 				}
+				
+				//multplayer
 				else if (choiceMenu == 1){
 					SDL_RenderClear(renderer);
 					//on remet a la bonne taille
 					//SDL_SetWindowSize(pWindow, w, h);
 					tetris.init(music, true); //mettre a true si multiplayer
 					SDL_RenderPresent(renderer);
-					tetris.loop(music, true); //mettre a true si multiplayer
+					gameState = tetris.loop(music, true); //mettre a true si multiplayer
 					quit_menu=true;
 				}
+				
+				//settings
 				else if (choiceMenu == 3){
 					parametresmain(renderer, tetris, policetetris,police);
 					SDL_RenderCopy(renderer, startmenu, NULL, NULL);
@@ -197,7 +203,10 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 					cadre ={w/2-xShift-25, h/2- (numberChoice * sizeBetweenText)/2
 							+ sizeBetweenText, 2*xShift+50, 40};
 				}
+				
+				//Quit
 				else if (choiceMenu == 4){
+					gameState = ReturnCodeMenu::QUIT_GAME;
 					quit_menu = true;
 				}
 				break;
@@ -218,7 +227,11 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 	FREE_RENDERER_AND_WINDOW(renderer, pWindow);
 	TTF_CloseFont(police);
 	TTF_CloseFont(policetetris);
-	return tetris.getquit();
+	
+	if (gameState == ReturnCodeMenu::QUIT_GAME ){
+		return true;
+	}
+	return false;
 }
 
 void Jeu::parametresmain(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1, TTF_Font * P2) {
