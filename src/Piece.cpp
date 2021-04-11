@@ -646,8 +646,8 @@ void Piece::cheat(bool mat[BLOCSX][BLOCSY]){
 		rotation++;
 	}
 	//update matrice
-	for(int i = 0; i < 4; i++)
-		mat[this->getx(i)][this->gety(i)]=true;
+	//for(int i = 0; i < 4; i++)
+	//	mat[this->getx(i)][this->gety(i)]=true;
 }
 /*############################################################################
  ########################          LEFT L         #############################
