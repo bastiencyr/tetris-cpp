@@ -30,7 +30,7 @@ class Tetris
 {
 protected:
 
-    SDL_Window* pWindow;
+    //SDL_Window* pWindow;
     SDL_Renderer* renderer;
     //SDL_Renderer* welcome_screen;
 	SDL_Texture *blank;
@@ -58,14 +58,14 @@ protected:
 //    SDL_Rect dest;
 
 public :
-	Tetris(int w, int h, SDL_Rect sizeTetris, SDL_Renderer *renderer, bool multiplayer = false);
+	Tetris(int w, int h, SDL_Rect sizeTetris, SDL_Renderer * &renderer, bool multiplayer = false);
 
     void init(Mix_Music* music, bool multiplayer = false);
 	void ListePieceInit(Piece * Liste[7]);
     void keyboard(const Uint8* keys);
 
-    bool loop(Mix_Music* music, bool multiplayer);
-	void NouvPiece(Piece *& oldp, Piece *& newp, Piece * Liste[7]);
+    ReturnCodeMenu loop(Mix_Music* music, bool multiplayer);
+	ReturnCodeMenu NouvPiece(Piece *& oldp, Piece *& newp, Piece * Liste[7]);
 
 	void printMatrice();
 
@@ -74,7 +74,7 @@ public :
 	void CopyLine(int i, int decalage, int factor, bool player2 = false);
 	void addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2 = false);
 
-	bool printMenu();
+	ReturnCodeMenu printMenu();
 	void updateAndPrintScore(int& score, int& ScoreOld, int& sc);
 
 	bool printGenericMenu(SDL_Texture * text_texture, int xShift,
@@ -86,12 +86,14 @@ public :
 	void minimenu(SDL_Texture * menu, SDL_Rect * cadre);
 	void DrawSelected();
 
+	ReturnCodeMenu endGameMenu(Mix_Music* music, bool multiplayer);
+	
 	bool getquit() {return quitgame;};
 	int geth() {return h;};
 	int getw() {return w;};
 	int getopt() {return options;};
 	SDL_Renderer* get_renderer() {return renderer;};
-	SDL_Window* get_pWindow() {return pWindow;};
+	//SDL_Window* get_pWindow() {return pWindow;};
 	SDL_Texture* get_menu() {return menu;};
 	int getvolume() {return volume;};
 	void setoption(unsigned int opt) {options ^= opt;};
