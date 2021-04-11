@@ -439,7 +439,7 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 	SDL_SetRenderDrawColor(renderer,17,17,52,255);
 	SDL_RenderFillRect(renderer, NULL);
 
-	tetris.printGenericMenu(graphmenu,xShift,sizeBetweenText,1,numberChoice, "Parametres Graphiques", "Mode", "Lignes Blanches");
+	tetris.printGenericMenu(graphmenu,xShift,sizeBetweenText,1,numberChoice, "Parametres Graphiques", "Mode (derouler)", "Lignes Blanches");
 	const char * str1= "Centre";
 	const char * str2= "Yeux";
 	tetris.addmenuoptions(graphmenu,xShift,sizeBetweenText,numberChoice, 2, 2, str1, str2);
