@@ -40,7 +40,6 @@ Piece::Piece(unsigned int options) {
 	}
 }
 
-
 void Piece::initStaticMembers(SDL_Rect sizeTetris){
 	locTetris.w = sizeTetris.w;
 	locTetris.h = locTetris.w*2;
@@ -64,7 +63,7 @@ void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  textur
 	//pour que la transparence soit prise en compte
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
-
+	if(alpha!=255 && this->opt & ACCESS) alpha=130;
 	int factor = locTetris.w/BLOCSX;
 
 	SDL_Rect src_r[4];
@@ -471,12 +470,12 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 	tour.w = 4*factor;
 	SDL_RenderFillRect(renderer,&tour);
 
-	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1], this->color[2], 255);
 	//SDL_SetRenderDrawColor(renderer, 255,255,255, 255);
+	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1], this->color[2], 255);
+
 	SDL_RenderDrawRect(renderer,&tour);
 
 	SDL_SetRenderTarget(renderer, NULL);
-
 
 	Piece * temp = new Piece(this->opt);
 	temp->adjust(this);
@@ -714,7 +713,6 @@ LTetri::LTetri(unsigned int options) : Piece(){
 }
 
 void LTetri::update(){
-
 	for(int i = 0; i<4; i++) {
 	    this->src[i].x=floor(BLOCSX/2);
 		this->src[i].y=i;
@@ -726,7 +724,21 @@ void LTetri::update(){
 
 	this->dst[3].x=floor(BLOCSX/2)+1;
 	this->dst[3].y= 2;
+}
 
+void LTetri::placeprev(int x, int y) {
+	for(int i = 0; i<2; i++) {
+		this->src[i].x= x+1+i;
+		this->src[i].y=y+1;
+
+		this->dst[i].x=x+1+i;
+		this->dst[i].y=y+1;
+	}
+
+	this->src[3].x=x+1;
+	this->src[3].y= y;
+	this->dst[3].x=x+1;
+	this->dst[3].y= y;
 }
 
 OTetri::OTetri(unsigned int options) : Piece() {
@@ -806,7 +818,7 @@ void ITetri::update() {
 	this->dst[3].y=3;
 }
 
-void ITetri::printNextPiece2(SDL_Renderer* renderer, 
+void ITetri::printNextPiece2(SDL_Renderer* renderer,
 		SDL_Texture*  blank,SDL_Texture* texture){
 	Piece temp = *this;
 	temp.dst[0].x = floor(BLOCSX/2)+1;
