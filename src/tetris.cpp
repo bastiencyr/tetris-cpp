@@ -406,7 +406,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 				pieceIA = PiecListIA[randn];
 				pieceIA->update();
 				pieceIA->cheat(matIA);
-				
+
 				if (!pieceIA->isLegalPosition(pieceIA, matIA).NO_ERROR){
 					quit_loop = true;
 					gameState = ReturnCodeMenu::GAME_OVER;
@@ -417,7 +417,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 				}
 				pieceIA->draw(renderer,blank,texture, 255, false,
 						sizeTetris2.x/sizeBloc);
-				
+
 			}
 			tIA = 0;
 		}
@@ -426,19 +426,11 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		dia = TetrisLinesUpdate(&scoreIA, true);
 		//if(d==1) Mix_PlayMusic(line, 0);
 		//else if(d>1) Mix_PlayMusic(lines, 0);
-<<<<<<< HEAD
-		if (multiplayer and dia >= 1) this->addLineToPlayer(dia, piece, ghost);
-		if (multiplayer and d >= 1) this->addLineToPlayer(dia, pieceIA, ghost, true);
 
-		this->updateAndPrintScore(score, ScoreOld, sc);
-
-=======
 		if (multiplayer and dia >= 1) this->addLineToPlayer(dia-1, piece, ghost);
 		if (multiplayer and d >= 1) this->addLineToPlayer(d-1, pieceIA, ghost, true);
-		
+
 		this->updateAndPrintScore(score, ScoreOld, sc, multiplayer);
-		
->>>>>>> d7e58e6a4b1e7c64131b6a10c3bcde74f9fd541f
 		SDL_RenderPresent(renderer);
 	}
 	for (int i = 0; i < 7; i++){
@@ -458,39 +450,23 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	return gameState;
 }
 
-<<<<<<< HEAD
-void Tetris::updateAndPrintScore(int& score, int& ScoreOld, int& sc){
-
-=======
 void Tetris::updateAndPrintScore(int& score, int& ScoreOld, int& sc, bool multiplayer){
-	
->>>>>>> d7e58e6a4b1e7c64131b6a10c3bcde74f9fd541f
-	if (score > ScoreOld){
+		if (score > ScoreOld){
 		TTF_Font * police = TTF_OpenFont("src/RetroGaming.ttf", 65);
 		if(!police){
 			std::cout << TTF_GetError()<< std::endl;
 		}
-<<<<<<< HEAD
 
-		SDL_Color textColor = {0, 255, 255};
-		SDL_Surface * text_surface = TTF_RenderText_Blended(police, "Score", textColor);
-		SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-
-		SDL_Rect dstrect = {0, 0, 100, 40 };
-
-=======
-		
 		SDL_Color textColor = {63, 63, 63};
 		SDL_Surface * text_surface = TTF_RenderText_Blended(police, "Score", textColor);
 		SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-		
+
 		SDL_Rect dstrect = {sizeTetris.x/2, sizeTetris.h/3, 100, 40 };
 		if(multiplayer){
 			dstrect.x = 1.2 * sizeTetris.w;
 			dstrect.y = sizeTetris.h/7;
 		}
-		
->>>>>>> d7e58e6a4b1e7c64131b6a10c3bcde74f9fd541f
+
 		SDL_SetRenderTarget(renderer, texture);
 		SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 		SDL_SetRenderTarget(renderer, NULL);
@@ -504,22 +480,15 @@ void Tetris::updateAndPrintScore(int& score, int& ScoreOld, int& sc, bool multip
 
 		text_surface = TTF_RenderText_Solid(police, scoreStrArr, textColor);
 		text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-<<<<<<< HEAD
 
-		SDL_Rect dstrect2 = {0, 60, 100, 40 };
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
-=======
-		
 		SDL_Rect dstrect2 = {sizeTetris.x/2, sizeTetris.h/3+60, 100, 40 };
 		if(multiplayer){
 			dstrect2.x = 1.2 * sizeTetris.w;
 			dstrect2.y = sizeTetris.h/7 + 60;
 		}
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); 
-		
-		
->>>>>>> d7e58e6a4b1e7c64131b6a10c3bcde74f9fd541f
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+
 		SDL_SetRenderTarget(renderer, texture);
 		SDL_RenderFillRect(renderer, &dstrect2);
 
@@ -549,12 +518,12 @@ void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool p
 		SDL_SetRenderDrawColor(renderer,100,100,100,255);
 		srand(time(0));
 		int randn= rand() % 10;
-		
+
 		int factor = sizeTetris.w/BLOCSX;
 		//ajouter une ligne à player1
 		for (int i = 0; i< BLOCSY ; i++)
 			CopyLine(i, -1, 0, player2);
-		
+
 		if (player2){
 			for(int j=0 ; j< BLOCSX ; j++)
 				matIA[j][BLOCSY-1] = true;
@@ -565,10 +534,10 @@ void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool p
 				mat[j][BLOCSY-1] = true;
 			mat[randn][BLOCSY-1] = false;
 		}
-		
+
 		for(int j = 0; j< BLOCSX ; j++){
 			SDL_SetRenderTarget(renderer, texture);
-			
+
 			SDL_Rect line = {
 				sizeTetris.x + j*factor,
 				(BLOCSY-1)*factor+ sizeTetris.y,
@@ -577,29 +546,29 @@ void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool p
 			};
 			if (player2) line.x = sizeTetris2.x + j*factor;
 			SDL_RenderCopy(renderer, blank, &line, &line);
-			
+
 			if(j!=randn){
 				line.x= sizeTetris.x + j*factor + 5;
 				line.y= (BLOCSY-1)*factor+ sizeTetris.y + 5;
 				line.h= factor - 10;
 				line.w= factor - 10;
 				if (player2) line.x= sizeTetris2.x + j*factor + 5;
-				
+
 				SDL_RenderFillRect(renderer, &line);
 				SDL_SetRenderTarget(renderer, NULL);
 				SDL_RenderCopy(renderer, texture, &line, &line);
 			}
 		}
 		piece->up();
-		
+
 		//A laisser ?
 		piece->mvDstToSrc(*piece);
-		
+
 		if(!player2){
 			ghost->up();
 			ghost->DownGhost(mat,piece);
 			ghost->verif(piece);
-			
+
 			ghost->draw(renderer,blank,texture,OPAC);
 			piece->draw(renderer,blank,texture);
 		}
@@ -993,11 +962,8 @@ ReturnCodeMenu Tetris::endGameMenu(Mix_Music* music, bool multiplayer){
 					SDL_RenderClear(renderer);
 					this->init(music, multiplayer);
 					SDL_RenderPresent(renderer);
-<<<<<<< HEAD
-					menuState = this->loop(music, false);
-=======
-					menuState = this->loop(music, multiplayer); 
->>>>>>> d7e58e6a4b1e7c64131b6a10c3bcde74f9fd541f
+
+					menuState = this->loop(music, multiplayer);
 					quit_menu = true;
 				}
 				break;
