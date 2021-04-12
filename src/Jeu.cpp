@@ -90,7 +90,7 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
 		exit(EXIT_FAILURE);
 	}
-	
+
 	bool quitgame = false;
 	while(!quitgame)
 		quitgame = Jeu::MenuLancement(h,w,music, sizeTetris);
@@ -182,7 +182,7 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 					gameState = tetris.loop(music, false); //mettre a true si multiplayer
 					quit_menu=true;
 				}
-				
+
 				//multplayer
 				else if (choiceMenu == 1){
 					SDL_RenderClear(renderer);
@@ -193,7 +193,7 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 					gameState = tetris.loop(music, true); //mettre a true si multiplayer
 					quit_menu=true;
 				}
-				
+
 				//settings
 				else if (choiceMenu == 3){
 					parametresmain(renderer, tetris, policetetris,police);
@@ -203,7 +203,7 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 					cadre ={w/2-xShift-25, h/2- (numberChoice * sizeBetweenText)/2
 							+ sizeBetweenText, 2*xShift+50, 40};
 				}
-				
+
 				//Quit
 				else if (choiceMenu == 4){
 					gameState = ReturnCodeMenu::QUIT_GAME;
@@ -227,7 +227,7 @@ bool Jeu::MenuLancement(int h, int w,Mix_Music* music,SDL_Rect sizeTetris) {
 	FREE_RENDERER_AND_WINDOW(renderer, pWindow);
 	TTF_CloseFont(police);
 	TTF_CloseFont(policetetris);
-	
+
 	if (gameState == ReturnCodeMenu::QUIT_GAME ){
 		return true;
 	}
@@ -457,12 +457,20 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 	int sizeBetweenText = 80, xShift = 100;
 	int h= tetris.geth();
 	int w= tetris.getw();
+	int factor = w/BLOCSX;
 	SDL_Texture* graphmenu = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
+			SDL_TEXTUREACCESS_TARGET, w, h);
+	SDL_Texture* blankmenu = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
 
 	SDL_SetRenderTarget(renderer, graphmenu);
 	SDL_SetRenderDrawColor(renderer,17,17,52,255);
 	SDL_RenderFillRect(renderer, NULL);
+
+	SDL_SetRenderTarget(renderer,blankmenu);
+	SDL_RenderCopy(renderer, graphmenu, NULL, NULL);
+	SDL_SetRenderTarget(renderer, graphmenu);
+
 
 	tetris.printGenericMenu(graphmenu,xShift,sizeBetweenText,1,numberChoice, "Parametres Graphiques", "Mode (derouler)", "Lignes Blanches");
 	const char * str1= "Centre";
@@ -473,9 +481,18 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderCopy(renderer, graphmenu, NULL, NULL);
 
+
+	SDL_Rect cadre = { w/2-xShift-25 , h/2 - (numberChoice * sizeBetweenText)/2+sizeBetweenText, 2*xShift+50, 40};
+
+	SDL_Rect cadreprev = {w/2-75-sizeBetweenText-3*xShift, h/2+2*sizeBetweenText, 2*(2*xShift+sizeBetweenText), h/4};
+	LTetri * prev = new LTetri(tetris.getopt());
+	prev->placeprev(cadreprev.x/factor,cadreprev.y/factor);
+	prev->draw(renderer, blankmenu, graphmenu);
+	prev->affiche_coord(1,1);
+	SDL_SetRenderDrawColor(renderer,230,230,230,255);
+	SDL_RenderDrawRect(renderer, &cadreprev);
 	SDL_RenderPresent(renderer);
 
-	SDL_Rect cadre = { w/2-xShift-25, h/2 - (numberChoice * sizeBetweenText)/2+sizeBetweenText, 2*xShift+50, 40};
 
 	//cadre.y += sizeBetweenText;
 	//cadre.x += sizeBetweenText;

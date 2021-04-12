@@ -58,6 +58,8 @@ public :
 	int getcol(int i);
 	int getpastel(int i);
 
+	void setopt(unsigned int options) {this->opt = options;};
+
 	bool translate(int a, int b, bool moveSource=true);
     bool down(bool moveSource=true);
 	void up(bool moveSource=true);
@@ -175,6 +177,7 @@ class LTetri : public Piece {
 	public:
 		LTetri(unsigned int options );
 		void update();
+		void placeprev(int x, int y);
 };
 
 class ITetri : public Piece {
