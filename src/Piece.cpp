@@ -727,7 +727,7 @@ void LTetri::update(){
 }
 
 void LTetri::placeprev(int x, int y) {
-	for(int i = 0; i<2; i++) {
+	for(int i = 0; i<3; i++) {
 		this->src[i].x= x+1+i;
 		this->src[i].y=y+1;
 

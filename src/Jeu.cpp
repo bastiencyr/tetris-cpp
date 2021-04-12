@@ -486,6 +486,7 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 
 	SDL_Rect cadreprev = {w/2-75-sizeBetweenText-3*xShift, h/2+2*sizeBetweenText, 2*(2*xShift+sizeBetweenText), h/4};
 	LTetri * prev = new LTetri(tetris.getopt());
+	prev->update();
 	prev->placeprev(cadreprev.x/factor,cadreprev.y/factor);
 	prev->draw(renderer, blankmenu, graphmenu);
 	prev->affiche_coord(1,1);
