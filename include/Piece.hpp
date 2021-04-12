@@ -42,33 +42,91 @@ public:
 public :
 	Piece(unsigned int options = 0x0);
 	static void initStaticMembers(SDL_Rect sizeTetris);
-
     virtual ~Piece(); // destructor
-
-	virtual void update();
-	void adjust(Piece *piece);
-	void verif(Piece * ref);
-	void DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen=false);
-
-	void mvDstToSrc(Piece &pieceDst);
-
+	
+	/**************************************************************************/
+	//The getters
 	int getx(int i);
 	int gety(int i);
 
 	int getcol(int i);
 	int getpastel(int i);
+	
+	/**************************************************************************/
+	
+	virtual void update();
+	void adjust(Piece *piece);
+	void verif(Piece * ref);
+	void DownGhost(bool mat[BLOCSX][BLOCSY],Piece * ref, bool gen=false);
 
 	void setopt(unsigned int options) {this->opt = options;};
-
-	bool translate(int a, int b, bool moveSource=true);
+	
+	/**
+	 * @brief This function copied dst array attribute of this in src attribute
+	 * of pieceDst
+	 * @param pieceDst The piece in which the src is moved.
+	 */
+	void mvDstToSrc(Piece &pieceDst);
+	
+	//The folowwings functions move an entire piece
+	/**
+	 * @brief This function translate a piece. A piece composes of two arrays
+	 * (src and dst) of four SDL_Rect. When a piece is translated, the dst is 
+	 * move on src and dst is translated.  
+	 * @param a, the translation along x axis
+	 * @param b, the translation along y axis
+	 * @param moveDstToSource if true, the dst is copied into src.  
+	 * @return always true.
+	 */
+	bool translate(int a, int b, bool moveDstToSource=true);
+	
+	/**
+	 * @brief This function call translate(0,1,moveSource). Cf translate for
+	 * more detail. 
+	 * @param moveSource
+	 * @return 
+	 */
     bool down(bool moveSource=true);
+	
+	/**
+	 * @brief This function call translate(0,-1,moveSource). Cf translate for
+	 * more detail. 
+	 * @param moveSource
+	 */
 	void up(bool moveSource=true);
+	
+	/**
+	 * @brief This function call translate(1,0,moveSource). Cf translate for
+	 * more detail. 
+	 * @param moveSource
+	 */
 	bool right(bool moveSource=true);
+	
+	/**
+	 * @brief This function call translate(0,1,moveSource). Cf translate for
+	 * more detail. 
+	 * @param moveSource
+	 */
 	bool left(bool moveSource=true);
+	
+	/**
+	 * This function copied dst into src if moveSource is true and changes
+	 * dst so that this is rotated to the right.
+	 * @param moveSource
+	 */
 	void rotateLeft(bool moveSource=true);
 
+	/**
+	 * This function copied dst into src if moveSource is true and changes
+	 * dst so that this is rotated to the right.
+	 * @param moveSource
+	 */
+	
 	virtual void rotateRight(bool moveSource=true);
 
+	/**************************************************************************/
+	//The followings functions ensure the legality of pieces movements  
+	
 	/**
 	 * @brief This function check the position of the piece temp in the matrice
 	 * mat. It doesnt modify this.
@@ -156,14 +214,30 @@ public :
 	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture,
 	int alpha = 255, bool erase=false, float shift = 0);
 
-	virtual void printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture);
+	virtual void printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, float xShift=0.5);
 
-
-	void affiche_coord(bool source, bool dest);
-
+	
 	void cheat(bool mat[BLOCSX][BLOCSY]);
+	
+	/**
+	 * @brief This function move dst array piece on down. This functions permits
+	 * to implement ghost feature. 
+	 * src array is not 
+	 * changed. 
+	 * @param mat the matrice that represents tetris game.
+	 */
 	void holdPiece(bool mat[BLOCSX][BLOCSY]);
+	
+	/**
+	 * @brief This function return the number of full line in a tetris game.
+	 * A Tetris is represented  as a matrice of BLOCSx*BLOCSY. A full line 
+	 * is a line where all element are true.
+	 * @param mat the matrice that represents element.
+	 * @return the number of full line in mat.
+	 */
 	int nbFullLine(bool mat[BLOCSX][BLOCSY]);
+	
+	void affiche_coord(bool source, bool dest);
 
 };
 
@@ -185,7 +259,7 @@ class ITetri : public Piece {
 		ITetri(unsigned int options );
 		void update() override;
 		void printNextPiece2(SDL_Renderer* renderer,
-		SDL_Texture*  blank,SDL_Texture* texture) override;
+		SDL_Texture*  blank,SDL_Texture* texture, float xShift=0.5) override;
 
 };
 
@@ -196,6 +270,8 @@ class OTetri : public Piece {
 		void update();
 		void rotateRight(bool moveSource=true);
 		Error isLegalRotateRight(bool mat[BLOCSX][BLOCSY]);
+		void printNextPiece2(SDL_Renderer* renderer,
+		SDL_Texture*  blank,SDL_Texture* texture, float xShift = 0.9);
 
 };
 

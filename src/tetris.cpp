@@ -231,7 +231,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		ghost->draw(renderer,blank,texture,OPAC);
 	};
 
-	Piece::initStaticMembers(sizeTetris);
+	//Piece::initStaticMembers(sizeTetris);
 
 	Mix_Music* rotate = Mix_LoadMUS("sfx/SFX_PieceRotateLR.ogg");
 	Mix_Music* drop = Mix_LoadMUS("sfx/SFX_PieceSoftDrop.ogg");
