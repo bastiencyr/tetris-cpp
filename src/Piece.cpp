@@ -60,7 +60,7 @@ Piece::~Piece() {
  */
 
 void Piece::draw(SDL_Renderer* renderer,SDL_Texture*  blank,SDL_Texture*  texture,
-		int alpha, bool erase, int shift){
+		int alpha, bool erase, float shift){
 	//pour que la transparence soit prise en compte
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
@@ -467,8 +467,8 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 	}
 	tour.x = locTetris.w +locTetris.x +factor;
 	tour.y = locTetris.h / 2 - factor + locTetris.y;
-	tour.h = 5*factor;
-	tour.w = 5*factor;
+	tour.h = 4*factor;
+	tour.w = 4*factor;
 	SDL_RenderFillRect(renderer,&tour);
 
 	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1], this->color[2], 255);
@@ -480,13 +480,13 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 
 	Piece * temp = new Piece(this->opt);
 	temp->adjust(this);
-	int a =  locTetris.w/(2*factor) +2;
+	int a =  locTetris.w/(2*factor) +1;
 	int b = locTetris.h/(2*factor);
 
 	temp->translate(a, b, false);
 	temp->translate(0,0,true);
 
-	temp->draw(renderer, blank, texture);
+	temp->draw(renderer, blank, texture, 255, false, 0.5);
 	
 	delete(temp);
 }
@@ -809,17 +809,16 @@ void ITetri::update() {
 void ITetri::printNextPiece2(SDL_Renderer* renderer, 
 		SDL_Texture*  blank,SDL_Texture* texture){
 	Piece temp = *this;
-	temp.dst[0].x = floor(BLOCSX/2);
-	temp.dst[1].x = floor(BLOCSX/2) + 1;
-	temp.dst[2].x = floor(BLOCSX/2) + 2;
-	temp.dst[3].x = floor(BLOCSX/2) + 3;
+	temp.dst[0].x = floor(BLOCSX/2)+1;
+	temp.dst[1].x = floor(BLOCSX/2)+1;
+	temp.dst[2].x = floor(BLOCSX/2)+1;
+	temp.dst[3].x = floor(BLOCSX/2)+1;
 	
-	temp.dst[0].y = 1 ;
-	temp.dst[1].y = 1 ;
-	temp.dst[2].y = 1 ;
-	temp.dst[3].y = 1 ;
+	temp.dst[0].y = -1;
+	temp.dst[1].y = 0;
+	temp.dst[2].y = 1;
+	temp.dst[3].y = 2;
 	
-	//temp.mvDstToSrc(temp);
 	
 	temp.Piece::printNextPiece2(renderer, blank, texture);
 }

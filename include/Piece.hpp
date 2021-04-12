@@ -152,7 +152,7 @@ public :
 	SDL_Texture* texture);
 
 	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture,
-	int alpha = 255, bool erase=false, int shift = 0);
+	int alpha = 255, bool erase=false, float shift = 0);
 
 	virtual void printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture);
 
