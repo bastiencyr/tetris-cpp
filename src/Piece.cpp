@@ -486,7 +486,7 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 	temp->translate(0,0,true);
 
 	temp->draw(renderer, blank, texture, 255, false, xShift);
-	
+
 	delete(temp);
 }
 
@@ -728,17 +728,17 @@ void LTetri::update(){
 
 void LTetri::placeprev(int x, int y) {
 	for(int i = 0; i<3; i++) {
-		this->src[i].x= x+1+i;
-		this->src[i].y=y+1;
+		this->src[i].x= x;
+		this->src[i].y=y+i+1;
 
-		this->dst[i].x=x+1+i;
-		this->dst[i].y=y+1;
+		this->dst[i].x=x;
+		this->dst[i].y=y+i+1;
 	}
 
 	this->src[3].x=x+1;
-	this->src[3].y= y;
+	this->src[3].y= y+1;
 	this->dst[3].x=x+1;
-	this->dst[3].y= y;
+	this->dst[3].y= y+1;
 }
 
 OTetri::OTetri(unsigned int options) : Piece() {
@@ -830,13 +830,13 @@ void ITetri::printNextPiece2(SDL_Renderer* renderer,
 	temp.dst[1].x = floor(BLOCSX/2)+1;
 	temp.dst[2].x = floor(BLOCSX/2)+1;
 	temp.dst[3].x = floor(BLOCSX/2)+1;
-	
+
 	temp.dst[0].y = -1;
 	temp.dst[1].y = 0;
 	temp.dst[2].y = 1;
 	temp.dst[3].y = 2;
-	
-	
+
+
 	temp.Piece::printNextPiece2(renderer, blank, texture, xShift);
 }
 

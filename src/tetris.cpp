@@ -669,6 +669,9 @@ void Tetris::minimenu(SDL_Texture * menu, SDL_Rect * cadre) {
 		FREE_SURFACE(text_surface);
 		FREE_TEXTURE(text_texture);
 	}
+	SDL_SetRenderDrawColor(renderer,255,255,255,255);
+	cadre->y -= 40*3;
+	SDL_RenderDrawRect(renderer, cadre);
 	SDL_RenderPresent(renderer);
 
 	DrawSelected();
@@ -676,6 +679,7 @@ void Tetris::minimenu(SDL_Texture * menu, SDL_Rect * cadre) {
 	int numberChoice = 4, sizeBetweenText = 40, xShift = 100;;
 	bool quit_menu = false;
 	SDL_Event event;
+
 
 	while (!quit_menu && SDL_WaitEvent(&event)){
 		switch (event.type)
@@ -716,6 +720,7 @@ void Tetris::minimenu(SDL_Texture * menu, SDL_Rect * cadre) {
 					setmode(PASTEL);
 					DrawSelected();
 				}
+				quit_menu = true;
 				break;
 
 			case SDLK_ESCAPE:
