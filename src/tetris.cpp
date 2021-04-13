@@ -231,7 +231,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		ghost->draw(renderer,blank,texture,OPAC);
 	};
 
-	//Piece::initStaticMembers(sizeTetris);
+	Piece::initStaticMembers(sizeTetris);
 
 	Mix_Music* rotate = Mix_LoadMUS("sfx/SFX_PieceRotateLR.ogg");
 	Mix_Music* drop = Mix_LoadMUS("sfx/SFX_PieceSoftDrop.ogg");
@@ -249,11 +249,19 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	bool quit_loop = false;
 	ReturnCodeMenu gameState = ReturnCodeMenu::INIT ;
 	score = 0 ;
+	scoreIA = 0;
 	bool cont = true;
 	double t=0, delta_t=0, tIA =0, delta_tIA = 0;
-	int scoreIA = 0, ScoreOld=score-1;
+	int scoreOldIA = score+1, ScoreOld=score-1;
 	int d=0, dia = 0;
-	this->updateAndPrintScore(score, ScoreOld, sc, multiplayer);
+
+	if (multiplayer){
+		this->printScore(scoreIA, 1.6 * sizeTetris.w, sizeTetris.h/7);
+		this->printScore(score, 1.1 * sizeTetris.w, sizeTetris.h/7);
+	}
+	else
+		this->printScore(score, 0.6 * sizeTetris.w, sizeTetris.h/7);
+		
 
 	Piece * PiecList[7], * PiecListIA[7], *PiecGhosts[7];
 	ListePieceInit(PiecList);
@@ -399,38 +407,50 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 					blank,texture);
 			t=0;
 		}
-
+		
+		//nouvPiece for IA
 		if (multiplayer and tIA>=2 ){
-			if(multiplayer){
-				randn = rand() % 7;
-				pieceIA = PiecListIA[randn];
-				pieceIA->update();
-				pieceIA->cheat(matIA);
-
-				if (!pieceIA->isLegalPosition(pieceIA, matIA).NO_ERROR){
-					quit_loop = true;
-					gameState = ReturnCodeMenu::GAME_OVER;
-					pieceIA->affiche_coord(true, true);
-				}
-				for (int i=0; i<4; i++){
-					matIA[pieceIA->getx(i)][pieceIA->gety(i)]=true;
-				}
-				pieceIA->draw(renderer,blank,texture, 255, false,
-						sizeTetris2.x/sizeBloc);
-
+			randn = rand() % 7;
+			pieceIA = PiecListIA[randn];
+			pieceIA->update();
+			pieceIA->cheat(matIA);
+			
+			if (!pieceIA->isLegalPosition(pieceIA, matIA).NO_ERROR){
+				quit_loop = true;
+				gameState = ReturnCodeMenu::GAME_OVER;
+				pieceIA->affiche_coord(true, true);
 			}
+			for (int i=0; i<4; i++){
+				matIA[pieceIA->getx(i)][pieceIA->gety(i)]=true;
+			}
+			pieceIA->draw(renderer,blank,texture, 255, false,
+					sizeTetris2.x/sizeBloc);
+			
 			tIA = 0;
 		}
-
+		
 		d=TetrisLinesUpdate(&score);
-		dia = TetrisLinesUpdate(&scoreIA, true);
 		//if(d==1) Mix_PlayMusic(line, 0);
 		//else if(d>1) Mix_PlayMusic(lines, 0);
-
-		if (multiplayer and dia >= 1) this->addLineToPlayer(dia-1, piece, ghost);
-		if (multiplayer and d >= 1) this->addLineToPlayer(d-1, pieceIA, ghost, true);
-
-		this->updateAndPrintScore(score, ScoreOld, sc, multiplayer);
+		
+		//update score
+		if (multiplayer){
+			dia = TetrisLinesUpdate(&scoreIA, true);
+			if(dia>=1){
+				this->addLineToPlayer(dia-1, piece, ghost);
+				this->updateLevel(scoreIA, scoreOldIA, scIA);
+				printScore(scoreIA, 1.6 * sizeTetris.w, sizeTetris.h/7);
+			}
+			
+			if (d >= 1){
+				this->updateLevel(score, ScoreOld, sc);
+				this->addLineToPlayer(d-1, pieceIA, ghost, true);
+				printScore(score, 1.1 * sizeTetris.w, sizeTetris.h/7);
+			}	
+		}
+		if (!multiplayer and d>0)
+			printScore(score, 0.6 * sizeTetris.w, sizeTetris.h/7);
+		
 		SDL_RenderPresent(renderer);
 	}
 	for (int i = 0; i < 7; i++){
@@ -443,114 +463,15 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	Mix_FreeMusic(drop);
 	Mix_FreeMusic(line);
 	Mix_FreeMusic(lines);
-
+	
 	if (gameState == ReturnCodeMenu::GAME_OVER)
 		gameState = this->endGameMenu( music, multiplayer);
-
+	
 	return gameState;
 }
 
-void Tetris::updateAndPrintScore(int& score, int& ScoreOld, int& sc, bool multiplayer){
-		if (score > ScoreOld){
-		TTF_Font * police = TTF_OpenFont("src/RetroGaming.ttf", 65);
-		if(!police){
-			std::cout << TTF_GetError()<< std::endl;
-		}
-
-		SDL_Color textColor = {63, 63, 63};
-		SDL_Surface * text_surface = TTF_RenderText_Blended(police, "Score", textColor);
-		SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-
-		SDL_Rect dstrect = {sizeTetris.x/2, sizeTetris.h/3, 100, 40 };
-		if(multiplayer){
-			dstrect.x = 1.1 * sizeTetris.w;
-			dstrect.y = sizeTetris.h/7;
-		}
-
-		SDL_SetRenderTarget(renderer, texture);
-		SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
-		SDL_SetRenderTarget(renderer, NULL);
-		SDL_RenderCopy(renderer, texture, &dstrect, &dstrect);
-
-		std::string scoreStr = std::to_string ( score );
-		char * scoreStrArr = &scoreStr[0];
-
-		FREE_SURFACE(text_surface);
-		FREE_TEXTURE(text_texture);
-
-		text_surface = TTF_RenderText_Solid(police, scoreStrArr, textColor);
-		text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-
-		SDL_Rect dstrect2 = {sizeTetris.x/2, sizeTetris.h/3+60, 100, 40 };
-		if(multiplayer){
-			dstrect2.x = 1.1 * sizeTetris.w;
-			dstrect2.y = sizeTetris.h/7 + 60;
-		}
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
-
-		SDL_SetRenderTarget(renderer, texture);
-		SDL_RenderFillRect(renderer, &dstrect2);
-
-		SDL_RenderCopy(renderer, text_texture, NULL, &dstrect2);
-		SDL_SetRenderTarget(renderer, NULL);
-		SDL_RenderCopy(renderer, texture, &dstrect2, &dstrect2);
-	
-		//on affiche le score du joueur2
-		if (multiplayer){
-			SDL_SetRenderTarget(renderer, texture);
-			SDL_SetRenderDrawColor(renderer, 63, 63, 63, 255); 
-			SDL_RenderDrawLine(renderer,3*sizeTetris.w/2, 50,
-					3*sizeTetris.w/2,200);
-			
-			text_surface = TTF_RenderText_Blended(police, "Score", textColor);
-			text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); 
-			
-			int texW = 0;
-			int texH = 0;
-			SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
-
-			SDL_Rect dstrect = {sizeTetris.w, sizeTetris.h/7, texW/10, texH/10 };
-			dstrect.x = 1.6 * sizeTetris.w;
-			
-			SDL_SetRenderTarget(renderer, texture);
-			SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
-			SDL_SetRenderTarget(renderer, NULL);
-			SDL_RenderCopy(renderer, texture, &dstrect, &dstrect);
-			
-			FREE_SURFACE(text_surface);
-			FREE_TEXTURE(text_texture);
-			
-			std::string scoreStr = std::to_string ( score );
-			char * scoreStrArr = &scoreStr[0];
-			
-			FREE_SURFACE(text_surface);
-			FREE_TEXTURE(text_texture);
-			
-			//affichage du score
-			text_surface = TTF_RenderText_Solid(police, scoreStrArr, textColor);
-			text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-			
-			SDL_Rect dstrect2 = {0, sizeTetris.h/7+60, text_surface->w/2, text_surface->h/2 };
-			dstrect2.x = 1.6 * sizeTetris.w;
-			
-			SDL_SetRenderTarget(renderer, texture);
-			SDL_RenderFillRect(renderer, &dstrect2);
-			
-			SDL_RenderCopy(renderer, text_texture, NULL, &dstrect2);
-			SDL_SetRenderTarget(renderer, NULL);
-			SDL_RenderCopy(renderer, texture, &dstrect2, &dstrect2);
-			
-		}
-		
-		TTF_CloseFont(police);
-		FREE_SURFACE(text_surface);
-		FREE_TEXTURE(text_texture);
-		police = nullptr;
-	}
-
-	if(score-ScoreOld>500) {
+void Tetris::updateLevel(int& score, int& ScoreOld, int& sc){
+	if (score-ScoreOld>500) {
 		ScoreOld=score;
 		if(sc!=17) {
 			sc++;
@@ -560,54 +481,114 @@ void Tetris::updateAndPrintScore(int& score, int& ScoreOld, int& sc, bool multip
 	}
 }
 
-void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2){
-	//player2 = true -> ajouter une ligne à l'IA
-	for(int i=0 ; i< nbLineToAdd ;i++){
-		SDL_SetRenderDrawColor(renderer,100,100,100,255);
-		srand(time(0));
-		int randn= rand() % 10;
-
-		int factor = sizeTetris.w/BLOCSX;
-		//ajouter une ligne à player1
-		for (int i = 0; i< BLOCSY ; i++)
-			CopyLine(i, -1, 0, player2);
-
-		if (player2){
-			for(int j=0 ; j< BLOCSX ; j++)
-				matIA[j][BLOCSY-1] = true;
-			matIA[randn][BLOCSY-1] = false;
-		}
-		else {
-			for(int j=0 ; j< BLOCSX ; j++)
-				mat[j][BLOCSY-1] = true;
-			mat[randn][BLOCSY-1] = false;
-		}
-
-		for(int j = 0; j< BLOCSX ; j++){
-			SDL_SetRenderTarget(renderer, texture);
-
-			SDL_Rect line = {
-				sizeTetris.x + j*factor,
-				(BLOCSY-1)*factor+ sizeTetris.y,
-				factor,
-				factor,
-			};
-			if (player2) line.x = sizeTetris2.x + j*factor;
-			SDL_RenderCopy(renderer, blank, &line, &line);
-
-			if(j!=randn){
-				line.x= sizeTetris.x + j*factor + 5;
-				line.y= (BLOCSY-1)*factor+ sizeTetris.y + 5;
-				line.h= factor - 10;
-				line.w= factor - 10;
-				if (player2) line.x= sizeTetris2.x + j*factor + 5;
-
-				SDL_RenderFillRect(renderer, &line);
-				SDL_SetRenderTarget(renderer, NULL);
-				SDL_RenderCopy(renderer, texture, &line, &line);
+void Tetris::printScore(int& score, int xScore, int yScore){
+	
+	TTF_Font * police = TTF_OpenFont("src/RetroGaming.ttf", 65);
+	if(!police){
+		std::cout << TTF_GetError()<< std::endl;
+	}
+	
+	//affchage de "score"
+	SDL_Color textColor = {255, 255, 255};
+	SDL_Surface * text_surface = TTF_RenderText_Blended(police, "Score", textColor);
+	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+	
+	int scoreW = text_surface->w/2, scoreH = text_surface->h/2;
+	SDL_Rect dstrect = {0,0, scoreW, scoreH };
+	
+	dstrect.x = xScore; 
+	dstrect.y = yScore;
+	
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
+	SDL_SetRenderTarget(renderer, NULL);
+	SDL_RenderCopy(renderer, texture, &dstrect, &dstrect);
+	
+	std::string scoreStr = std::to_string ( score );
+	char * scoreStrArr = &scoreStr[0];
+	
+	FREE_SURFACE(text_surface);
+	FREE_TEXTURE(text_texture);
+	
+	//print score
+	text_surface = TTF_RenderText_Solid(police, scoreStrArr, textColor);
+	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+	
+	SDL_Rect dstrect2 = {0,0, text_surface->w/2, text_surface->h/2 };
+	dstrect2.x = xScore + scoreW/2 - text_surface->w/4 ;
+	dstrect2.y = yScore + 60;
+	
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_RenderFillRect(renderer, &dstrect2);
+	
+	//on affiche une ligne de séparation
+	//if (player2){
+	//	SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255); 
+	//	SDL_RenderDrawLine(renderer,3*sizeTetris.w/2, 60,
+	//			3*sizeTetris.w/2,250);
+	//}
+	
+	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect2);
+	SDL_SetRenderTarget(renderer, NULL);
+	SDL_RenderCopy(renderer, texture, &dstrect2, &dstrect2);
+	
+	TTF_CloseFont(police);
+	FREE_SURFACE(text_surface);
+	FREE_TEXTURE(text_texture);
+	police = nullptr;
+	
+}
+	
+	void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2){
+		//player2 = true -> ajouter une ligne à l'IA
+		for(int i=0 ; i< nbLineToAdd ;i++){
+			SDL_SetRenderDrawColor(renderer,100,100,100,255);
+			srand(time(0));
+			int randn= rand() % 10;
+			
+			int factor = sizeTetris.w/BLOCSX;
+			//ajouter une ligne à player1
+			for (int i = 0; i< BLOCSY ; i++)
+				CopyLine(i, -1, 0, player2);
+			
+			if (player2){
+				for(int j=0 ; j< BLOCSX ; j++)
+					matIA[j][BLOCSY-1] = true;
+				matIA[randn][BLOCSY-1] = false;
 			}
-		}
-		piece->up();
+			else {
+				for(int j=0 ; j< BLOCSX ; j++)
+					mat[j][BLOCSY-1] = true;
+				mat[randn][BLOCSY-1] = false;
+			}
+			
+			for(int j = 0; j< BLOCSX ; j++){
+				SDL_SetRenderTarget(renderer, texture);
+				
+				SDL_Rect line = {
+					sizeTetris.x + j*factor,
+					(BLOCSY-1)*factor+ sizeTetris.y,
+					factor,
+					factor,
+				};
+				if (player2) line.x = sizeTetris2.x + j*factor;
+				SDL_RenderCopy(renderer, blank, &line, &line);
+				
+				if(j!=randn){
+					line.x= sizeTetris.x + j*factor + 5;
+					line.y= (BLOCSY-1)*factor+ sizeTetris.y + 5;
+					line.h= factor - 10;
+					line.w= factor - 10;
+					if (player2) line.x= sizeTetris2.x + j*factor + 5;
+					
+					SDL_RenderFillRect(renderer, &line);
+					SDL_SetRenderTarget(renderer, NULL);
+					SDL_RenderCopy(renderer, texture, &line, &line);
+				}
+			}
+			piece->up();
 
 		//A laisser ?
 		piece->mvDstToSrc(*piece);

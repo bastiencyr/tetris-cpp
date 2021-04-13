@@ -43,7 +43,7 @@ protected:
 	int w,h;
     double timer;
 	bool quitgame; //TODO A SUPPRIMER
-	int score;
+	int score, scoreIA;
 
 	bool mat[BLOCSX][BLOCSY];
 	bool matIA[BLOCSX][BLOCSY];
@@ -69,8 +69,11 @@ public :
     void keyboard(const Uint8* keys);
 	ReturnCodeMenu NouvPiece(Piece *& oldp, Piece *& newp, Piece * Liste[7]);
 	
-	void updateAndPrintScore(int& score, int& ScoreOld, int& sc, bool multiplayer);
-
+	/**************************************************************************/
+	//USER SCORE
+	void updateLevel(int& score, int& ScoreOld, int& sc);
+	void printScore(int& score, int xScore, int yScore);
+	
 	/**************************************************************************/
 	//LINE DISAPARITION AND APPARITION
 	int TetrisLinesUpdate(int* score, bool player2 = false);

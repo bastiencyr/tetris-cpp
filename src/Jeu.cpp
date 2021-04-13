@@ -60,6 +60,7 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 
 		sizeTetris.x = sizeTetris.w;
 		Piece::initStaticMembers(sizeTetris);
+
 	}
 
 	if(Mix_OpenAudio(48000, MIX_DEFAULT_FORMAT, 2, 4096) == -1) //Initialisation de l'API Mixer
