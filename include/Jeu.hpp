@@ -14,9 +14,11 @@ public:
 	void parametresmain(SDL_Renderer* renderer, Tetris &tetris);
 	void parametresaudio(SDL_Renderer* renderer, Tetris &tetris);
 	void parametresgraph(SDL_Renderer* renderer, Tetris &tetris);
-	void fillblankoptions(SDL_Rect * rect, unsigned int options, SDL_Renderer * &renderer, SDL_Texture * blankmenu);
+	void fillblankoptions(SDL_Rect * rect, unsigned int options, SDL_Renderer * renderer,  SDL_Texture * graphmenu,SDL_Texture * blankmenu);
+	void drawprev(Piece * prev, unsigned int options, SDL_Rect* rect,
+				SDL_Renderer * renderer, SDL_Texture * blankmenu, SDL_Texture * graphmenu);
 
-	void DrawCheckboxes(SDL_Renderer* renderer, Tetris &tetris);
+	void DrawCheckboxes(SDL_Renderer * renderer, SDL_Texture * graphmenu,Tetris &tetris);
 private:
 	Mix_Music* music;
 

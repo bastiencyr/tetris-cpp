@@ -431,7 +431,8 @@ void Jeu::parametresaudio(SDL_Renderer* renderer, Tetris & tetris) {
 	FREE_TEXTURE(audiomenu);
 }
 
-void Jeu::DrawCheckboxes(SDL_Renderer* renderer, Tetris &tetris) {
+void Jeu::DrawCheckboxes(SDL_Renderer* renderer, SDL_Texture * graphmenu,Tetris &tetris) {
+	SDL_SetRenderTarget(renderer,graphmenu);
 	int h= tetris.geth();
 	int w= tetris.getw();
 	int sizeBetweenText = 80;
@@ -449,10 +450,13 @@ void Jeu::DrawCheckboxes(SDL_Renderer* renderer, Tetris &tetris) {
 		if(i==0) checkbox.x+= sizeBetweenText+250;
 		else checkbox.x-= 2*(sizeBetweenText+250);
 	}
+	SDL_SetRenderTarget(renderer,NULL);
+	SDL_RenderCopy(renderer, graphmenu, NULL, NULL);
 	SDL_RenderPresent(renderer);
+	SDL_SetRenderTarget(renderer, graphmenu);
 }
 
-void Jeu::fillblankoptions(SDL_Rect * rect, unsigned int options, SDL_Renderer * &renderer, SDL_Texture * blankmenu) {
+void Jeu::fillblankoptions(SDL_Rect * rect, unsigned int options, SDL_Renderer * renderer,SDL_Texture * graphmenu, SDL_Texture * blankmenu) {
 	SDL_SetRenderTarget(renderer,blankmenu);
 	SDL_SetRenderDrawColor(renderer,63,63,63,255);
 	if(options&CLASSIC) {
@@ -468,15 +472,22 @@ void Jeu::fillblankoptions(SDL_Rect * rect, unsigned int options, SDL_Renderer *
 	SDL_SetRenderDrawColor(renderer,230,230,230,255);
 	SDL_RenderDrawRect(renderer, rect);
 
-	SDL_SetRenderTarget(renderer,NULL);
+	SDL_SetRenderTarget(renderer,graphmenu);
 	SDL_RenderCopy(renderer, blankmenu, rect, rect);
+	SDL_SetRenderTarget(renderer,NULL);
+	SDL_RenderCopy(renderer, graphmenu, NULL, NULL);
+	SDL_RenderPresent(renderer);
+	SDL_SetRenderTarget(renderer, graphmenu);
 }
-/*
-void Jeu::drawprev(Piece * prev, unsigned int options, SDL_Rect* rect) {
+
+void Jeu::drawprev(Piece * prev, unsigned int options, SDL_Rect* rect,
+			SDL_Renderer * renderer, SDL_Texture * blankmenu, SDL_Texture * graphmenu) {
 	prev->setopt(options);
-	fillblankoptions(rect, options);
+	fillblankoptions(rect, options, renderer, graphmenu, blankmenu);
+	prev->draw(renderer, blankmenu, graphmenu);
+	SDL_RenderPresent(renderer);
 }
-*/
+
 void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris) {
 	int numberChoice = 3;
 	int sizeBetweenText = 80, xShift = 100;
@@ -495,12 +506,11 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris) {
 	SDL_RenderCopy(renderer, graphmenu, NULL, NULL);
 	SDL_SetRenderTarget(renderer, graphmenu);
 
-
 	tetris.printGenericMenu(graphmenu,xShift,sizeBetweenText,1,numberChoice, "Parametres Graphiques", "Mode (derouler)", "Lignes Blanches");
 	const char * str1= "Centre";
 	const char * str2= "Yeux";
 	tetris.addmenuoptions(graphmenu,xShift,sizeBetweenText,numberChoice, 2, 2, str1, str2);
-	DrawCheckboxes(renderer, tetris);
+	DrawCheckboxes(renderer, graphmenu, tetris);
 
 
 
@@ -513,23 +523,9 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris) {
 	int factor = prev->locTetris.x/BLOCSX;
 	SDL_Rect cadreprev = {w/2-75-sizeBetweenText-3*xShift, h/2+2*sizeBetweenText, 3*factor, 4*factor};
 
-	auto drawprev = [&] (Piece * prev, unsigned int options)
-	{
-		//SDL_SetRenderTarget(renderer, graphmenu);
-		prev->setopt(options);
-		//SDL_SetRenderTarget(renderer, NULL);
-		//fillblankoptions(&cadreprev, options, renderer, blankmenu);
-
-		prev->draw(renderer, blankmenu, graphmenu);
-
-		//SDL_RenderCopy(renderer, graphmenu, NULL, NULL);
-		SDL_RenderPresent(renderer);
-		SDL_SetRenderTarget(renderer, graphmenu);
-	};
-
 	prev->update();
 	prev->placeprev((cadreprev.x-prev->locTetris.x)/factor,(cadreprev.y-prev->locTetris.y)/factor);
-	drawprev(prev, tetris.getopt());
+	drawprev(prev, tetris.getopt(), &cadreprev, renderer, blankmenu, graphmenu);
 	prev->affiche_coord(1,1);
 
 	//SDL_RenderCopy(renderer,blankmenu, NULL, NULL);
@@ -541,6 +537,10 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris) {
 
 	bool quit_menu = false;
 	SDL_Event event;
+
+	SDL_SetRenderTarget(renderer,NULL);
+	SDL_RenderCopy(renderer, graphmenu, NULL, NULL);
+	SDL_SetRenderTarget(renderer, graphmenu);
 
 	while (!quit_menu && SDL_WaitEvent(&event)){
 		switch (event.type)
@@ -608,15 +608,15 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris) {
 					SDL_SetRenderDrawColor(renderer,0,0,0,255);
 					SDL_RenderDrawRect(renderer, &cadre);
 					SDL_SetRenderDrawColor(renderer,255,255,255,255);
-					drawprev(prev, tetris.getopt());
-					DrawCheckboxes(renderer, tetris);
+					drawprev(prev, tetris.getopt(), &cadreprev, renderer, blankmenu, graphmenu);
+					DrawCheckboxes(renderer, graphmenu, tetris);
 				}
 				else if(choiceMenu==1) {
 					if(choiceX==-1) tetris.setoption(EYES);
 					else if(choiceX == 0) tetris.setoption(WHITE_LINED);
 					else tetris.setoption(MILIEU);
-					drawprev(prev, tetris.getopt());
-					DrawCheckboxes(renderer, tetris);
+					drawprev(prev, tetris.getopt(), &cadreprev, renderer, blankmenu, graphmenu);
+					DrawCheckboxes(renderer,graphmenu, tetris);
 				}
 
 				else if (choiceMenu == 2){
@@ -634,6 +634,10 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris) {
 
 		default :break;
 		}
+		SDL_SetRenderTarget(renderer,NULL);
+		SDL_RenderCopy(renderer, graphmenu, NULL, NULL);
+		SDL_RenderPresent(renderer);
+		SDL_SetRenderTarget(renderer, graphmenu);
 	}
 	FREE_TEXTURE(graphmenu);
 }
