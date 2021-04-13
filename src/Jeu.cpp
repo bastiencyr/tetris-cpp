@@ -15,6 +15,7 @@
 #include <cassert>
 #include "../include/tetris.hpp"
 #include "../include/Jeu.hpp"
+#include "../include/Piece.hpp"
 #define SIZE_BLOC 35
 #define BLOCSX 10
 #define BLOCSY 20
@@ -24,8 +25,6 @@
 #define FREE_RENDERER_AND_WINDOW(renderer_t, window_t) { \
 SDL_DestroyRenderer(renderer_t); SDL_DestroyWindow(window_t); \
 renderer_t = nullptr; window_t = nullptr;}
-
-
 
 void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 
@@ -60,6 +59,7 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 		h = sizeTetris.h;
 
 		sizeTetris.x = sizeTetris.w;
+		Piece::initStaticMembers(sizeTetris);
 	}
 
 	if(Mix_OpenAudio(48000, MIX_DEFAULT_FORMAT, 2, 4096) == -1) //Initialisation de l'API Mixer
@@ -486,6 +486,7 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 
 	SDL_Rect cadreprev = {w/2-75-sizeBetweenText-3*xShift, h/2+2*sizeBetweenText, 2*(2*xShift+sizeBetweenText), h/4};
 	LTetri * prev = new LTetri(tetris.getopt());
+	prev->update();
 	prev->placeprev(cadreprev.x/factor,cadreprev.y/factor);
 	prev->draw(renderer, blankmenu, graphmenu);
 	prev->affiche_coord(1,1);
@@ -602,7 +603,6 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris, TTF_Font * P1
 
 int main(int argc, char** argv)
 {
-
 	int h= SIZE_BLOC*BLOCSY;
 	int w= SIZE_BLOC*BLOCSX + 500;
 	SDL_Rect sizeTetris;
