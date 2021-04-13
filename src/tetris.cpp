@@ -427,8 +427,8 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		//if(d==1) Mix_PlayMusic(line, 0);
 		//else if(d>1) Mix_PlayMusic(lines, 0);
 
-		if (multiplayer and dia >= 1) this->addLineToPlayer(dia-1, piece, ghost);
-		if (multiplayer and d >= 1) this->addLineToPlayer(d-1, pieceIA, ghost, true);
+		if (multiplayer && dia >= 2) this->addLineToPlayer(dia-1, piece, ghost);
+		if (multiplayer && d >= 2) this->addLineToPlayer(d-1, pieceIA, ghost, true);
 
 		this->updateAndPrintScore(score, ScoreOld, sc, multiplayer);
 		SDL_RenderPresent(renderer);
@@ -495,55 +495,55 @@ void Tetris::updateAndPrintScore(int& score, int& ScoreOld, int& sc, bool multip
 		SDL_RenderCopy(renderer, text_texture, NULL, &dstrect2);
 		SDL_SetRenderTarget(renderer, NULL);
 		SDL_RenderCopy(renderer, texture, &dstrect2, &dstrect2);
-	
+
 		//on affiche le score du joueur2
 		if (multiplayer){
 			SDL_SetRenderTarget(renderer, texture);
-			SDL_SetRenderDrawColor(renderer, 63, 63, 63, 255); 
+			SDL_SetRenderDrawColor(renderer, 63, 63, 63, 255);
 			SDL_RenderDrawLine(renderer,3*sizeTetris.w/2, 50,
 					3*sizeTetris.w/2,200);
-			
+
 			text_surface = TTF_RenderText_Blended(police, "Score", textColor);
 			text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); 
-			
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
 			int texW = 0;
 			int texH = 0;
 			SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
 
 			SDL_Rect dstrect = {sizeTetris.w, sizeTetris.h/7, texW/10, texH/10 };
 			dstrect.x = 1.6 * sizeTetris.w;
-			
+
 			SDL_SetRenderTarget(renderer, texture);
 			SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
 			SDL_SetRenderTarget(renderer, NULL);
 			SDL_RenderCopy(renderer, texture, &dstrect, &dstrect);
-			
+
 			FREE_SURFACE(text_surface);
 			FREE_TEXTURE(text_texture);
-			
+
 			std::string scoreStr = std::to_string ( score );
 			char * scoreStrArr = &scoreStr[0];
-			
+
 			FREE_SURFACE(text_surface);
 			FREE_TEXTURE(text_texture);
-			
+
 			//affichage du score
 			text_surface = TTF_RenderText_Solid(police, scoreStrArr, textColor);
 			text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-			
+
 			SDL_Rect dstrect2 = {0, sizeTetris.h/7+60, text_surface->w/2, text_surface->h/2 };
 			dstrect2.x = 1.6 * sizeTetris.w;
-			
+
 			SDL_SetRenderTarget(renderer, texture);
 			SDL_RenderFillRect(renderer, &dstrect2);
-			
+
 			SDL_RenderCopy(renderer, text_texture, NULL, &dstrect2);
 			SDL_SetRenderTarget(renderer, NULL);
 			SDL_RenderCopy(renderer, texture, &dstrect2, &dstrect2);
-			
+
 		}
-		
+
 		TTF_CloseFont(police);
 		FREE_SURFACE(text_surface);
 		FREE_TEXTURE(text_texture);
