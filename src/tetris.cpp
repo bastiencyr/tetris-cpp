@@ -735,6 +735,7 @@ void Tetris::minimenu(SDL_Texture * menu, SDL_Rect * cadre) {
 					setmode(PASTEL);
 					DrawSelected();
 				}
+				quit_menu = true;
 				break;
 
 			case SDLK_ESCAPE:
