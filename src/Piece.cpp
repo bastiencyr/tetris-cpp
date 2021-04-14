@@ -472,13 +472,9 @@ void Piece::printinsquare(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Textur
 
 	Piece * temp = new Piece(this->opt);
 	temp->adjust(this);
-	temp->update();
-	
-	temp->translate(0,0,true);
+
 	temp->translate(a, b, false);
 	temp->translate(0,0,true);
-	std::cout << "square" << std::endl;
-	temp->affiche_coord(1,1);
 
 	temp->draw(renderer, blank, texture, 255, false, xShift);
 
