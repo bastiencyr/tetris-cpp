@@ -447,10 +447,9 @@ void Piece::adjust(Piece *piece) {
 	}
 }
 
-void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, float xShift){
+void Piece::printinsquare(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, SDL_Rect* square, int a, int b, float xShift) {
 	int factor = locTetris.w/BLOCSX;
 
-	SDL_Rect tour;
 	SDL_SetRenderTarget(renderer, texture);
 
 	SDL_SetRenderDrawColor(renderer,63,63,63,255);
@@ -464,30 +463,64 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 		SDL_SetRenderDrawColor(renderer,212,255,254,255);
 		//SDL_SetRenderDrawColor(renderer,10,10,10,255);
 	}
-	tour.x = locTetris.w +locTetris.x +factor;
-	tour.y = locTetris.h / 2 - 1.5*factor + locTetris.y;
-	tour.h = 5*factor;
-	tour.w = 4*factor;
-	SDL_RenderFillRect(renderer,&tour);
+	SDL_RenderFillRect(renderer,square);
 
-	//SDL_SetRenderDrawColor(renderer, 255,255,255, 255);
 	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1], this->color[2], 255);
 
-	SDL_RenderDrawRect(renderer,&tour);
+	SDL_RenderDrawRect(renderer,square);
 
 	SDL_SetRenderTarget(renderer, NULL);
 
 	Piece * temp = new Piece(this->opt);
 	temp->adjust(this);
-	int a =  locTetris.w/(2*factor) +1;
-	int b = locTetris.h/(2*factor);
+	temp->update();
 
 	temp->translate(a, b, false);
 	temp->translate(0,0,true);
+	std::cout << "square" << std::endl;
+	temp->affiche_coord(1,1);
 
 	temp->draw(renderer, blank, texture, 255, false, xShift);
 
 	delete(temp);
+}
+
+void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, float xShift){
+	SDL_Rect tour;
+	int factor = locTetris.w/BLOCSX;
+
+	tour.x = locTetris.w +locTetris.x +factor;
+	tour.y = locTetris.h / 2 - 1.5*factor + locTetris.y;
+	tour.h = 5*factor;
+	tour.w = 4*factor;
+
+	int a =  locTetris.w/(2*factor) +1;
+	int b = locTetris.h/(2*factor);
+	printinsquare(renderer, blank, texture, &tour, a, b, xShift);
+
+}
+
+void Piece::printreserve(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, bool multiplayer, float xShift) {
+	SDL_Rect tour;
+	int factor = locTetris.w/BLOCSX;
+
+	tour.x = locTetris.x - 6*factor;
+	tour.y = locTetris.h / 2 - 1.5*factor + locTetris.y;
+	tour.h = 5*factor;
+	tour.w = 4*factor;
+
+	int a = -locTetris.w/(2*factor) -7;
+	int b = locTetris.h/(2*factor);
+	this->affiche_coord(1,1);
+	if(multiplayer) {
+		tour.x += locTetris.w + 7*factor;
+		tour.y += tour.h + 0.5*factor;
+		a+=2*(locTetris.w/(2*factor)+4);
+		b+=tour.h + 0.5;
+	}
+
+
+	printinsquare(renderer, blank, texture, &tour, xShift, a, b);
 }
 
 
@@ -785,7 +818,7 @@ void OTetri::rotateRight(bool moveSource){
 }
 
 void OTetri::printNextPiece2(SDL_Renderer* renderer,
-		SDL_Texture*  blank,SDL_Texture* texture, float xShift){
+		SDL_Texture*  blank,SDL_Texture* texture,float xShift){
 	this->Piece::printNextPiece2(renderer, blank, texture, 0.9);
 }
 
