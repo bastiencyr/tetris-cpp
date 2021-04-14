@@ -67,7 +67,7 @@ public :
     void init(Mix_Music* music, bool multiplayer = false);
 	void ListePieceInit(Piece * Liste[7]);
     void keyboard(const Uint8* keys);
-	ReturnCodeMenu NouvPiece(Piece *& oldp, Piece *& newp, Piece * Liste[7], int multiplayer);
+	ReturnCodeMenu NouvPiece(Piece *& oldp, Piece *& newp, Piece * Liste[7]);
 
 	/**************************************************************************/
 	//USER SCORE
