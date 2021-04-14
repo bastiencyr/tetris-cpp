@@ -356,6 +356,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 					piece->update();
 					ghost->adjust(piece);
 					ghostVerifDraw(ghost, piece, true);
+					reserve->update();
 					reserve->printreserve(renderer, blank, texture, multiplayer);
 					break;
 
