@@ -43,10 +43,7 @@ protected:
 	int w,h;
     double timer;
 	bool quitgame; //TODO A SUPPRIMER
-	int score, scoreIA;
 
-	bool mat[BLOCSX][BLOCSY];
-	bool matIA[BLOCSX][BLOCSY];
 
 public :
 	Tetris(int w, int h, SDL_Rect sizeTetris, SDL_Renderer * &renderer, bool multiplayer = false);
@@ -58,7 +55,6 @@ public :
 	int getw() {return w;};
 	int getopt() {return options;};
 	SDL_Renderer* get_renderer() {return renderer;};
-	//SDL_Window* get_pWindow() {return pWindow;};
 	SDL_Texture* get_menu() {return menu;};
 	int getvolume() {return volume;};
 
@@ -67,21 +63,6 @@ public :
     void init(Mix_Music* music, bool multiplayer = false);
 	void ListePieceInit(Piece * Liste[7]);
     void keyboard(const Uint8* keys);
-	ReturnCodeMenu NouvPiece(Piece *& oldp, Piece *& newp, Piece * Liste[7]);
-
-	/**************************************************************************/
-	//USER SCORE
-	void updateLevel(int& score, int& ScoreOld, int& sc);
-	void printScore(int& score, int xScore, int yScore);
-
-	/**************************************************************************/
-	//LINE DISAPARITION AND APPARITION
-	int TetrisLinesUpdate(int* score, bool player2 = false);
-	void FillEmpty(int i, int factor, bool player2 = false);
-	void CopyLine(int i, int decalage, int factor, bool player2 = false);
-	void addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2 = false);
-
-
 
 	/*************************************************************************/
 	//MENU FUNCTIONS
