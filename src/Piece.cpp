@@ -510,8 +510,8 @@ void Piece::printreserve(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture
 	if(multiplayer) {
 		tour.x += locTetris.w + 7*factor;
 		tour.y += tour.h + 0.5*factor;
-		a+=2*(locTetris.w/(2*factor)+4);
-		b+=tour.h + 0.5;
+		a+= locTetris.w/factor+7;
+		b+= tour.h/factor + 0.5;
 	}
 	printinsquare(renderer, blank, texture, &tour, a, b);
 }
