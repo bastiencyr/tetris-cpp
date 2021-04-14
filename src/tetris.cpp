@@ -189,6 +189,7 @@ void Tetris::init(Mix_Music* music, bool multiplayer){
 
 }
 
+//MIGRATION OK REMPLACER DANS LE CONSTRUCTEUR DE PLAYER
 void Tetris::ListePieceInit(Piece * Liste[7]) {
 	Liste[0] = new LTetri(options);
 	Liste[1] = new OTetri(options);
@@ -202,6 +203,8 @@ void Tetris::ListePieceInit(Piece * Liste[7]) {
 		Liste[i]->update();
 }
 
+//REMPLACE PAR nouvPiece(Piece * & oldp, Piece *& newp)
+//DRAW nEST PAS DEPLACE ET DOIT DONC ETRE AJOUTER EN DEHORS DE LA FONCTION
 ReturnCodeMenu Tetris::NouvPiece(Piece * & oldp, Piece *& newp, Piece * Liste[7]) {
 	ReturnCodeMenu gameState = ReturnCodeMenu::INIT ;
 	oldp = newp;
@@ -470,6 +473,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	return gameState;
 }
 
+//REMPLACER PAR updateLevel(int& ScoreOld);
 void Tetris::updateLevel(int& score, int& ScoreOld, int& sc){
 	if (score-ScoreOld>500) {
 		ScoreOld=score;
@@ -540,64 +544,64 @@ void Tetris::printScore(int& score, int xScore, int yScore){
 	police = nullptr;
 	
 }
-	
-	void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2){
-		//player2 = true -> ajouter une ligne à l'IA
-		for(int i=0 ; i< nbLineToAdd ;i++){
-			SDL_SetRenderDrawColor(renderer,100,100,100,255);
-			srand(time(0));
-			int randn= rand() % 10;
-			
-			int factor = sizeTetris.w/BLOCSX;
-			//ajouter une ligne à player1
-			for (int i = 0; i< BLOCSY ; i++)
-				CopyLine(i, -1, 0, player2);
-			
-			if (player2){
-				for(int j=0 ; j< BLOCSX ; j++)
-					matIA[j][BLOCSY-1] = true;
-				matIA[randn][BLOCSY-1] = false;
-			}
-			else {
-				for(int j=0 ; j< BLOCSX ; j++)
-					mat[j][BLOCSY-1] = true;
-				mat[randn][BLOCSY-1] = false;
-			}
-			
-			for(int j = 0; j< BLOCSX ; j++){
-				SDL_SetRenderTarget(renderer, texture);
-				
-				SDL_Rect line = {
-					sizeTetris.x + j*factor,
-					(BLOCSY-1)*factor+ sizeTetris.y,
-					factor,
-					factor,
-				};
-				if (player2) line.x = sizeTetris2.x + j*factor;
-				SDL_RenderCopy(renderer, blank, &line, &line);
-				
-				if(j!=randn){
-					line.x= sizeTetris.x + j*factor + 5;
-					line.y= (BLOCSY-1)*factor+ sizeTetris.y + 5;
-					line.h= factor - 10;
-					line.w= factor - 10;
-					if (player2) line.x= sizeTetris2.x + j*factor + 5;
-					
-					SDL_RenderFillRect(renderer, &line);
-					SDL_SetRenderTarget(renderer, NULL);
-					SDL_RenderCopy(renderer, texture, &line, &line);
-				}
-			}
-			piece->up();
 
+void Tetris::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2){
+	//player2 = true -> ajouter une ligne à l'IA
+	for(int i=0 ; i< nbLineToAdd ;i++){
+		SDL_SetRenderDrawColor(renderer,100,100,100,255);
+		srand(time(0));
+		int randn= rand() % 10;
+		
+		int factor = sizeTetris.w/BLOCSX;
+		//ajouter une ligne à player1
+		for (int i = 0; i< BLOCSY ; i++)
+			CopyLine(i, -1, 0, player2);
+		
+		if (player2){
+			for(int j=0 ; j< BLOCSX ; j++)
+				matIA[j][BLOCSY-1] = true;
+			matIA[randn][BLOCSY-1] = false;
+		}
+		else {
+			for(int j=0 ; j< BLOCSX ; j++)
+				mat[j][BLOCSY-1] = true;
+			mat[randn][BLOCSY-1] = false;
+		}
+		
+		for(int j = 0; j< BLOCSX ; j++){
+			SDL_SetRenderTarget(renderer, texture);
+			
+			SDL_Rect line = {
+				sizeTetris.x + j*factor,
+				(BLOCSY-1)*factor+ sizeTetris.y,
+				factor,
+				factor,
+			};
+			if (player2) line.x = sizeTetris2.x + j*factor;
+			SDL_RenderCopy(renderer, blank, &line, &line);
+			
+			if(j!=randn){
+				line.x= sizeTetris.x + j*factor + 5;
+				line.y= (BLOCSY-1)*factor+ sizeTetris.y + 5;
+				line.h= factor - 10;
+				line.w= factor - 10;
+				if (player2) line.x= sizeTetris2.x + j*factor + 5;
+				
+				SDL_RenderFillRect(renderer, &line);
+				SDL_SetRenderTarget(renderer, NULL);
+				SDL_RenderCopy(renderer, texture, &line, &line);
+			}
+		}
+		piece->up();
+		
 		//A laisser ?
 		piece->mvDstToSrc(*piece);
-
+		
 		if(!player2){
 			ghost->up();
 			ghost->DownGhost(mat,piece);
 			ghost->verif(piece);
-
+			
 			ghost->draw(renderer,blank,texture,OPAC);
 			piece->draw(renderer,blank,texture);
 		}
@@ -1197,6 +1201,7 @@ int Tetris::TetrisLinesUpdate(int *score, bool player2) {
 	return decalage;
 }
 
+//void Player::FillEmpty(int i) 
 void Tetris::FillEmpty(int i,int factore, bool player2) {
 	int factor = sizeTetris.w/BLOCSX;
 	SDL_Rect line;
