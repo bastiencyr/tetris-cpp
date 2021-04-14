@@ -157,21 +157,6 @@ void Tetris::init(Mix_Music* music, bool multiplayer){
 
 }
 
-//MIGRATION OK REMPLACER DANS LE CONSTRUCTEUR DE PLAYER
-void Tetris::ListePieceInit(Piece * Liste[7]) {
-	Liste[0] = new LTetri(options);
-	Liste[1] = new OTetri(options);
-	Liste[2] = new TTetri(options);
-	Liste[3] = new ZTetri(options);
-	Liste[4] = new JTetri(options);
-	Liste[5] = new ITetri(options);
-	Liste[6] = new STetri(options);
-
-	for(int i = 0; i<7; i++)
-		Liste[i]->update();
-}
-
-
 ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 
 	auto ghostVerifDraw = [&] (Piece *ghost, Piece *piece, bool matGame[BLOCSX][BLOCSY], bool gen =false)
@@ -184,6 +169,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	Piece::initStaticMembers(sizeTetris);
 	
 	Player player1 (blank, sizeTetris, options);
+	Player ghostPlayer1 (blank, sizeTetris, options);
 	Player player2 (blank, sizeTetris2, options);
 	
 	Mix_Music* rotate = Mix_LoadMUS("sfx/SFX_PieceRotateLR.ogg");
@@ -209,13 +195,6 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	else
 		player1.printScore(renderer, texture, 0.6 * sizeTetris.w, sizeTetris.h/7);
 
-
-	Piece *PiecGhosts[7];
-	ListePieceInit(PiecGhosts);
-
-	srand(time(0));
-	int randn= rand() % 7;
-
 	Piece *piece, *newPiece, *pieceIA, *ghost, *reserve, *temp;
 	reserve = nullptr; temp = nullptr;
 	//player1
@@ -224,9 +203,9 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	player1.nouvPiece(renderer, texture, piece, newPiece) ;
 
 	for(int i = 0; i<7; i++)
-		PiecGhosts[i]->adjust(player1.getPiece(i));
+		ghostPlayer1.getPiece(i)->adjust(player1.getPiece(i));
 
-	ghost=PiecGhosts[randn];
+	ghost=ghostPlayer1.getPiece(0);
 	ghost->adjust(piece);
 	ghost->DownGhost(player1.matGame,piece,1);
 	ghost->draw(renderer,blank,texture,OPAC);
@@ -423,9 +402,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		}
 		SDL_RenderPresent(renderer);
 	}
-	for (int i = 0; i < 7; i++){
-		delete PiecGhosts[i];
-	}
+	
 	//this->printMenu();
 	Mix_FreeMusic(rotate);
 	Mix_FreeMusic(drop);
