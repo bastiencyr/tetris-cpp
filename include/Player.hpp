@@ -30,7 +30,7 @@ public:
 	SDL_Rect getLocTetris(){ return locTetris;};
 	int getScore(){return score;};
 
-	int getCurrentDifficulty(){return difficulte[difficulte_i];};
+	double getCurrentDifficulty(){return difficulte[difficulte_i];};
 	//MatGame* getMat(){ return matGame;};
 	
 	Piece *getRandomPiece(){

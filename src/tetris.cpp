@@ -417,9 +417,10 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 				player1.printScore(renderer, texture, 1.1 * sizeTetris.w, sizeTetris.h/7);
 			}
 		}
-		if (!multiplayer and d>0)
+		if (!multiplayer and d>0){
+			player1.updateLevel(ScoreOld);
 			player1.printScore(renderer, texture, 0.6 * sizeTetris.w, sizeTetris.h/7);
-
+		}
 		SDL_RenderPresent(renderer);
 	}
 	for (int i = 0; i < 7; i++){
