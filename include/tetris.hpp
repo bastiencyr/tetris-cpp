@@ -94,7 +94,7 @@ public :
 			int numberChoice, int indice, int numItem,const char * str1, const char*str2);
 	void minimenu(SDL_Texture * menu, SDL_Rect * cadre);
 	void DrawSelected();
-	ReturnCodeMenu endGameMenu(Mix_Music* music, bool multiplayer);
+	ReturnCodeMenu endGameMenu(Mix_Music* music, bool multiplayer, bool win);
 
 	/**************************************************************************/
 

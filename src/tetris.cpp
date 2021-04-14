@@ -250,7 +250,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	ReturnCodeMenu gameState = ReturnCodeMenu::INIT ;
 	score = 0 ;
 	scoreIA = 0;
-	bool cont = true;
+	bool cont = true, win = true;
 	double t=0, delta_t=0, tIA =0, delta_tIA = 0;
 	int scoreOldIA = score+1, ScoreOld=score-1;
 	int d=0, dia = 0;
@@ -294,6 +294,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		if(!cont) {
 			gameState = NouvPiece(piece, newPiece, PiecList, multiplayer);
 			if(gameState == ReturnCodeMenu::GAME_OVER){
+				win = false;
 				quit_loop = true;
 			}
 
@@ -355,7 +356,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 					piece->update();
 					ghost->adjust(piece);
 					ghostVerifDraw(ghost, piece, true);
-					reserve->printreserve(renderer, blank, texture, multiplayer, 0.5);
+					reserve->printreserve(renderer, blank, texture, multiplayer);
 					break;
 
 				case SDLK_ESCAPE:
@@ -487,7 +488,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	Mix_FreeMusic(lines);
 
 	if (gameState == ReturnCodeMenu::GAME_OVER)
-		gameState = this->endGameMenu( music, multiplayer);
+		gameState = this->endGameMenu( music, multiplayer, win);
 
 	return gameState;
 }
@@ -928,7 +929,7 @@ void Tetris::UpDownCasesLoopMenu(int retour, int way, int & choiceMenu ,
 	SDL_RenderPresent(renderer);
 }
 
-ReturnCodeMenu Tetris::endGameMenu(Mix_Music* music, bool multiplayer){
+ReturnCodeMenu Tetris::endGameMenu(Mix_Music* music, bool multiplayer, bool win){
 	int numberChoice = 3;
 	int sizeBetweenText = 80, xShift = 100;
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
@@ -938,8 +939,10 @@ ReturnCodeMenu Tetris::endGameMenu(Mix_Music* music, bool multiplayer){
 	SDL_SetRenderDrawColor(renderer,63,63,63,200);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderFillRect(renderer, NULL);
-
-	printGenericMenu(menu, xShift, sizeBetweenText ,false, numberChoice, "Game Over", "Recommencer",
+	const char * str;
+	if(multiplayer && win)  str = "Partie gagnee";
+	else str = "Game Over";
+	printGenericMenu(menu, xShift, sizeBetweenText ,false, numberChoice, str, "Recommencer",
 			"Aller au menu", "Quitter");
 
 	SDL_Rect cadre ={w/2-xShift-25,0, 250, 40};
