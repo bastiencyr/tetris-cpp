@@ -14,13 +14,18 @@ class Piece;
 class Player
 {
 public:
-	Player(SDL_Rect locTetris, int options);
+	Player(SDL_Texture *blank, SDL_Rect locTetris, int options);
 	ReturnCodeMenu nouvPiece(SDL_Renderer* renderer, SDL_Texture* texture, Piece * & oldp, Piece *& newp);
 	void updateLevel(int& ScoreOld);
 	int tetrisLinesUpdate(SDL_Renderer* renderer, SDL_Texture* texture, int *score);
 	void fillEmpty(SDL_Renderer* renderer, SDL_Texture* texture, int i);
 	void copyLine(SDL_Renderer* renderer, SDL_Texture* texture, int i, int decalage);
 	void printMatrice();
+	
+	SDL_Rect getLocTetris(){ return locTetris;};
+	int getScore(){return score;};
+	int getSc(){ return sc;};
+	Piece * getListe(){ return *liste;}
 
 
 private:

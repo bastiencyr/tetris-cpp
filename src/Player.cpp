@@ -26,7 +26,9 @@ renderer_t = nullptr; window_t = nullptr;}
 #define BLOCSX 10
 #define BLOCSY 20
 
-Player::Player(SDL_Rect locTetris, int options){
+Player::Player(SDL_Texture *blank, SDL_Rect locTetris, int options){
+	this->blank = blank;
+	
 	liste[0] = new LTetri(options);
 	liste[1] = new OTetri(options);
 	liste[2] = new TTetri(options);
