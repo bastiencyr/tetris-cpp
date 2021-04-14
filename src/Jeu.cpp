@@ -519,9 +519,10 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris) {
 
 	//SDL_Rect cadreprev = {w/2-75-sizeBetweenText-3*xShift, h/2+2*sizeBetweenText, 2*(2*xShift+sizeBetweenText), h/4};
 
-
 	LTetri * prev = new LTetri(tetris.getopt());
-	int factor = prev->locTetris.x/BLOCSX;
+	std::cout << prev->locTetris.w <<std::endl << prev->locTetris.h  <<std::endl<< prev->locTetris.x  <<std::endl<< prev->locTetris.y <<std::endl;
+
+	int factor = prev->locTetris.w/BLOCSX;
 	SDL_Rect cadreprev = {w/2-75-sizeBetweenText-3*xShift, h/2+2*sizeBetweenText, 3*factor, 4*factor};
 
 	prev->update();

@@ -34,7 +34,7 @@ protected:
 	SDL_Texture *blank;
     SDL_Texture *texture;
 	SDL_Texture *menu;
-	
+
 	int volume;
 	unsigned int options;
 
@@ -61,19 +61,19 @@ public :
 	//SDL_Window* get_pWindow() {return pWindow;};
 	SDL_Texture* get_menu() {return menu;};
 	int getvolume() {return volume;};
-	
+
 	ReturnCodeMenu loop(Mix_Music* music, bool multiplayer);
-	
+
     void init(Mix_Music* music, bool multiplayer = false);
 	void ListePieceInit(Piece * Liste[7]);
     void keyboard(const Uint8* keys);
 	ReturnCodeMenu NouvPiece(Piece *& oldp, Piece *& newp, Piece * Liste[7]);
-	
+
 	/**************************************************************************/
 	//USER SCORE
 	void updateLevel(int& score, int& ScoreOld, int& sc);
 	void printScore(int& score, int xScore, int yScore);
-	
+
 	/**************************************************************************/
 	//LINE DISAPARITION AND APPARITION
 	int TetrisLinesUpdate(int* score, bool player2 = false);
@@ -81,7 +81,7 @@ public :
 	void CopyLine(int i, int decalage, int factor, bool player2 = false);
 	void addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2 = false);
 
-	
+
 
 	/*************************************************************************/
 	//MENU FUNCTIONS
@@ -94,17 +94,17 @@ public :
 			int numberChoice, int indice, int numItem,const char * str1, const char*str2);
 	void minimenu(SDL_Texture * menu, SDL_Rect * cadre);
 	void DrawSelected();
-	ReturnCodeMenu endGameMenu(Mix_Music* music, bool multiplayer);
-	
+	ReturnCodeMenu endGameMenu(Mix_Music* music, bool multiplayer, bool win);
+
 	/**************************************************************************/
-	
+
 	void setoption(unsigned int opt) {options ^= opt;};
 	void setmodedefault() {options&=~CLASSIC; options&=~ACCESS; options&=~PASTEL;};
 	void setmode(unsigned int opt) {options&=~CLASSIC; options&=~ACCESS; options&=~PASTEL; options|=opt;};
 	int upvolume() {if(volume<MIX_MAX_VOLUME) volume++; return volume;};
 	int downvolume() {if(volume >0) volume --; return volume;};
 
-	
+
 	void printMatrice();
     ~Tetris(); // destructor
 
