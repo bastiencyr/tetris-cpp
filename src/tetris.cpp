@@ -14,6 +14,8 @@
 #include "../include/tetris.hpp"
 #include <SDL2/SDL_ttf.h>
 #include "../include/Error.hpp"
+#include "../include/Player.hpp"
+
 #define OPAC 70
 #define FREE_SURFACE(surface_t) { SDL_FreeSurface(surface_t); surface_t = nullptr;}
 #define FREE_TEXTURE(texture_t) { SDL_DestroyTexture(texture_t); texture_t = nullptr;}
@@ -235,7 +237,10 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	};
 
 	Piece::initStaticMembers(sizeTetris);
-
+	
+	Player player1 (blank, sizeTetris, options);
+	Player player2 (blank, sizeTetris, options);
+	
 	Mix_Music* rotate = Mix_LoadMUS("sfx/SFX_PieceRotateLR.ogg");
 	Mix_Music* drop = Mix_LoadMUS("sfx/SFX_PieceSoftDrop.ogg");
 	Mix_Music* line = Mix_LoadMUS("sfx/SFX_SpecialLineClearSingle.ogg");
