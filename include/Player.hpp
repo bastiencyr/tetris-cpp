@@ -15,7 +15,8 @@ class MatGame;
 class Player
 {
 public:
-	Player(SDL_Texture *blank, SDL_Rect locTetris, int options);
+	Player(SDL_Renderer * renderer, SDL_Texture *texture, 
+		SDL_Texture *blank, SDL_Rect locTetris, int options);
 	ReturnCodeMenu nouvPiece(SDL_Renderer* renderer, SDL_Texture* texture, Piece * & oldp, Piece *& newp);
 
 	int tetrisLinesUpdate(SDL_Renderer* renderer, SDL_Texture* texture);
@@ -25,6 +26,9 @@ public:
 	void addLineToPlayer(SDL_Renderer* renderer, SDL_Texture* texture, int nbLineToAdd, Piece *piece, Piece *ghost, bool player2=false);
 	void printScore(SDL_Renderer* renderer, SDL_Texture* texture, int xScore, int yScore);
 	void updateLevel(int& ScoreOld);
+	
+	void restart(SDL_Renderer* renderer, SDL_Texture* texture);
+
 
 	
 	SDL_Rect getLocTetris(){ return locTetris;};
@@ -49,12 +53,15 @@ public:
 
 private:
 	SDL_Rect locTetris;
+	SDL_Rect locScore;
 	int w,h;
 	int score;
 	int difficulte_i;
 	double difficulte[18]={1.,0.9,0.82,0.72,0.61,0.52,0.45,0.4,0.37,0.35,0.34,0.33,0.32,0.31,0.3,0.29,0.28,0.27}; //difficulté
 	Piece *liste[7];
 	SDL_Texture *blank;
+	SDL_Renderer* renderer;
+    SDL_Texture *texture;
 };
 
 #endif

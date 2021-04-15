@@ -9,7 +9,7 @@
 #include <iostream>
 #include <cassert>
 #include <time.h>
-
+#include <SDL_image.h>
 #include <SDL.h>
 #include "../include//Player.hpp"
 #include "../include/Piece.hpp"
@@ -27,8 +27,11 @@ renderer_t = nullptr; window_t = nullptr;}
 #define BLOCSX 10
 #define BLOCSY 20
 
-Player::Player(SDL_Texture *blank, SDL_Rect locTetris, int options){
+Player::Player(SDL_Renderer * renderer, SDL_Texture *texture, 
+		SDL_Texture *blank, SDL_Rect locTetris, int options){
 	this->blank = blank;
+	this->texture = texture;
+	this->renderer = renderer;
 	
 	liste[0] = new LTetri(options);
 	liste[1] = new OTetri(options);
@@ -54,6 +57,7 @@ Player::Player(SDL_Texture *blank, SDL_Rect locTetris, int options){
 	this->locTetris.y = locTetris.y;
 	score = 0 ;
 	difficulte_i=0;
+	
 }
 
 ReturnCodeMenu Player::nouvPiece(SDL_Renderer* renderer, SDL_Texture* texture, Piece * & oldp, Piece *& newp) {
@@ -74,6 +78,17 @@ ReturnCodeMenu Player::nouvPiece(SDL_Renderer* renderer, SDL_Texture* texture, P
 		oldp->draw(renderer,blank,texture);
 
 	return gameState;
+}
+
+void Player::restart(SDL_Renderer* renderer, SDL_Texture* texture){
+	score = 0 ;
+	for(int i = 0; i < BLOCSX; i++) {
+		for(int j = 0; j < BLOCSY; j++) {
+			matGame[i][j] = false;
+		}
+	}
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_RenderCopy(renderer, blank, &locTetris, &locTetris);
 }
 
 void Player::updateLevel(int& ScoreOld){

@@ -11,6 +11,7 @@
 #include <iostream>
 #include <cassert>
 #include <time.h>
+#include <SDL_image.h>
 #include "../include/tetris.hpp"
 #include <SDL2/SDL_ttf.h>
 #include "../include/Error.hpp"
@@ -154,10 +155,42 @@ void Tetris::init(Mix_Music* music, bool multiplayer){
 	FREE_TEXTURE(text_texture);
 	FREE_SURFACE(text_surface);
 	TTF_CloseFont(police);
+	
+	//print help
+	IMG_Init(IMG_INIT_PNG);
+	SDL_Surface * image = IMG_Load("img/arrow.png");
+	SDL_Texture * image_render = SDL_CreateTextureFromSurface(renderer, image);
+	float f1 = (float) sizeTetris.w /(2.*(float)image->w);
+	int f = (int) (1/f1);
+
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_Rect arr = {sizeTetris.w+sizeTetris.x,
+	sizeTetris.h - image->h/f,
+	image->w/f, 
+	image->h/f};
+	int wArrow = image->w/f;
+	
+	SDL_RenderCopy(renderer, image_render, NULL, &arr);
+	
+	image = IMG_Load("img/R.png");
+	image_render = SDL_CreateTextureFromSurface(renderer, image);
+	f1 = (float) wArrow /(3.*(float)image->w);
+
+	f = (int) (1./f1) -1 ;
+	
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_Rect arr2 = {sizeTetris.w+sizeTetris.x + wArrow , 
+	sizeTetris.h - image->h/f -20 ,image->w/f, image->h/f};
+
+	SDL_RenderCopy(renderer, image_render, NULL, &arr2);
+	
+	
+	IMG_Quit();
 
 }
 
 ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
+	
 
 	auto ghostVerifDraw = [&] (Piece *ghost, Piece *piece, bool matGame[BLOCSX][BLOCSY], bool gen =false)
 	{
@@ -168,9 +201,9 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 
 	Piece::initStaticMembers(sizeTetris);
 	
-	Player player1 (blank, sizeTetris, options);
-	Player ghostPlayer1 (blank, sizeTetris, options);
-	Player player2 (blank, sizeTetris2, options);
+	Player player1 (renderer, texture, blank, sizeTetris, options);
+	Player ghostPlayer1 (renderer, texture, blank, sizeTetris, options);
+	Player player2 (renderer, texture, blank, sizeTetris2, options);
 	
 	Mix_Music* rotate = Mix_LoadMUS("sfx/SFX_PieceRotateLR.ogg");
 	Mix_Music* drop = Mix_LoadMUS("sfx/SFX_PieceSoftDrop.ogg");
@@ -290,6 +323,10 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 					if (gameState == ReturnCodeMenu::QUIT_GAME
 							or gameState == ReturnCodeMenu::GO_TO_MAIN_MENU)
 						quit_loop = true;
+					if (gameState == ReturnCodeMenu::RESTART ){
+						player1.restart(renderer, texture);
+						player1.printScore(renderer, texture, 0.6 * sizeTetris.w, sizeTetris.h/7);
+					}
 					break;
 
 				case SDLK_RIGHT:
@@ -378,6 +415,10 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		}
 
 		int d=player1.tetrisLinesUpdate(renderer, texture);
+		if (!multiplayer and d>0){
+			player1.updateLevel(ScoreOld);
+			player1.printScore(renderer, texture, 0.6 * sizeTetris.w, sizeTetris.h/7);
+		}
 		//if(d==1) Mix_PlayMusic(line, 0);
 		//else if(d>1) Mix_PlayMusic(lines, 0);
 
@@ -396,10 +437,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 				player1.printScore(renderer, texture, 1.1 * sizeTetris.w, sizeTetris.h/7);
 			}
 		}
-		if (!multiplayer and d>0){
-			player1.updateLevel(ScoreOld);
-			player1.printScore(renderer, texture, 0.6 * sizeTetris.w, sizeTetris.h/7);
-		}
+		
 		SDL_RenderPresent(renderer);
 	}
 	
@@ -919,8 +957,8 @@ ReturnCodeMenu Tetris::printMenu(){
 //							mat[i][j] = false;
 //						}
 //					}
-					SDL_SetRenderTarget(renderer, texture);
-					SDL_RenderCopy(renderer, blank, &sizeTetris, &sizeTetris);
+					//SDL_SetRenderTarget(renderer, texture);
+					//SDL_RenderCopy(renderer, blank, &sizeTetris, &sizeTetris);
 					quit_menu = true;
 					menuState = ReturnCodeMenu::RESTART;
 					//quit = false;

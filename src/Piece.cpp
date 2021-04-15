@@ -194,10 +194,6 @@ bool Piece::translate(int a, int b, bool moveSource){
 	return true;
 }
 
-/*
- * Cette fonction déplace une pièce vers le bas sans la dessiner.
- * Il faut appeler la méthode draw pour dessiner la pièce.
- */
 bool Piece::down(bool moveSource){
 	//normalement c'est 1 (normalisé). Faudra le faire
 	return this->translate(0, 1, moveSource);
@@ -211,22 +207,10 @@ bool Piece::left(bool moveSource){
 	return this->translate(-1, 0, moveSource);
 }
 
-/*
- * Cette méthode est utile pour revenir en arrière si un déplacement était pas
- * légal. En effet, si l'utilisateur veut se déplacer vers le bas, on change
- * dabord la position de la pièces SANS lafficher; on vérifie la légalité puis on
- * affiche. Si le déplacement n'était pas légal, il faut pouvoir revenir en arrière.
- */
 void Piece::up(bool moveSource){
 	this->translate(0, -1, moveSource);
 }
 
-
-/*
- *Cette fonction effectue la rotation de la pièce.
- * Le centre de rotation est donné par l'entier contenu dans la structure
- * de la pièce.
- */
 void Piece::rotateLeft(bool moveSource){
 
 	Piece temp;
@@ -242,11 +226,6 @@ void Piece::rotateLeft(bool moveSource){
 	}
 }
 
-/*
- *Cette fonction effectue la rotation de la pièce.
- * Le centre de rotation est donné par l'entier contenu dans la structure
- * de la pièce.
- */
 void Piece::rotateRight(bool moveSource){
 
 	Piece temp;
@@ -342,11 +321,6 @@ Error Piece::isLegalUp(bool mat[BLOCSX][BLOCSY]){
 	return isLegalTranslate(0, -1, mat);
 }
 
-/*
- *Cette fonction effectue la rotation de la pièce.
- * Le centre de rotation est donné par l'entier contenu dans la structure
- * de la pièce.
- */
 Error Piece::isLegalRotateLeft(bool mat[BLOCSX][BLOCSY]){
 
 	Piece temp;
@@ -358,11 +332,6 @@ Error Piece::isLegalRotateLeft(bool mat[BLOCSX][BLOCSY]){
 	return isLegalPosition(&temp, mat);
 }
 
-/*
- *Cette fonction effectue la rotation de la pièce.
- * Le centre de rotation est donné par l'entier contenu dans la structure
- * de la pièce.
- */
 Error Piece::isLegalRotateRight(bool mat[BLOCSX][BLOCSY]){
 
 	Piece temp;
@@ -374,10 +343,6 @@ Error Piece::isLegalRotateRight(bool mat[BLOCSX][BLOCSY]){
 	return isLegalPosition(&temp, mat);
 }
 
-/*
- * Cette méthode affiche les coordonnées d'une pièce
- * Elle a un objectif de débugage
- */
 void Piece::affiche_coord(bool source, bool dest){
 	if(source) {
 		std::cout << "coordonnées de la source "<<std::endl;

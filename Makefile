@@ -1,6 +1,6 @@
 CC=g++
 CFLAGS= $(shell sdl2-config --cflags)
-LDFLAGS=  $(shell sdl2-config --libs) -lSDL2_mixer -lSDL2_ttf
+LDFLAGS=  $(shell sdl2-config --libs) -lSDL2_mixer -lSDL2_ttf -lSDL2_image
 
 TARGET = tetris
 
