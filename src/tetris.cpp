@@ -33,7 +33,7 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris, SDL_Renderer* &renderer, bool m
 	this->renderer = renderer;
 	quitgame = true;
 	this-> volume = MIX_MAX_VOLUME/2;
-	
+
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
 	blank = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
@@ -132,14 +132,14 @@ void Tetris::init(Mix_Music* music, bool multiplayer){
 	if(multiplayer)
 		SDL_RenderCopy(renderer, texture, &sizeTetris, &sizeTetris2);
 
-	
-	
-	
+
+
+
 
 }
 
 ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
-	
+
 
 	auto ghostVerifDraw = [&] (Piece *ghost, Piece *piece, bool matGame[BLOCSX][BLOCSY], bool gen =false)
 	{
@@ -149,11 +149,11 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	};
 
 	Piece::initStaticMembers(sizeTetris);
-	
+
 	Player player1 (renderer, texture, blank, sizeTetris, options);
 	Player ghostPlayer1 (renderer, texture, blank, sizeTetris, options);
 	Player player2 (renderer, texture, blank, sizeTetris2, options);
-	
+
 	Mix_Music* rotate = Mix_LoadMUS("sfx/SFX_PieceRotateLR.ogg");
 	Mix_Music* drop = Mix_LoadMUS("sfx/SFX_PieceSoftDrop.ogg");
 	Mix_Music* line = Mix_LoadMUS("sfx/SFX_SpecialLineClearSingle.ogg");
@@ -191,6 +191,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	ghost->adjust(piece);
 	ghost->DownGhost(player1.matGame,piece,1);
 	ghost->draw(renderer,blank,texture,OPAC);
+	piece->printreserve(renderer, blank, texture, multiplayer,true);
 
 	int sizeBloc = sizeTetris.w/BLOCSX;
 	//BOUCLE
@@ -273,6 +274,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 							or gameState == ReturnCodeMenu::GO_TO_MAIN_MENU)
 						quit_loop = true;
 					if (gameState == ReturnCodeMenu::RESTART ){
+						piece->printreserve(renderer, blank, texture, multiplayer,true);
 						player1.restart(renderer, texture);
 						player1.printScore(renderer, texture, 0.6 * sizeTetris.w, sizeTetris.h/7);
 					}
@@ -379,17 +381,17 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 				player2.updateLevel(scoreOldIA);
 				player2.printScore(renderer, texture, 1.6 * sizeTetris.w, sizeTetris.h/7);
 			}
-			
+
 			if (d >= 1){
 				player1.updateLevel(ScoreOld);
 				player2.addLineToPlayer(renderer, texture, d-1, pieceIA, ghost, true);
 				player1.printScore(renderer, texture, 1.1 * sizeTetris.w, sizeTetris.h/7);
 			}
 		}
-		
+
 		SDL_RenderPresent(renderer);
 	}
-	
+
 	//this->printMenu();
 	Mix_FreeMusic(rotate);
 	Mix_FreeMusic(drop);
@@ -509,7 +511,7 @@ void Tetris::minimenu(SDL_Texture * menu, SDL_Rect * cadre) {
 					DrawSelected();
 				}
 
-				
+
 				else if (choiceMenu == 2){
 					setmode(ACCESS);
 					DrawSelected();

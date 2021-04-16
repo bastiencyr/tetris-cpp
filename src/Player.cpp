@@ -27,12 +27,12 @@ renderer_t = nullptr; window_t = nullptr;}
 #define BLOCSX 10
 #define BLOCSY 20
 
-Player::Player(SDL_Renderer * renderer, SDL_Texture *texture, 
+Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 		SDL_Texture *blank, SDL_Rect locTetris, int options){
 	this->blank = blank;
 	this->texture = texture;
 	this->renderer = renderer;
-	
+
 	liste[0] = new LTetri(options);
 	liste[1] = new OTetri(options);
 	liste[2] = new TTetri(options);
@@ -40,10 +40,10 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	liste[4] = new JTetri(options);
 	liste[5] = new ITetri(options);
 	liste[6] = new STetri(options);
-	
+
 	for(int i = 0; i<7; i++)
 		liste[i]->update();
-	
+
 	//mat[BLOCSX][BLOCSY];
 	for(auto &raw : matGame){
 		for(auto &el : raw)
@@ -57,23 +57,23 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	this->locTetris.y = locTetris.y;
 	score = 0 ;
 	difficulte_i=0;
-	
+
 	//print help
 	IMG_Init(IMG_INIT_PNG);
 	SDL_Surface * image;
 	SDL_Texture * image_render;
 	int f ; float f1;
 	int interWidget = locTetris.w/20;
-	
+
 	image = IMG_Load("img/Space.png");
 	image_render = SDL_CreateTextureFromSurface(renderer, image);
 	f1 = (float) locTetris.w  /(2.*(float)image->w);
 	f = (int) (1./f1) -1 ;
-	SDL_Rect posSpaceKey = {locTetris.w+locTetris.x + interWidget, 
+	SDL_Rect posSpaceKey = {locTetris.w+locTetris.x + interWidget,
 	locTetris.h - image->h/f - interWidget ,image->w/f, image->h/f};
 	SDL_RenderCopy(renderer, image_render, NULL, &posSpaceKey);
-	
-	
+
+
 	image = IMG_Load("img/arrow.png");
 	image_render = SDL_CreateTextureFromSurface(renderer, image);
 	f1 = (float) locTetris.w /(2.*(float)image->w);
@@ -82,44 +82,44 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_Rect posArrowKey = {locTetris.w+locTetris.x +interWidget,
 	locTetris.h - posSpaceKey.h - (locTetris.h - (posSpaceKey.y+posSpaceKey.h)) - image->h/f -interWidget,
-	image->w/f, 
+	image->w/f,
 	image->h/f};
 	int wArrow = image->w/f;
-	
+
 	SDL_RenderCopy(renderer, image_render, NULL, &posArrowKey);
-	
+
 	image = IMG_Load("img/Esc.png");
 	image_render = SDL_CreateTextureFromSurface(renderer, image);
 	f1 = (float) wArrow /(3.*(float)image->w);
 	f = (int) (1./f1) -1 +1;
 	SDL_SetRenderTarget(renderer, texture);
-	SDL_Rect posEscKey = {locTetris.w+locTetris.x + posSpaceKey.w +  interWidget, 
+	SDL_Rect posEscKey = {locTetris.w+locTetris.x + posSpaceKey.w +  interWidget,
 	locTetris.h - image->h/f -interWidget ,
 	image->w/f, image->h/f};
 	SDL_RenderCopy(renderer, image_render, NULL, &posEscKey);
-	
+
 	image = IMG_Load("img/R.png");
 	image_render = SDL_CreateTextureFromSurface(renderer, image);
 	f1 = (float) wArrow /(3.*(float)image->w);
 	f = (int) (1./f1) -1 +1;
 	SDL_SetRenderTarget(renderer, texture);
-	SDL_Rect posRKey = {locTetris.w+locTetris.x + posSpaceKey.w + interWidget, 
+	SDL_Rect posRKey = {locTetris.w+locTetris.x + posSpaceKey.w + interWidget,
 	locTetris.h - posEscKey.h - (locTetris.h-(posEscKey.y + posEscKey.h)) - image->h/f - interWidget
 	,image->w/f, image->h/f};
 	SDL_RenderCopy(renderer, image_render, NULL, &posRKey);
-	
+
 	locHelp.h = posArrowKey.h + posSpaceKey.h + 2*interWidget;
 	locHelp.x = posArrowKey.x;
 	locHelp.y = posArrowKey.y ;
 	locHelp.w = posSpaceKey.w = interWidget + posEscKey.w;
-	
-	
+
+
 	//print next piece
-	
+
 	//tour.x = locTetris.w +locTetris.x +factor;
 	//tour.y = locTetris.h / 3 - 1.5*factor + locTetris.y;
-	
-	
+
+
 	//print nextpiece
 	TTF_Font *police = TTF_OpenFont("src/Tetris.ttf", 65);
 	if(!police){
@@ -143,9 +143,9 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	FREE_SURFACE(text_surface);
 	TTF_CloseFont(police);
 	//priont cadre & nextpiece
-	
+
 	IMG_Quit();
-	
+
 }
 
 ReturnCodeMenu Player::nouvPiece(SDL_Renderer* renderer, SDL_Texture* texture, Piece * & oldp, Piece *& newp) {
@@ -194,21 +194,21 @@ void Player::updateLevel(int& ScoreOld){
 
 
 int Player::tetrisLinesUpdate(SDL_Renderer* renderer, SDL_Texture* texture) {
-	
+
 	int decalage = 0;
 	for(int i = BLOCSY-1; i>=0; i--) {
-		
+
 		int compt = 0;
 		for(int j = 0; j<BLOCSX; j++)
 			if (matGame[j][i])
 				compt++;
-		
+
 		if(compt==BLOCSX){ //ligne pleine
 			decalage++;
 			fillEmpty(renderer, texture, i);
 		}
-		
-		
+
+
 		else if(compt < BLOCSX && compt != 0 && decalage!=0)
 		{
 			copyLine(renderer, texture, i, decalage);
@@ -257,10 +257,10 @@ void Player::fillEmpty(SDL_Renderer* renderer, SDL_Texture* texture, int i) {
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_RenderCopy(renderer, blank, &line, &line);
 	SDL_SetRenderTarget(renderer, NULL);
-	
+
 	for (auto &row : matGame)
 		row[i]=false;
-	
+
 }
 
 void Player::copyLine(SDL_Renderer* renderer, SDL_Texture* texture, int i, int decalage) {
@@ -270,20 +270,20 @@ void Player::copyLine(SDL_Renderer* renderer, SDL_Texture* texture, int i, int d
 	//(je sais pas si ça marche) On copie la texture originelle sur le truc temporaire (y a une vraie raison à ça)
 	SDL_SetRenderTarget(renderer, temp);
 	SDL_RenderCopy(renderer, blank, NULL, NULL);
-	
+
 	SDL_Rect copyline;
 	SDL_Rect copytext;
-	
+
 	copyline.h= factor;
 	copyline.w= factor*BLOCSX;
 	copyline.y= (i+decalage)*factor+ locTetris.y;
 	copyline.x= 0 + locTetris.x;
-	
+
 	copytext.h= factor;
 	copytext.w= factor;
 	copytext.y= i*factor+ locTetris.y;
 	copytext.x= 0 + locTetris.x;
-	
+
 	for(int j = 0; j < BLOCSX; j++) {
 		if(matGame[j][i]) {
 			copytext.x=j*factor + locTetris.x;
@@ -292,19 +292,19 @@ void Player::copyLine(SDL_Renderer* renderer, SDL_Texture* texture, int i, int d
 			matGame[j][i]=0;
 		}
 	}
-	
+
 	SDL_SetRenderTarget(renderer, texture);
-	
+
 	copytext.w= factor*BLOCSX;
 	copytext.x=0 + locTetris.x;
-	
+
 	SDL_RenderCopy(renderer, temp, &copytext, &copyline);
-	
+
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
-	
+
 	FREE_TEXTURE(temp);
-	
+
 }
 
 void Player::printMatrice(){
@@ -326,51 +326,51 @@ void Player::addLineToPlayer(SDL_Renderer* renderer, SDL_Texture* texture, int n
 		SDL_SetRenderDrawColor(renderer,100,100,100,255);
 		srand(time(0));
 		int randn= rand() % 10;
-		
+
 		int factor = locTetris.w/BLOCSX;
 		//ajouter une ligne à player1
 		for (int i = 0; i< BLOCSY ; i++)
 			copyLine(renderer, texture, i, -1);
-		
+
 		for(int j=0 ; j< BLOCSX ; j++)
 			matGame[j][BLOCSY-1] = true;
 		matGame[randn][BLOCSY-1] = false;
-	
-		
+
+
 		for(int j = 0; j< BLOCSX ; j++){
 			SDL_SetRenderTarget(renderer, texture);
-			
+
 			SDL_Rect line = {
 				locTetris.x + j*factor,
 				(BLOCSY-1)*factor+ locTetris.y,
 				factor,
 				factor,
 			};
-			
+
 			SDL_RenderCopy(renderer, blank, &line, &line);
-			
+
 			if(j!=randn){
 				line.x= locTetris.x + j*factor + 5;
 				line.y= (BLOCSY-1)*factor+ locTetris.y + 5;
 				line.h= factor - 10;
 				line.w= factor - 10;
 				if (player2) line.x= locTetris.x + j*factor + 5;
-				
+
 				SDL_RenderFillRect(renderer, &line);
 				SDL_SetRenderTarget(renderer, NULL);
 				SDL_RenderCopy(renderer, texture, &line, &line);
 			}
 		}
 		piece->up();
-		
+
 		//A laisser ?
 		piece->mvDstToSrc(*piece);
-		
+
 		if(!player2){
 			ghost->up();
 			ghost->DownGhost(matGame,piece);
 			ghost->verif(piece);
-			
+
 			ghost->draw(renderer,blank,texture,OPAC);
 			piece->draw(renderer,blank,texture);
 		}
