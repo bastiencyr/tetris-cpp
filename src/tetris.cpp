@@ -28,7 +28,15 @@ renderer_t = nullptr; window_t = nullptr;}
 Tetris::Tetris(int w, int h, SDL_Rect locTetris, SDL_Renderer* &renderer, bool multiplayer){
 	this->w=w;
 	this->h=h;
-	this->options = 0x0;
+	cookieFile.open("cookie.txt", std::ios::in);
+	if (cookieFile) {
+		cookieFile >>this->options;
+		cookieFile.close();
+	}
+	else {
+		this->options = 0;
+	}
+	
 	timer=0;
 	this->renderer = renderer;
 	quitgame = true;
@@ -54,6 +62,12 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris, SDL_Renderer* &renderer, bool m
 }
 
 Tetris::~Tetris(){
+	cookieFile.open("cookie.txt", std::ios::out);
+	if (cookieFile) {
+		cookieFile << this->options;
+		cookieFile.close();
+	}	
+	
 	FREE_TEXTURE(blank);
 	//FREE_TEXTURE(texture);
 	//FREE_TEXTURE(menu);

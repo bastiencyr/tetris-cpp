@@ -11,6 +11,7 @@
 #include <SDL2/SDL_mixer.h>
 #include <string>
 #include "Piece.hpp"
+#include <fstream>
 
 #define SIZE_BLOC 35
 #define BLOCSX 10
@@ -37,6 +38,7 @@ protected:
 
 	int volume;
 	unsigned int options;
+	std::fstream cookieFile;
 
 	SDL_Rect sizeTetris;
 	SDL_Rect sizeTetris2;
