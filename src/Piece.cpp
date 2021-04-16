@@ -273,7 +273,6 @@ Error Piece::isLegalTranslate(int a, int b, bool mat[BLOCSX][BLOCSY]){
 Error Piece::isLegalPosition(Piece *temp, bool mat[BLOCSX][BLOCSY]){
 
 	Error e;
-
 	for(int i = 0; i< 4; i++) {
 		if(temp->dst[i].x < 0 and temp->dst[i].x < e.OVER_NUMBER_X)
 			e.OVER_NUMBER_X = temp->dst[i].x;

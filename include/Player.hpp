@@ -26,8 +26,8 @@ public:
 	void copyLine(int i, int decalage);
 	void printMatrice();
 	void addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2=false);
-	void printScore(int xScore, int yScore);
-	void printScoreText(int xScore, int yScore);
+	void printScore(bool multiplayer, bool playerIA=false);
+	void printScoreText(bool multiplayer, bool playerIA = false);
 	void updateLevel(int& ScoreOld);
 	void printSeparation();
 	void restart();
@@ -50,6 +50,8 @@ public:
 	}
 	
 	Piece ** getListe(){ return liste;}
+	
+	SDL_Rect& getLocScoreInt(){ return locScoreInt;};
 	
 public:
 	bool matGame[BLOCSX][BLOCSY];

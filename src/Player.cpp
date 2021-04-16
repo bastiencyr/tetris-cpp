@@ -152,7 +152,7 @@ Player::~Player(){
 	for (auto el : liste)
 		delete el;
 }
-void Player::printScoreText(int xScore, int yScore){
+void Player::printScoreText(bool multiplayer, bool playerIA){
 		//affchage de "score"
 	TTF_Font *police = TTF_OpenFont("src/RetroGaming.ttf", 65);
 	if(!police){
@@ -163,11 +163,17 @@ void Player::printScoreText(int xScore, int yScore){
 	SDL_Surface * text_surface = TTF_RenderText_Blended(police, "Score", textColor);
 	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 
-	int scoreW = text_surface->w/2, scoreH = text_surface->h/2;
+	float f1 = (2.*(float)locTetris.w/5.)/(float)text_surface->w;
+	int f = (int) 1/f1;
+	int scoreW = text_surface->w/f, scoreH = text_surface->h/f;
 	locScoreTxt = {0,0, scoreW, scoreH };
-
-	locScoreTxt.x = xScore;
-	locScoreTxt.y = yScore;
+	locScoreTxt.y = locTetris.w/20;
+	
+	if (multiplayer){
+		locScoreTxt.x = locTetris.w + 2*locTetris.w/4 - scoreW/2;
+	}
+	else
+		locScoreTxt.x = locTetris.w - scoreW - locTetris.w/20;
 	
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_RenderCopy(renderer, text_texture, NULL, &locScoreTxt);
@@ -179,7 +185,7 @@ void Player::printScoreText(int xScore, int yScore){
 	TTF_CloseFont(police);
 }
 
-void Player::printScore(int xScore, int yScore){
+void Player::printScore(bool multiplayer, bool playerIA){
 
 	TTF_Font * police = TTF_OpenFont("src/RetroGaming.ttf", 65);
 	if(!police){
@@ -194,9 +200,18 @@ void Player::printScore(int xScore, int yScore){
 	SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 
 	SDL_Rect dstrect2 = {0,0, text_surface->w/2, text_surface->h/2 };
-	dstrect2.x = xScore - text_surface->w/4 +50 ;
-	dstrect2.y = yScore + 60;
+	
+	if (multiplayer)
+		if (playerIA)
+			dstrect2.x = 3*locTetris.w/2 + locTetris.w/20 ;
+		else
+			dstrect2.x = 3*locTetris.w/2 - locTetris.w/20 - text_surface->w/2;
 
+	else
+		dstrect2.x = locScoreTxt.x + locScoreTxt.w/2 - text_surface->w/4;
+	
+	dstrect2.y = locScoreTxt.y + locScoreTxt.h + locTetris.w/20;
+	
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
 	SDL_SetRenderTarget(renderer, texture);
@@ -220,7 +235,8 @@ void Player::printSeparation(){
 	std::cout << locScoreTxt.x << ":" << locScoreTxt.y << ":" << locScoreTxt.w << ":" << locScoreTxt.h << std::endl;
 	SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
 	SDL_SetRenderTarget(renderer, texture);
-	SDL_RenderDrawLine(renderer, 3*locTetris.w/2, locScoreTxt.y,
+	SDL_RenderDrawLine(renderer, 3*locTetris.w/2, 
+			locScoreTxt.y + locScoreTxt.h + locTetris.w/20,
 			 3*locTetris.w/2, 
 			locScoreTxt.y + locScoreTxt.h + locScoreInt.h + locTetris.w/20);
 	SDL_RenderPresent(renderer);

@@ -180,15 +180,15 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	int scoreOldIA = 1, ScoreOld=-1;
 
 	if (multiplayer){
-		player2.printScoreText(1.6 * sizeTetris.w, sizeTetris.h/15);
-		player1.printScoreText(1.1 * sizeTetris.w, sizeTetris.h/15);
-		player2.printScore(1.6 * sizeTetris.w, sizeTetris.h/15);
-		player1.printScore(1.1 * sizeTetris.w, sizeTetris.h/15);
+		player2.printScoreText(multiplayer, true);//1.6 * sizeTetris.w, sizeTetris.h/15);
+		player2.printScore(multiplayer, true);
+		player1.printScoreText(multiplayer);
+		player1.printScore(multiplayer);
 		player1.printSeparation();
 	}
 	else{
-		player1.printScoreText(0.6 * sizeTetris.w, sizeTetris.h/15);
-		player1.printScore(0.6 * sizeTetris.w, sizeTetris.h/15);
+		player1.printScoreText(multiplayer);
+		player1.printScore(multiplayer);
 	}
 	Piece *piece, *newPiece, *pieceIA, *ghost, *reserve, *temp;
 	reserve = nullptr; temp = nullptr;
@@ -291,11 +291,11 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 						player1.restart();
 						player2.restart();
 						if (multiplayer){
-							player2.printScore(1.6 * sizeTetris.w, sizeTetris.h/15);
-							player1.printScore(1.1 * sizeTetris.w, sizeTetris.h/15);
+							player2.printScore(multiplayer, true);
+							player1.printScore(multiplayer, false);
 						}
 						else
-							player1.printScore(0.6 * sizeTetris.w, sizeTetris.h/15);
+							player1.printScore(multiplayer, false);
 					}
 					break;
 
@@ -350,7 +350,6 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 
 			//this->printMatrice();
 		}
-
 		prev = now;
 		now = SDL_GetPerformanceCounter();
 		delta_t = static_cast<double>((now - prev)/
@@ -387,11 +386,9 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		int d=player1.tetrisLinesUpdate();
 		if (!multiplayer and d>0){
 			player1.updateLevel(ScoreOld);
-			player1.printScore(0.6 * sizeTetris.w, sizeTetris.h/15);
+			player1.printScore(multiplayer);
 		}
-		//if(d==1) Mix_PlayMusic(line, 0);
-		//else if(d>1) Mix_PlayMusic(lines, 0);
-
+		
 		//update score
 		if (multiplayer){
 			int dia = player2.tetrisLinesUpdate();
@@ -399,14 +396,14 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 				if(dia==4) player1.addLineToPlayer(dia, piece, ghost, true);
 				else player1.addLineToPlayer(dia, piece, ghost, true);				
 				player2.updateLevel(scoreOldIA);
-				player2.printScore(1.6 * sizeTetris.w, sizeTetris.h/15);
+				player2.printScore(multiplayer, true);
 			}
 
 			if (d >= 1){
 				player1.updateLevel(ScoreOld);
 				if(d==4) player2.addLineToPlayer(d, pieceIA, ghost, false);
 				else player2.addLineToPlayer(d-1, pieceIA, ghost, false);
-				player1.printScore(1.1 * sizeTetris.w, sizeTetris.h/15);
+				player1.printScore(multiplayer, false);
 			}
 		}
 
@@ -418,10 +415,21 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	Mix_FreeMusic(drop);
 	Mix_FreeMusic(line);
 	Mix_FreeMusic(lines);
-
+	
 	if (gameState == ReturnCodeMenu::GAME_OVER)
 		gameState = this->endGameMenu( music, multiplayer, win);
-
+	
+	if (gameState == ReturnCodeMenu::RESTART){
+		SDL_RenderClear(renderer);
+		this->init(music, multiplayer);
+		SDL_SetRenderTarget(renderer, texture);
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderFillRect(renderer, &player1.getLocScoreInt()); //on efface 
+		SDL_RenderFillRect(renderer, &player2.getLocScoreInt()); //on efface 
+		SDL_SetRenderTarget(renderer, NULL);
+		SDL_RenderPresent(renderer);
+		gameState = this->loop(music, multiplayer);
+	}
 	return gameState;
 }
 
@@ -817,10 +825,7 @@ ReturnCodeMenu Tetris::endGameMenu(Mix_Music* music, bool multiplayer, bool win)
 
 				//recommencer
 				if (choiceMenu == 0){
-					SDL_RenderClear(renderer);
-					this->init(music, multiplayer);
-					SDL_RenderPresent(renderer);
-					menuState = this->loop(music, multiplayer);
+					menuState = ReturnCodeMenu::RESTART; 
 					quit_menu = true;
 				}
 				break;
