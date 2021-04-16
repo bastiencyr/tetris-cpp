@@ -27,7 +27,7 @@ public:
 	void printScore(int xScore, int yScore);
 	void printScoreText(int xScore, int yScore);
 	void updateLevel(int& ScoreOld);
-	
+	void printSeparation();
 	void restart();
 
 

@@ -160,16 +160,16 @@ void Player::printScoreText(int xScore, int yScore){
 	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 
 	int scoreW = text_surface->w/2, scoreH = text_surface->h/2;
-	SDL_Rect dstrect = {0,0, scoreW, scoreH };
+	locScoreTxt = {0,0, scoreW, scoreH };
 
-	dstrect.x = xScore;
-	dstrect.y = yScore;
-
+	locScoreTxt.x = xScore;
+	locScoreTxt.y = yScore;
+	
 	SDL_SetRenderTarget(renderer, texture);
-	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
+	SDL_RenderCopy(renderer, text_texture, NULL, &locScoreTxt);
 	SDL_SetRenderTarget(renderer, NULL);
-	SDL_RenderCopy(renderer, texture, &dstrect, &dstrect);
-
+	SDL_RenderCopy(renderer, texture, &locScoreTxt, &locScoreTxt);
+	
 	FREE_SURFACE(text_surface);
 	FREE_TEXTURE(text_texture);
 	TTF_CloseFont(police);
@@ -198,12 +198,7 @@ void Player::printScore(int xScore, int yScore){
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_RenderFillRect(renderer, &locScoreInt); //on efface ce quil y avait avant
 	locScoreInt = dstrect2;
-	//on affiche une ligne de séparation
-	//if (player2){
-	//	SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
-	//	SDL_RenderDrawLine(renderer,3*sizeTetris.w/2, 60,
-	//			3*sizeTetris.w/2,250);
-	//}
+	
 
 	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect2);
 	SDL_SetRenderTarget(renderer, NULL);
@@ -214,6 +209,17 @@ void Player::printScore(int xScore, int yScore){
 	FREE_TEXTURE(text_texture);
 	police = nullptr;
 
+}
+
+void Player::printSeparation(){
+	//on affiche une ligne de séparation
+	std::cout << locScoreTxt.x << ":" << locScoreTxt.y << ":" << locScoreTxt.w << ":" << locScoreTxt.h << std::endl;
+	SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_RenderDrawLine(renderer, 3*locTetris.w/2, locScoreTxt.y,
+			 3*locTetris.w/2, 
+			locScoreTxt.y + locScoreTxt.h + locScoreInt.h + locTetris.w/20);
+	SDL_RenderPresent(renderer);
 }
 
 ReturnCodeMenu Player::nouvPiece(Piece * & oldp, Piece *& newp) {

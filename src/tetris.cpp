@@ -132,10 +132,6 @@ void Tetris::init(Mix_Music* music, bool multiplayer){
 	if(multiplayer)
 		SDL_RenderCopy(renderer, texture, &sizeTetris, &sizeTetris2);
 
-
-
-
-
 }
 
 ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
@@ -175,6 +171,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		player1.printScoreText(1.1 * sizeTetris.w, sizeTetris.h/15);
 		player2.printScore(1.6 * sizeTetris.w, sizeTetris.h/15);
 		player1.printScore(1.1 * sizeTetris.w, sizeTetris.h/15);
+		player1.printSeparation();
 	}
 	else{
 		player1.printScoreText(0.6 * sizeTetris.w, sizeTetris.h/15);
