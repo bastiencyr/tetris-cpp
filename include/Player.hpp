@@ -15,15 +15,33 @@ class MatGame;
 class Player
 {
 public:
-	Player(SDL_Renderer * renderer, SDL_Texture *texture, 
+	Player(SDL_Renderer * renderer, SDL_Texture *texture,
 		SDL_Texture *blank, SDL_Rect locTetris, int options);
 	ReturnCodeMenu nouvPiece(Piece * & oldp, Piece *& newp);
-	
+
 	 ~Player(); // destructor
 
+	 /**************************************************************************/
+ 	//The followings functions handle the lines disappearing when completed
+
+	/**
+	 * This function detects the filled lines and calls the following two
+	 * functions when needed
+	 * @return int number of lines completed
+	 */
 	int tetrisLinesUpdate();
+	/**
+	 * The function erases a line
+	 * @param int i the index of the line to be erased
+	 */
 	void fillEmpty(int i);
+	/**
+	 * This function moves a line
+	 * @param int i the line to be moved
+	 * @param int decalage number of lines down to be translated to
+	 */
 	void copyLine(int i, int decalage);
+
 	void printMatrice();
 	void addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2=false);
 	void printScore(int xScore, int yScore);
@@ -33,13 +51,13 @@ public:
 	void restart();
 
 
-	
+
 	SDL_Rect getLocTetris(){ return locTetris;};
 	int getScore(){return score;};
 
 	double getCurrentDifficulty(){return difficulte[difficulte_i];};
 	//MatGame* getMat(){ return matGame;};
-	
+
 	Piece *getRandomPiece(){
 		srand(time(0));
 		int randn= rand() % 7;
@@ -48,9 +66,9 @@ public:
 	Piece *getPiece(int i){
 		return liste[i];
 	}
-	
+
 	Piece ** getListe(){ return liste;}
-	
+
 public:
 	bool matGame[BLOCSX][BLOCSY];
 
@@ -70,4 +88,3 @@ private:
 };
 
 #endif
-
