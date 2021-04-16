@@ -211,6 +211,17 @@ public :
 	bool onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,SDL_Texture* blank,
 	SDL_Texture* texture);
 
+	/**
+	 * @brief This function erases the old position of the piece, and
+	 * draws the new one, following to the graphic options used.
+	 * @param mat the matrix of the Tetris
+	 * @param renderer, blank, texture used to draw
+	 * @param alpha opacity
+	 * @param erase if true, draw only erases the old position and doesn't
+	 * draw the new one
+	 * @param shift a x-shift in a % of a case
+	 *
+	 */
 	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture,
 	int alpha = 255, bool erase=false, float shift = 0.);
 
