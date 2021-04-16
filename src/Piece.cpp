@@ -433,7 +433,11 @@ void Piece::printinsquare(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Textur
 	SDL_RenderFillRect(renderer,square);
 
 	SDL_SetRenderDrawColor(renderer, this->color[0], this->color[1], this->color[2], 255);
-
+	if(this->opt & (PASTEL | ACCESS | CLASSIC)) {
+		if(this->opt & PASTEL) SDL_SetRenderDrawColor(renderer, this->pastel[0], this->pastel[1], this->pastel[2], 255);
+		else if(this->opt & ACCESS) SDL_SetRenderDrawColor(renderer, 0,255,4, 100);
+		else SDL_SetRenderDrawColor(renderer, 20,20,20, 255);
+	}
 	SDL_RenderDrawRect(renderer,square);
 
 	SDL_SetRenderTarget(renderer, NULL);
