@@ -120,9 +120,9 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	locHelp.x = posArrowKey.x;
 	locHelp.y = posArrowKey.y ;
 	locHelp.w = posSpaceKey.w = interWidget + posEscKey.w;
-	
+
 	//print nextpiece
-	TTF_Font *police = TTF_OpenFont("src/Tetris.ttf", 65);
+	TTF_Font *police = TTF_OpenFont("src/RetroGaming.ttf", 65);
 	if(!police){
 		std::cout << TTF_GetError()<< std::endl;
 	}
@@ -134,7 +134,7 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	int sCase = locTetris.w/BLOCSX;
 	int texW = sCase * 3;
 	int texX = locTetris.w + sCase + locTetris.x + (sCase/2) ;
-	int texY = locTetris.h/2 - sCase * 4 + locTetris.y;
+	int texY = locTetris.h/3 + sCase * 4 + locTetris.y;
 	SDL_Rect dstrect = { texX, texY, texW, 25 };
 
 	SDL_SetRenderTarget(renderer, texture);
@@ -143,18 +143,18 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	FREE_TEXTURE(text_texture);
 	FREE_SURFACE(text_surface);
 	TTF_CloseFont(police);
-	
+
 	IMG_Quit();
 
 }
 
 void Player::printScoreText(int xScore, int yScore){
 		//affchage de "score"
-	TTF_Font *police = TTF_OpenFont("src/Tetris.ttf", 65);
+	TTF_Font *police = TTF_OpenFont("src/RetroGaming.ttf", 65);
 	if(!police){
 		std::cout << TTF_GetError()<< std::endl;
 	}
-	
+
 	SDL_Color textColor = {255, 255, 255};
 	SDL_Surface * text_surface = TTF_RenderText_Blended(police, "Score", textColor);
 	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
@@ -451,5 +451,3 @@ void Player::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool p
 		SDL_RenderPresent(renderer);
 	}
 }
-
-

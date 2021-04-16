@@ -383,14 +383,15 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		if (multiplayer){
 			int dia = player2.tetrisLinesUpdate();
 			if(dia>=1){
-				player1.addLineToPlayer(dia-1, piece, ghost);
-				player2.updateLevel(scoreOldIA);
+				if(dia==4) player1.addLineToPlayer(dia, pieceIA, ghost, true);
+				else player1.addLineToPlayer(dia-1, pieceIA, ghost, true);				player2.updateLevel(scoreOldIA);
 				player2.printScore(1.6 * sizeTetris.w, sizeTetris.h/15);
 			}
 
 			if (d >= 1){
 				player1.updateLevel(ScoreOld);
-				player2.addLineToPlayer(d-1, pieceIA, ghost, true);
+				if(d==4) player2.addLineToPlayer(d, pieceIA, ghost, true);
+				else player2.addLineToPlayer(d-1, pieceIA, ghost, true);
 				player1.printScore(1.1 * sizeTetris.w, sizeTetris.h/15);
 			}
 		}
