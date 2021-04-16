@@ -25,6 +25,7 @@ public:
 	void printMatrice();
 	void addLineToPlayer(SDL_Renderer* renderer, SDL_Texture* texture, int nbLineToAdd, Piece *piece, Piece *ghost, bool player2=false);
 	void printScore(SDL_Renderer* renderer, SDL_Texture* texture, int xScore, int yScore);
+	void printScoreText(int xScore, int yScore);
 	void updateLevel(int& ScoreOld);
 	
 	void restart(SDL_Renderer* renderer, SDL_Texture* texture);
@@ -52,8 +53,10 @@ public:
 	bool matGame[BLOCSX][BLOCSY];
 
 private:
-	SDL_Rect locTetris;
-	SDL_Rect locHelp;
+	SDL_Rect locTetris; //position du tetris central
+	SDL_Rect locHelp; //position du help en bas a droite
+	SDL_Rect locScoreInt; //position du score
+	//SDL_Rect locScoreTxt2; //position de "score"
 	int w,h;
 	int score;
 	int difficulte_i;

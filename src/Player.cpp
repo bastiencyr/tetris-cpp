@@ -9,7 +9,7 @@
 #include <iostream>
 #include <cassert>
 #include <time.h>
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 #include <SDL.h>
 #include "../include//Player.hpp"
 #include "../include/Piece.hpp"
@@ -57,7 +57,8 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	this->locTetris.y = locTetris.y;
 	score = 0 ;
 	difficulte_i=0;
-	
+	locScoreInt = {0,0,0,0};
+	//locScoreTxt2 = {0,0,0,0};
 	//print help
 	IMG_Init(IMG_INIT_PNG);
 	SDL_Surface * image;
@@ -113,13 +114,6 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	locHelp.y = posArrowKey.y ;
 	locHelp.w = posSpaceKey.w = interWidget + posEscKey.w;
 	
-	
-	//print next piece
-	
-	//tour.x = locTetris.w +locTetris.x +factor;
-	//tour.y = locTetris.h / 3 - 1.5*factor + locTetris.y;
-	
-	
 	//print nextpiece
 	TTF_Font *police = TTF_OpenFont("src/Tetris.ttf", 65);
 	if(!police){
@@ -133,7 +127,7 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	int sCase = locTetris.w/BLOCSX;
 	int texW = sCase * 3;
 	int texX = locTetris.w + sCase + locTetris.x + (sCase/2) ;
-	int texY = locTetris.h/3 - sCase * 3 + locTetris.y;
+	int texY = locTetris.h/2 - sCase * 4 + locTetris.y;
 	SDL_Rect dstrect = { texX, texY, texW, 25 };
 
 	SDL_SetRenderTarget(renderer, texture);
@@ -142,10 +136,36 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	FREE_TEXTURE(text_texture);
 	FREE_SURFACE(text_surface);
 	TTF_CloseFont(police);
-	//priont cadre & nextpiece
 	
 	IMG_Quit();
 	
+}
+
+void Player::printScoreText(int xScore, int yScore){
+		//affchage de "score"
+	TTF_Font *police = TTF_OpenFont("src/Tetris.ttf", 65);
+	if(!police){
+		std::cout << TTF_GetError()<< std::endl;
+	}
+	
+	SDL_Color textColor = {255, 255, 255};
+	SDL_Surface * text_surface = TTF_RenderText_Blended(police, "Score", textColor);
+	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+
+	int scoreW = text_surface->w/2, scoreH = text_surface->h/2;
+	SDL_Rect dstrect = {0,0, scoreW, scoreH };
+
+	dstrect.x = xScore;
+	dstrect.y = yScore;
+
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
+	SDL_SetRenderTarget(renderer, NULL);
+	SDL_RenderCopy(renderer, texture, &dstrect, &dstrect);
+
+	FREE_SURFACE(text_surface);
+	FREE_TEXTURE(text_texture);
+	TTF_CloseFont(police);
 }
 
 ReturnCodeMenu Player::nouvPiece(SDL_Renderer* renderer, SDL_Texture* texture, Piece * & oldp, Piece *& newp) {
@@ -384,42 +404,23 @@ void Player::printScore(SDL_Renderer* renderer, SDL_Texture* texture, int xScore
 	if(!police){
 		std::cout << TTF_GetError()<< std::endl;
 	}
-
-	//affchage de "score"
 	SDL_Color textColor = {255, 255, 255};
-	SDL_Surface * text_surface = TTF_RenderText_Blended(police, "Score", textColor);
-	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-
-	int scoreW = text_surface->w/2, scoreH = text_surface->h/2;
-	SDL_Rect dstrect = {0,0, scoreW, scoreH };
-
-	dstrect.x = xScore;
-	dstrect.y = yScore;
-
-	SDL_SetRenderTarget(renderer, texture);
-	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
-	SDL_SetRenderTarget(renderer, NULL);
-	SDL_RenderCopy(renderer, texture, &dstrect, &dstrect);
-
 	std::string scoreStr = std::to_string ( score );
 	char * scoreStrArr = &scoreStr[0];
 
-	FREE_SURFACE(text_surface);
-	FREE_TEXTURE(text_texture);
-
 	//print score
-	text_surface = TTF_RenderText_Solid(police, scoreStrArr, textColor);
-	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+	SDL_Surface *text_surface = TTF_RenderText_Solid(police, scoreStrArr, textColor);
+	SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 
 	SDL_Rect dstrect2 = {0,0, text_surface->w/2, text_surface->h/2 };
-	dstrect2.x = xScore + scoreW/2 - text_surface->w/4 ;
+	dstrect2.x = xScore - text_surface->w/4 +50 ;
 	dstrect2.y = yScore + 60;
 
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
 	SDL_SetRenderTarget(renderer, texture);
-	SDL_RenderFillRect(renderer, &dstrect2);
-
+	SDL_RenderFillRect(renderer, &locScoreInt); //on efface ce quil y avait avant
+	locScoreInt = dstrect2;
 	//on affiche une ligne de séparation
 	//if (player2){
 	//	SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);

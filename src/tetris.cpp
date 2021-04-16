@@ -171,12 +171,15 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	int scoreOldIA = 1, ScoreOld=-1;
 
 	if (multiplayer){
-		player2.printScore(renderer, texture, 1.6 * sizeTetris.w, sizeTetris.h/7);
-		player1.printScore(renderer, texture, 1.1 * sizeTetris.w, sizeTetris.h/7);
+		player2.printScoreText(1.6 * sizeTetris.w, sizeTetris.h/15);
+		player1.printScoreText(1.1 * sizeTetris.w, sizeTetris.h/15);
+		player2.printScore(renderer, texture, 1.6 * sizeTetris.w, sizeTetris.h/15);
+		player1.printScore(renderer, texture, 1.1 * sizeTetris.w, sizeTetris.h/15);
 	}
-	else
-		player1.printScore(renderer, texture, 0.6 * sizeTetris.w, sizeTetris.h/7);
-
+	else{
+		player2.printScoreText(0.6 * sizeTetris.w, sizeTetris.h/15);
+		player1.printScore(renderer, texture, 0.6 * sizeTetris.w, sizeTetris.h/15);
+	}
 	Piece *piece, *newPiece, *pieceIA, *ghost, *reserve, *temp;
 	reserve = nullptr; temp = nullptr;
 	//player1
@@ -274,7 +277,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 						quit_loop = true;
 					if (gameState == ReturnCodeMenu::RESTART ){
 						player1.restart(renderer, texture);
-						player1.printScore(renderer, texture, 0.6 * sizeTetris.w, sizeTetris.h/7);
+						player1.printScore(renderer, texture, 0.6 * sizeTetris.w, sizeTetris.h/15);
 					}
 					break;
 
@@ -366,7 +369,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		int d=player1.tetrisLinesUpdate(renderer, texture);
 		if (!multiplayer and d>0){
 			player1.updateLevel(ScoreOld);
-			player1.printScore(renderer, texture, 0.6 * sizeTetris.w, sizeTetris.h/7);
+			player1.printScore(renderer, texture, 0.6 * sizeTetris.w, sizeTetris.h/15);
 		}
 		//if(d==1) Mix_PlayMusic(line, 0);
 		//else if(d>1) Mix_PlayMusic(lines, 0);
@@ -377,13 +380,13 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 			if(dia>=1){
 				player1.addLineToPlayer(renderer, texture, dia-1, piece, ghost);
 				player2.updateLevel(scoreOldIA);
-				player2.printScore(renderer, texture, 1.6 * sizeTetris.w, sizeTetris.h/7);
+				player2.printScore(renderer, texture, 1.6 * sizeTetris.w, sizeTetris.h/15);
 			}
 			
 			if (d >= 1){
 				player1.updateLevel(ScoreOld);
 				player2.addLineToPlayer(renderer, texture, d-1, pieceIA, ghost, true);
-				player1.printScore(renderer, texture, 1.1 * sizeTetris.w, sizeTetris.h/7);
+				player1.printScore(renderer, texture, 1.1 * sizeTetris.w, sizeTetris.h/15);
 			}
 		}
 		
