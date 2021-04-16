@@ -214,9 +214,9 @@ public :
 	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture,
 	int alpha = 255, bool erase=false, float shift = 0.);
 
-	virtual void printinsquare(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, SDL_Rect* square, int a, int b, float xShift=0.5);
+	virtual void printinsquare(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, SDL_Rect* square, int a, int b, bool init=false,float xShift=0.5);
 	void printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture);
-	void printreserve(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, bool multiplayer);
+	void printreserve(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, bool multiplayer, bool init=false);
 
 	void cheat(bool mat[BLOCSX][BLOCSY]);
 
@@ -261,7 +261,7 @@ class ITetri : public Piece {
 		void update() override;
 		//void printNextPiece2(SDL_Renderer* renderer,
 		//SDL_Texture*  blank,SDL_Texture* texture,float xShift=0.5) override;
-		void printinsquare(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, SDL_Rect* square, int a, int b, float xShift=0.5) override;
+		void printinsquare(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, SDL_Rect* square, int a, int b, bool init, float xShift=0.5) override;
 };
 
 
@@ -273,7 +273,7 @@ class OTetri : public Piece {
 		Error isLegalRotateRight(bool mat[BLOCSX][BLOCSY]);
 		//void printNextPiece2(SDL_Renderer* renderer,
 		//SDL_Texture*  blank,SDL_Texture* texture, float xShift = 0.9);
-		void printinsquare(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, SDL_Rect* square, int a, int b, float xShift=0.9);
+		void printinsquare(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, SDL_Rect* square, int a, int b, bool init, float xShift=0.9);
 
 
 };

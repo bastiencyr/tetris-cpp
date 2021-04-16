@@ -33,7 +33,7 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris, SDL_Renderer* &renderer, bool m
 	this->renderer = renderer;
 	quitgame = true;
 	this-> volume = MIX_MAX_VOLUME/2;
-	
+
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, w, h);
 	blank = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
@@ -132,14 +132,14 @@ void Tetris::init(Mix_Music* music, bool multiplayer){
 	if(multiplayer)
 		SDL_RenderCopy(renderer, texture, &sizeTetris, &sizeTetris2);
 
-	
-	
-	
+
+
+
 
 }
 
 ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
-	
+
 
 	auto ghostVerifDraw = [&] (Piece *ghost, Piece *piece, bool matGame[BLOCSX][BLOCSY], bool gen =false)
 	{
@@ -149,11 +149,11 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	};
 
 	Piece::initStaticMembers(sizeTetris);
-	
+
 	Player player1 (renderer, texture, blank, sizeTetris, options);
-	Player ghostPlayer1 (renderer, texture, blank, sizeTetris, options);
-	Player player2 (renderer, texture, blank, sizeTetris2, options);
-	
+	Player ghostPlayer1 (renderer, texture,blank, sizeTetris, options);
+	Player player2 (renderer, texture,blank, sizeTetris2, options);
+
 	Mix_Music* rotate = Mix_LoadMUS("sfx/SFX_PieceRotateLR.ogg");
 	Mix_Music* drop = Mix_LoadMUS("sfx/SFX_PieceSoftDrop.ogg");
 	Mix_Music* line = Mix_LoadMUS("sfx/SFX_SpecialLineClearSingle.ogg");
@@ -173,19 +173,19 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	if (multiplayer){
 		player2.printScoreText(1.6 * sizeTetris.w, sizeTetris.h/15);
 		player1.printScoreText(1.1 * sizeTetris.w, sizeTetris.h/15);
-		player2.printScore(renderer, texture, 1.6 * sizeTetris.w, sizeTetris.h/15);
-		player1.printScore(renderer, texture, 1.1 * sizeTetris.w, sizeTetris.h/15);
+		player2.printScore(1.6 * sizeTetris.w, sizeTetris.h/15);
+		player1.printScore(1.1 * sizeTetris.w, sizeTetris.h/15);
 	}
 	else{
-		player2.printScoreText(0.6 * sizeTetris.w, sizeTetris.h/15);
-		player1.printScore(renderer, texture, 0.6 * sizeTetris.w, sizeTetris.h/15);
+		player1.printScoreText(0.6 * sizeTetris.w, sizeTetris.h/15);
+		player1.printScore(0.6 * sizeTetris.w, sizeTetris.h/15);
 	}
 	Piece *piece, *newPiece, *pieceIA, *ghost, *reserve, *temp;
 	reserve = nullptr; temp = nullptr;
 	//player1
 	newPiece = player1.getRandomPiece();
 	piece = player1.getRandomPiece();
-	player1.nouvPiece(renderer, texture, piece, newPiece) ;
+	player1.nouvPiece(piece, newPiece) ;
 
 	for(int i = 0; i<7; i++)
 		ghostPlayer1.getPiece(i)->adjust(player1.getPiece(i));
@@ -194,6 +194,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 	ghost->adjust(piece);
 	ghost->DownGhost(player1.matGame,piece,1);
 	ghost->draw(renderer,blank,texture,OPAC);
+	piece->printreserve(renderer, blank, texture, multiplayer,true);
 
 	int sizeBloc = sizeTetris.w/BLOCSX;
 	//BOUCLE
@@ -202,7 +203,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		if (Mix_PlayingMusic() == 0) Mix_PlayMusic(music,-1);
 
 		if(!cont) {
-			gameState = player1.nouvPiece(renderer, texture, piece, newPiece);
+			gameState = player1.nouvPiece(piece, newPiece);
 			if(gameState == ReturnCodeMenu::GAME_OVER){
 				win = false;
 				quit_loop = true;
@@ -276,8 +277,15 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 							or gameState == ReturnCodeMenu::GO_TO_MAIN_MENU)
 						quit_loop = true;
 					if (gameState == ReturnCodeMenu::RESTART ){
-						player1.restart(renderer, texture);
-						player1.printScore(renderer, texture, 0.6 * sizeTetris.w, sizeTetris.h/15);
+						piece->printreserve(renderer, blank, texture, multiplayer,true);
+						player1.restart();
+						player2.restart();
+						if (multiplayer){
+							player2.printScore(1.6 * sizeTetris.w, sizeTetris.h/15);
+							player1.printScore(1.1 * sizeTetris.w, sizeTetris.h/15);
+						}
+						else
+							player1.printScore(0.6 * sizeTetris.w, sizeTetris.h/15);
 					}
 					break;
 
@@ -366,33 +374,33 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 			tIA = 0;
 		}
 
-		int d=player1.tetrisLinesUpdate(renderer, texture);
+		int d=player1.tetrisLinesUpdate();
 		if (!multiplayer and d>0){
 			player1.updateLevel(ScoreOld);
-			player1.printScore(renderer, texture, 0.6 * sizeTetris.w, sizeTetris.h/15);
+			player1.printScore(0.6 * sizeTetris.w, sizeTetris.h/15);
 		}
 		//if(d==1) Mix_PlayMusic(line, 0);
 		//else if(d>1) Mix_PlayMusic(lines, 0);
 
 		//update score
 		if (multiplayer){
-			int dia = player2.tetrisLinesUpdate(renderer, texture);
+			int dia = player2.tetrisLinesUpdate();
 			if(dia>=1){
-				player1.addLineToPlayer(renderer, texture, dia-1, piece, ghost);
+				player1.addLineToPlayer(dia-1, piece, ghost);
 				player2.updateLevel(scoreOldIA);
-				player2.printScore(renderer, texture, 1.6 * sizeTetris.w, sizeTetris.h/15);
+				player2.printScore(1.6 * sizeTetris.w, sizeTetris.h/15);
 			}
-			
+
 			if (d >= 1){
 				player1.updateLevel(ScoreOld);
-				player2.addLineToPlayer(renderer, texture, d-1, pieceIA, ghost, true);
-				player1.printScore(renderer, texture, 1.1 * sizeTetris.w, sizeTetris.h/15);
+				player2.addLineToPlayer(d-1, pieceIA, ghost, true);
+				player1.printScore(1.1 * sizeTetris.w, sizeTetris.h/15);
 			}
 		}
-		
+
 		SDL_RenderPresent(renderer);
 	}
-	
+
 	//this->printMenu();
 	Mix_FreeMusic(rotate);
 	Mix_FreeMusic(drop);
@@ -512,7 +520,7 @@ void Tetris::minimenu(SDL_Texture * menu, SDL_Rect * cadre) {
 					DrawSelected();
 				}
 
-				
+
 				else if (choiceMenu == 2){
 					setmode(ACCESS);
 					DrawSelected();
@@ -902,18 +910,8 @@ ReturnCodeMenu Tetris::printMenu(){
 
 				//recommencer
 				if (choiceMenu == 1){
-					//TODO
-//					score = 0 ;
-//					for(int i = 0; i < BLOCSX; i++) {
-//						for(int j = 0; j < BLOCSY; j++) {
-//							mat[i][j] = false;
-//						}
-//					}
-					//SDL_SetRenderTarget(renderer, texture);
-					//SDL_RenderCopy(renderer, blank, &sizeTetris, &sizeTetris);
 					quit_menu = true;
 					menuState = ReturnCodeMenu::RESTART;
-					//quit = false;
 				}
 				//go to menu (2)
 				else if (choiceMenu == 3 || choiceMenu == 2){

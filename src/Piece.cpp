@@ -412,7 +412,7 @@ void Piece::adjust(Piece *piece) {
 	}
 }
 
-void Piece::printinsquare(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, SDL_Rect* square, int a, int b, float xShift) {
+void Piece::printinsquare(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, SDL_Rect* square, int a, int b, bool init, float xShift) {
 	int factor = locTetris.w/BLOCSX;
 
 	SDL_SetRenderTarget(renderer, texture);
@@ -434,16 +434,18 @@ void Piece::printinsquare(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Textur
 	SDL_RenderDrawRect(renderer,square);
 
 	SDL_SetRenderTarget(renderer, NULL);
+	if(!init) {
+		Piece * temp = new Piece(this->opt);
+		temp->adjust(this);
 
-	Piece * temp = new Piece(this->opt);
-	temp->adjust(this);
+		temp->translate(a, b, false);
+		temp->translate(0,0,true);
 
-	temp->translate(a, b, false);
-	temp->translate(0,0,true);
+		temp->draw(renderer, blank, texture, 255, false, xShift);
 
-	temp->draw(renderer, blank, texture, 255, false, xShift);
+		delete(temp);
+	}
 
-	delete(temp);
 }
 
 void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture){
@@ -460,7 +462,7 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 	printinsquare(renderer, blank, texture, &tour, a, b);
 }
 
-void Piece::printreserve(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, bool multiplayer) {
+void Piece::printreserve(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, bool multiplayer, bool init) {
 	SDL_Rect tour;
 	int factor = locTetris.w/BLOCSX;
 
@@ -478,7 +480,7 @@ void Piece::printreserve(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture
 		a+= locTetris.w/factor+7;
 		b+= tour.h/factor + 0.5;
 	}
-	printinsquare(renderer, blank, texture, &tour, a, b);
+	printinsquare(renderer, blank, texture, &tour, a, b,init);
 }
 
 
@@ -777,8 +779,8 @@ void OTetri::rotateRight(bool moveSource){
 
 void OTetri::printinsquare(SDL_Renderer* renderer,
 		SDL_Texture*  blank,SDL_Texture* texture,SDL_Rect* square,
-		int a, int b,float xShift){
-	this->Piece::printinsquare(renderer, blank, texture,square,a,b, 0.9);
+		int a, int b, bool init,float xShift){
+	this->Piece::printinsquare(renderer, blank, texture,square,a,b, init,0.9);
 }
 
 ITetri::ITetri(unsigned int options) : Piece() {
@@ -816,7 +818,7 @@ void ITetri::update() {
 }
 
 void ITetri::printinsquare(SDL_Renderer* renderer,
-		SDL_Texture*  blank,SDL_Texture* texture, SDL_Rect* square, int a, int b, float xShift){
+		SDL_Texture*  blank,SDL_Texture* texture, SDL_Rect* square, int a, int b, bool init, float xShift){
 	Piece temp = *this;
 	temp.dst[0].x = floor(BLOCSX/2)+1;
 	temp.dst[1].x = floor(BLOCSX/2)+1;
@@ -829,7 +831,7 @@ void ITetri::printinsquare(SDL_Renderer* renderer,
 	temp.dst[3].y = 2;
 
 
-	temp.Piece::printinsquare(renderer, blank, texture,square,a,b, xShift);
+	temp.Piece::printinsquare(renderer, blank, texture,square,a,b,init, xShift);
 }
 
 TTetri::TTetri(unsigned int options) : Piece() {

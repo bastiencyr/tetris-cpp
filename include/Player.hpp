@@ -17,18 +17,18 @@ class Player
 public:
 	Player(SDL_Renderer * renderer, SDL_Texture *texture, 
 		SDL_Texture *blank, SDL_Rect locTetris, int options);
-	ReturnCodeMenu nouvPiece(SDL_Renderer* renderer, SDL_Texture* texture, Piece * & oldp, Piece *& newp);
+	ReturnCodeMenu nouvPiece(Piece * & oldp, Piece *& newp);
 
-	int tetrisLinesUpdate(SDL_Renderer* renderer, SDL_Texture* texture);
-	void fillEmpty(SDL_Renderer* renderer, SDL_Texture* texture, int i);
-	void copyLine(SDL_Renderer* renderer, SDL_Texture* texture, int i, int decalage);
+	int tetrisLinesUpdate();
+	void fillEmpty(int i);
+	void copyLine(int i, int decalage);
 	void printMatrice();
-	void addLineToPlayer(SDL_Renderer* renderer, SDL_Texture* texture, int nbLineToAdd, Piece *piece, Piece *ghost, bool player2=false);
-	void printScore(SDL_Renderer* renderer, SDL_Texture* texture, int xScore, int yScore);
+	void addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2=false);
+	void printScore(int xScore, int yScore);
 	void printScoreText(int xScore, int yScore);
 	void updateLevel(int& ScoreOld);
 	
-	void restart(SDL_Renderer* renderer, SDL_Texture* texture);
+	void restart();
 
 
 	
