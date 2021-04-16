@@ -220,11 +220,21 @@ public :
 	 * @param erase if true, draw only erases the old position and doesn't
 	 * draw the new one
 	 * @param shift a x-shift in a % of a case
-	 *
+	 * This function works on the "texture" texture and copies the result
+	 * to the renderer. The texture "blank" is used for the erasing part.
+	 * This function is used wherever a piece needs being drawn, and thus
+	 * uses some control mechanism, for example so that the "ghost" piece
+	 * doesn't risk erasing the piece that's falling.
 	 */
 	void draw(SDL_Renderer* renderer,SDL_Texture*  blank, SDL_Texture* texture,
 	int alpha = 255, bool erase=false, float shift = 0.);
 
+	/**
+	 * @brief This function handles pieces being drawn in a square
+	 * @param square The square to be drawn into
+	 * @param a, b Integers to be used to translate the piece into the square
+	 * and positioning it in a neat way
+	 */
 	virtual void printinsquare(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, SDL_Rect* square, int a, int b, bool init=false,float xShift=0.5);
 	void printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture);
 	void printreserve(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture* texture, bool multiplayer, bool init=false);
