@@ -14,6 +14,9 @@
 #include "../include/Error.hpp"
 #include "../include/tetris.hpp"
 
+#define FREE_SURFACE(surface_t) { SDL_FreeSurface(surface_t); surface_t = nullptr;}
+#define FREE_TEXTURE(texture_t) { SDL_DestroyTexture(texture_t); texture_t = nullptr;}
+
 SDL_Rect Piece::locTetris;
 
 Piece::Piece(unsigned int options) {
@@ -444,6 +447,26 @@ void Piece::printinsquare(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Textur
 		temp->draw(renderer, blank, texture, 255, false, xShift);
 
 		delete(temp);
+	}
+	else {
+		TTF_Font *police = TTF_OpenFont("src/RetroGaming.ttf", 65);
+		if(!police){
+			std::cout << TTF_GetError()<< std::endl;
+		}
+		SDL_Color textColor = {255, 255, 255};
+
+		SDL_Surface * text_surface = TTF_RenderText_Blended(police,"Reserve", textColor);
+		SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+		square->x += factor/2;
+		square->y += square->h + factor/2;
+		square->w = factor * 3;
+		square->h = 25;
+		SDL_SetRenderTarget(renderer, texture);
+		SDL_RenderCopy(renderer, text_texture, NULL, square);
+
+		FREE_TEXTURE(text_texture);
+		FREE_SURFACE(text_surface);
+		TTF_CloseFont(police);
 	}
 
 }
