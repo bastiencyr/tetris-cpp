@@ -260,10 +260,10 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 						reserve = piece;
 						piece = temp;
 						temp = nullptr;
+						piece->update();
+						ghost->adjust(piece);
+						ghostVerifDraw(ghost, piece, player1.matGame, true);
 					}
-					piece->update();
-					ghost->adjust(piece);
-					ghostVerifDraw(ghost, piece, player1.matGame, true);
 					reserve->update();
 					reserve->printreserve(renderer, blank, texture, multiplayer);
 					break;
