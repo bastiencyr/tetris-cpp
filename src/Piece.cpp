@@ -452,13 +452,13 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 	SDL_Rect tour;
 	int factor = locTetris.w/BLOCSX;
 
-	tour.x = locTetris.w +locTetris.x +factor;
-	tour.y = locTetris.h / 2 - 2.5*factor + locTetris.y;
+	tour.x = locTetris.w +locTetris.x + factor;
+	tour.y = locTetris.h / 3 - 1.5*factor + locTetris.y;
 	tour.h = 5*factor;
 	tour.w = 4*factor;
 
 	int a =  locTetris.w/(2*factor) +1;
-	int b = locTetris.h/(2*factor)-1;
+	int b = locTetris.h/(3*factor)+1;
 	printinsquare(renderer, blank, texture, &tour, a, b);
 }
 
@@ -466,19 +466,19 @@ void Piece::printreserve(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Texture
 	SDL_Rect tour;
 	int factor = locTetris.w/BLOCSX;
 
-	tour.x = locTetris.x - 6*factor;
-	tour.y = locTetris.h / 2 - 1.5*factor + locTetris.y;
+	tour.x = locTetris.x - 5*factor;
+	tour.y = locTetris.h / 3 - 1.5*factor + locTetris.y;
 	tour.h = 5*factor;
 	tour.w = 4*factor;
 
-	int a = -locTetris.w/(2*factor) -6;
-	int b = locTetris.h/(2*factor);
+	int a = -locTetris.w/(2*factor) -5;
+	int b = locTetris.h/(3*factor) +1;
 	this->affiche_coord(1,1);
 	if(multiplayer) {
-		tour.x += locTetris.w + 7*factor;
-		tour.y += tour.h + 0.5*factor;
-		a+= locTetris.w/factor+7;
-		b+= tour.h/factor + 0.5;
+		tour.x += locTetris.w + 6.1*factor + tour.w;
+		//tour.y += tour.h + 0.5*factor;
+		a+= (locTetris.w+tour.w)/factor+6;
+		//b+= tour.h/factor + 0.5;
 	}
 	printinsquare(renderer, blank, texture, &tour, a, b,init);
 }
