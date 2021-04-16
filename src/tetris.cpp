@@ -66,9 +66,8 @@ Tetris::~Tetris(){
 	if (cookieFile) {
 		cookieFile << this->options;
 		cookieFile.close();
-	}	
-	
-	FREE_TEXTURE(blank);
+	}
+	//FREE_TEXTURE(blank);
 	//FREE_TEXTURE(texture);
 	//FREE_TEXTURE(menu);
 	//FREE_RENDERER_AND_WINDOW(renderer, pWindow);
@@ -397,15 +396,16 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		if (multiplayer){
 			int dia = player2.tetrisLinesUpdate();
 			if(dia>=1){
-				if(dia==4) player1.addLineToPlayer(dia, pieceIA, ghost, true);
-				else player1.addLineToPlayer(dia-1, pieceIA, ghost, true);				player2.updateLevel(scoreOldIA);
+				if(dia==4) player1.addLineToPlayer(dia, piece, ghost, true);
+				else player1.addLineToPlayer(dia, piece, ghost, true);				
+				player2.updateLevel(scoreOldIA);
 				player2.printScore(1.6 * sizeTetris.w, sizeTetris.h/15);
 			}
 
 			if (d >= 1){
 				player1.updateLevel(ScoreOld);
-				if(d==4) player2.addLineToPlayer(d, pieceIA, ghost, true);
-				else player2.addLineToPlayer(d-1, pieceIA, ghost, true);
+				if(d==4) player2.addLineToPlayer(d, pieceIA, ghost, false);
+				else player2.addLineToPlayer(d-1, pieceIA, ghost, false);
 				player1.printScore(1.1 * sizeTetris.w, sizeTetris.h/15);
 			}
 		}

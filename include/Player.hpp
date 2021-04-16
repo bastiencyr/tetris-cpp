@@ -18,6 +18,8 @@ public:
 	Player(SDL_Renderer * renderer, SDL_Texture *texture, 
 		SDL_Texture *blank, SDL_Rect locTetris, int options);
 	ReturnCodeMenu nouvPiece(Piece * & oldp, Piece *& newp);
+	
+	 ~Player(); // destructor
 
 	int tetrisLinesUpdate();
 	void fillEmpty(int i);
