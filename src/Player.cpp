@@ -58,6 +58,94 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	score = 0 ;
 	difficulte_i=0;
 	
+	//print help
+	IMG_Init(IMG_INIT_PNG);
+	SDL_Surface * image;
+	SDL_Texture * image_render;
+	int f ; float f1;
+	int interWidget = locTetris.w/20;
+	
+	image = IMG_Load("img/Space.png");
+	image_render = SDL_CreateTextureFromSurface(renderer, image);
+	f1 = (float) locTetris.w  /(2.*(float)image->w);
+	f = (int) (1./f1) -1 ;
+	SDL_Rect posSpaceKey = {locTetris.w+locTetris.x + interWidget, 
+	locTetris.h - image->h/f - interWidget ,image->w/f, image->h/f};
+	SDL_RenderCopy(renderer, image_render, NULL, &posSpaceKey);
+	
+	
+	image = IMG_Load("img/arrow.png");
+	image_render = SDL_CreateTextureFromSurface(renderer, image);
+	f1 = (float) locTetris.w /(2.*(float)image->w);
+	f = (int) (1/f1);
+
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_Rect posArrowKey = {locTetris.w+locTetris.x +interWidget,
+	locTetris.h - posSpaceKey.h - (locTetris.h - (posSpaceKey.y+posSpaceKey.h)) - image->h/f -interWidget,
+	image->w/f, 
+	image->h/f};
+	int wArrow = image->w/f;
+	
+	SDL_RenderCopy(renderer, image_render, NULL, &posArrowKey);
+	
+	image = IMG_Load("img/Esc.png");
+	image_render = SDL_CreateTextureFromSurface(renderer, image);
+	f1 = (float) wArrow /(3.*(float)image->w);
+	f = (int) (1./f1) -1 +1;
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_Rect posEscKey = {locTetris.w+locTetris.x + posSpaceKey.w +  interWidget, 
+	locTetris.h - image->h/f -interWidget ,
+	image->w/f, image->h/f};
+	SDL_RenderCopy(renderer, image_render, NULL, &posEscKey);
+	
+	image = IMG_Load("img/R.png");
+	image_render = SDL_CreateTextureFromSurface(renderer, image);
+	f1 = (float) wArrow /(3.*(float)image->w);
+	f = (int) (1./f1) -1 +1;
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_Rect posRKey = {locTetris.w+locTetris.x + posSpaceKey.w + interWidget, 
+	locTetris.h - posEscKey.h - (locTetris.h-(posEscKey.y + posEscKey.h)) - image->h/f - interWidget
+	,image->w/f, image->h/f};
+	SDL_RenderCopy(renderer, image_render, NULL, &posRKey);
+	
+	locHelp.h = posArrowKey.h + posSpaceKey.h + 2*interWidget;
+	locHelp.x = posArrowKey.x;
+	locHelp.y = posArrowKey.y ;
+	locHelp.w = posSpaceKey.w = interWidget + posEscKey.w;
+	
+	
+	//print next piece
+	
+	//tour.x = locTetris.w +locTetris.x +factor;
+	//tour.y = locTetris.h / 3 - 1.5*factor + locTetris.y;
+	
+	
+	//print nextpiece
+	TTF_Font *police = TTF_OpenFont("src/Tetris.ttf", 65);
+	if(!police){
+		std::cout << TTF_GetError()<< std::endl;
+	}
+	SDL_Color textColor = {255, 255, 255};
+
+	SDL_Surface * text_surface = TTF_RenderText_Blended(police,"Next Piece", textColor);
+	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+
+	int sCase = locTetris.w/BLOCSX;
+	int texW = sCase * 3;
+	int texX = locTetris.w + sCase + locTetris.x + (sCase/2) ;
+	int texY = locTetris.h/3 - sCase * 3 + locTetris.y;
+	SDL_Rect dstrect = { texX, texY, texW, 25 };
+
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
+
+	FREE_TEXTURE(text_texture);
+	FREE_SURFACE(text_surface);
+	TTF_CloseFont(police);
+	//priont cadre & nextpiece
+	
+	IMG_Quit();
+	
 }
 
 ReturnCodeMenu Player::nouvPiece(SDL_Renderer* renderer, SDL_Texture* texture, Piece * & oldp, Piece *& newp) {

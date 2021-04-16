@@ -53,7 +53,7 @@ public:
 
 private:
 	SDL_Rect locTetris;
-	SDL_Rect locScore;
+	SDL_Rect locHelp;
 	int w,h;
 	int score;
 	int difficulte_i;

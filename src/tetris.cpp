@@ -132,60 +132,9 @@ void Tetris::init(Mix_Music* music, bool multiplayer){
 	if(multiplayer)
 		SDL_RenderCopy(renderer, texture, &sizeTetris, &sizeTetris2);
 
-
-	//affichage du texte
-	TTF_Font *police = TTF_OpenFont("src/Tetris.ttf", 65);
-	if(!police){
-		std::cout << TTF_GetError()<< std::endl;
-	}
-	SDL_Color textColor = {255, 255, 255};
-
-	SDL_Surface * text_surface = TTF_RenderText_Blended(police,"Next Piece", textColor);
-	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-
-	int sCase = sizeTetris.w/BLOCSX;
-	int texW = sCase * 3;
-	int texX = sizeTetris.w + 2*sCase + sizeTetris.x;
-	int texY = sizeTetris.h/2 - sCase * 3 + sizeTetris.y;
-	SDL_Rect dstrect = { texX, texY, texW, 25 };
-
-	SDL_SetRenderTarget(renderer, texture);
-	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
-
-	FREE_TEXTURE(text_texture);
-	FREE_SURFACE(text_surface);
-	TTF_CloseFont(police);
-	
-	//print help
-	IMG_Init(IMG_INIT_PNG);
-	SDL_Surface * image = IMG_Load("img/arrow.png");
-	SDL_Texture * image_render = SDL_CreateTextureFromSurface(renderer, image);
-	float f1 = (float) sizeTetris.w /(2.*(float)image->w);
-	int f = (int) (1/f1);
-
-	SDL_SetRenderTarget(renderer, texture);
-	SDL_Rect arr = {sizeTetris.w+sizeTetris.x,
-	sizeTetris.h - image->h/f,
-	image->w/f, 
-	image->h/f};
-	int wArrow = image->w/f;
-	
-	SDL_RenderCopy(renderer, image_render, NULL, &arr);
-	
-	image = IMG_Load("img/R.png");
-	image_render = SDL_CreateTextureFromSurface(renderer, image);
-	f1 = (float) wArrow /(3.*(float)image->w);
-
-	f = (int) (1./f1) -1 ;
-	
-	SDL_SetRenderTarget(renderer, texture);
-	SDL_Rect arr2 = {sizeTetris.w+sizeTetris.x + wArrow , 
-	sizeTetris.h - image->h/f -20 ,image->w/f, image->h/f};
-
-	SDL_RenderCopy(renderer, image_render, NULL, &arr2);
 	
 	
-	IMG_Quit();
+	
 
 }
 
