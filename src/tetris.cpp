@@ -806,7 +806,6 @@ ReturnCodeMenu Tetris::endGameMenu(Mix_Music* music, bool multiplayer, bool win)
 					SDL_RenderClear(renderer);
 					this->init(music, multiplayer);
 					SDL_RenderPresent(renderer);
-
 					menuState = this->loop(music, multiplayer);
 					quit_menu = true;
 				}
