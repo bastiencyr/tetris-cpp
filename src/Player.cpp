@@ -58,7 +58,7 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	score = 0 ;
 	difficulte_i=0;
 	locScoreInt = {0,0,0,0};
-	//locScoreTxt2 = {0,0,0,0};
+	locScoreTxt = {0,0,0,0};
 	//print help
 	IMG_Init(IMG_INIT_PNG);
 	SDL_Surface * image;

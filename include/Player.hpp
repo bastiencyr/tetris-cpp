@@ -56,7 +56,7 @@ private:
 	SDL_Rect locTetris; //position du tetris central
 	SDL_Rect locHelp; //position du help en bas a droite
 	SDL_Rect locScoreInt; //position du score
-	//SDL_Rect locScoreTxt2; //position de "score"
+	SDL_Rect locScoreTxt; //position de "score"
 	int w,h;
 	int score;
 	int difficulte_i;
