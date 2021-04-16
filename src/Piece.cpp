@@ -458,7 +458,7 @@ void Piece::printNextPiece2(SDL_Renderer* renderer, SDL_Texture*  blank,SDL_Text
 	tour.w = 4*factor;
 
 	int a =  locTetris.w/(2*factor) +1;
-	int b = locTetris.h/(3*factor)+1;
+	int b = locTetris.h/(2*factor)-1;
 	printinsquare(renderer, blank, texture, &tour, a, b);
 }
 

@@ -9,7 +9,7 @@
 #include <iostream>
 #include <cassert>
 #include <time.h>
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 #include <SDL.h>
 #include "../include//Player.hpp"
 #include "../include/Piece.hpp"
@@ -57,7 +57,8 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	this->locTetris.y = locTetris.y;
 	score = 0 ;
 	difficulte_i=0;
-
+	locScoreInt = {0,0,0,0};
+	//locScoreTxt2 = {0,0,0,0};
 	//print help
 	IMG_Init(IMG_INIT_PNG);
 	SDL_Surface * image;
@@ -72,7 +73,8 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	SDL_Rect posSpaceKey = {locTetris.w+locTetris.x + interWidget,
 	locTetris.h - image->h/f - interWidget ,image->w/f, image->h/f};
 	SDL_RenderCopy(renderer, image_render, NULL, &posSpaceKey);
-
+	FREE_SURFACE(image);
+	FREE_TEXTURE(image_render);
 
 	image = IMG_Load("img/arrow.png");
 	image_render = SDL_CreateTextureFromSurface(renderer, image);
@@ -87,6 +89,8 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	int wArrow = image->w/f;
 
 	SDL_RenderCopy(renderer, image_render, NULL, &posArrowKey);
+	FREE_SURFACE(image);
+	FREE_TEXTURE(image_render);
 
 	image = IMG_Load("img/Esc.png");
 	image_render = SDL_CreateTextureFromSurface(renderer, image);
@@ -97,6 +101,8 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	locTetris.h - image->h/f -interWidget ,
 	image->w/f, image->h/f};
 	SDL_RenderCopy(renderer, image_render, NULL, &posEscKey);
+	FREE_SURFACE(image);
+	FREE_TEXTURE(image_render);
 
 	image = IMG_Load("img/R.png");
 	image_render = SDL_CreateTextureFromSurface(renderer, image);
@@ -107,19 +113,14 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	locTetris.h - posEscKey.h - (locTetris.h-(posEscKey.y + posEscKey.h)) - image->h/f - interWidget
 	,image->w/f, image->h/f};
 	SDL_RenderCopy(renderer, image_render, NULL, &posRKey);
+	FREE_SURFACE(image);
+	FREE_TEXTURE(image_render);
 
 	locHelp.h = posArrowKey.h + posSpaceKey.h + 2*interWidget;
 	locHelp.x = posArrowKey.x;
 	locHelp.y = posArrowKey.y ;
 	locHelp.w = posSpaceKey.w = interWidget + posEscKey.w;
-
-
-	//print next piece
-
-	//tour.x = locTetris.w +locTetris.x +factor;
-	//tour.y = locTetris.h / 3 - 1.5*factor + locTetris.y;
-
-
+	
 	//print nextpiece
 	TTF_Font *police = TTF_OpenFont("src/Tetris.ttf", 65);
 	if(!police){
@@ -133,7 +134,7 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	int sCase = locTetris.w/BLOCSX;
 	int texW = sCase * 3;
 	int texX = locTetris.w + sCase + locTetris.x + (sCase/2) ;
-	int texY = locTetris.h/3 - sCase * 3 + locTetris.y;
+	int texY = locTetris.h/2 - sCase * 4 + locTetris.y;
 	SDL_Rect dstrect = { texX, texY, texW, 25 };
 
 	SDL_SetRenderTarget(renderer, texture);
@@ -142,13 +143,80 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 	FREE_TEXTURE(text_texture);
 	FREE_SURFACE(text_surface);
 	TTF_CloseFont(police);
-	//priont cadre & nextpiece
-
+	
 	IMG_Quit();
 
 }
 
-ReturnCodeMenu Player::nouvPiece(SDL_Renderer* renderer, SDL_Texture* texture, Piece * & oldp, Piece *& newp) {
+void Player::printScoreText(int xScore, int yScore){
+		//affchage de "score"
+	TTF_Font *police = TTF_OpenFont("src/Tetris.ttf", 65);
+	if(!police){
+		std::cout << TTF_GetError()<< std::endl;
+	}
+	
+	SDL_Color textColor = {255, 255, 255};
+	SDL_Surface * text_surface = TTF_RenderText_Blended(police, "Score", textColor);
+	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+
+	int scoreW = text_surface->w/2, scoreH = text_surface->h/2;
+	SDL_Rect dstrect = {0,0, scoreW, scoreH };
+
+	dstrect.x = xScore;
+	dstrect.y = yScore;
+
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
+	SDL_SetRenderTarget(renderer, NULL);
+	SDL_RenderCopy(renderer, texture, &dstrect, &dstrect);
+
+	FREE_SURFACE(text_surface);
+	FREE_TEXTURE(text_texture);
+	TTF_CloseFont(police);
+}
+
+void Player::printScore(int xScore, int yScore){
+
+	TTF_Font * police = TTF_OpenFont("src/RetroGaming.ttf", 65);
+	if(!police){
+		std::cout << TTF_GetError()<< std::endl;
+	}
+	SDL_Color textColor = {255, 255, 255};
+	std::string scoreStr = std::to_string ( score );
+	char * scoreStrArr = &scoreStr[0];
+
+	//print score
+	SDL_Surface *text_surface = TTF_RenderText_Solid(police, scoreStrArr, textColor);
+	SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+
+	SDL_Rect dstrect2 = {0,0, text_surface->w/2, text_surface->h/2 };
+	dstrect2.x = xScore - text_surface->w/4 +50 ;
+	dstrect2.y = yScore + 60;
+
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_RenderFillRect(renderer, &locScoreInt); //on efface ce quil y avait avant
+	locScoreInt = dstrect2;
+	//on affiche une ligne de séparation
+	//if (player2){
+	//	SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+	//	SDL_RenderDrawLine(renderer,3*sizeTetris.w/2, 60,
+	//			3*sizeTetris.w/2,250);
+	//}
+
+	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect2);
+	SDL_SetRenderTarget(renderer, NULL);
+	SDL_RenderCopy(renderer, texture, &dstrect2, &dstrect2);
+
+	TTF_CloseFont(police);
+	FREE_SURFACE(text_surface);
+	FREE_TEXTURE(text_texture);
+	police = nullptr;
+
+}
+
+ReturnCodeMenu Player::nouvPiece(Piece * & oldp, Piece *& newp) {
 	ReturnCodeMenu gameState = ReturnCodeMenu::INIT ;
 	oldp = newp;
 	oldp->update();
@@ -168,7 +236,7 @@ ReturnCodeMenu Player::nouvPiece(SDL_Renderer* renderer, SDL_Texture* texture, P
 	return gameState;
 }
 
-void Player::restart(SDL_Renderer* renderer, SDL_Texture* texture){
+void Player::restart(){
 	score = 0 ;
 	for(int i = 0; i < BLOCSX; i++) {
 		for(int j = 0; j < BLOCSY; j++) {
@@ -193,7 +261,7 @@ void Player::updateLevel(int& ScoreOld){
 
 
 
-int Player::tetrisLinesUpdate(SDL_Renderer* renderer, SDL_Texture* texture) {
+int Player::tetrisLinesUpdate() {
 
 	int decalage = 0;
 	for(int i = BLOCSY-1; i>=0; i--) {
@@ -205,14 +273,14 @@ int Player::tetrisLinesUpdate(SDL_Renderer* renderer, SDL_Texture* texture) {
 
 		if(compt==BLOCSX){ //ligne pleine
 			decalage++;
-			fillEmpty(renderer, texture, i);
+			fillEmpty(i);
 		}
 
 
 		else if(compt < BLOCSX && compt != 0 && decalage!=0)
 		{
-			copyLine(renderer, texture, i, decalage);
-			fillEmpty(renderer, texture, i);
+			copyLine(i, decalage);
+			fillEmpty(i);
 		}
 		//else
 		//	break;
@@ -245,7 +313,7 @@ int Player::tetrisLinesUpdate(SDL_Renderer* renderer, SDL_Texture* texture) {
 }
 
 
-void Player::fillEmpty(SDL_Renderer* renderer, SDL_Texture* texture, int i) {
+void Player::fillEmpty(int i) {
 	int factor = locTetris.w/BLOCSX;
 	SDL_Rect line;
 	line.x= 0 + locTetris.x;
@@ -263,7 +331,7 @@ void Player::fillEmpty(SDL_Renderer* renderer, SDL_Texture* texture, int i) {
 
 }
 
-void Player::copyLine(SDL_Renderer* renderer, SDL_Texture* texture, int i, int decalage) {
+void Player::copyLine(int i, int decalage) {
 	int factor = locTetris.w/BLOCSX;
 	SDL_Texture* temp = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 			SDL_TEXTUREACCESS_TARGET, this->w, this->h);
@@ -320,7 +388,7 @@ void Player::printMatrice(){
 	}
 }
 
-void Player::addLineToPlayer(SDL_Renderer* renderer, SDL_Texture* texture, int nbLineToAdd, Piece *piece, Piece *ghost, bool player2){
+void Player::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2){
 	//player2 = true -> ajouter une ligne à l'IA
 	for(int i=0 ; i< nbLineToAdd ;i++){
 		SDL_SetRenderDrawColor(renderer,100,100,100,255);
@@ -330,7 +398,7 @@ void Player::addLineToPlayer(SDL_Renderer* renderer, SDL_Texture* texture, int n
 		int factor = locTetris.w/BLOCSX;
 		//ajouter une ligne à player1
 		for (int i = 0; i< BLOCSY ; i++)
-			copyLine(renderer, texture, i, -1);
+			copyLine(i, -1);
 
 		for(int j=0 ; j< BLOCSX ; j++)
 			matGame[j][BLOCSY-1] = true;
@@ -378,62 +446,4 @@ void Player::addLineToPlayer(SDL_Renderer* renderer, SDL_Texture* texture, int n
 	}
 }
 
-void Player::printScore(SDL_Renderer* renderer, SDL_Texture* texture, int xScore, int yScore){
 
-	TTF_Font * police = TTF_OpenFont("src/RetroGaming.ttf", 65);
-	if(!police){
-		std::cout << TTF_GetError()<< std::endl;
-	}
-
-	//affchage de "score"
-	SDL_Color textColor = {255, 255, 255};
-	SDL_Surface * text_surface = TTF_RenderText_Blended(police, "Score", textColor);
-	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-
-	int scoreW = text_surface->w/2, scoreH = text_surface->h/2;
-	SDL_Rect dstrect = {0,0, scoreW, scoreH };
-
-	dstrect.x = xScore;
-	dstrect.y = yScore;
-
-	SDL_SetRenderTarget(renderer, texture);
-	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect);
-	SDL_SetRenderTarget(renderer, NULL);
-	SDL_RenderCopy(renderer, texture, &dstrect, &dstrect);
-
-	std::string scoreStr = std::to_string ( score );
-	char * scoreStrArr = &scoreStr[0];
-
-	FREE_SURFACE(text_surface);
-	FREE_TEXTURE(text_texture);
-
-	//print score
-	text_surface = TTF_RenderText_Solid(police, scoreStrArr, textColor);
-	text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-
-	SDL_Rect dstrect2 = {0,0, text_surface->w/2, text_surface->h/2 };
-	dstrect2.x = xScore + scoreW/2 - text_surface->w/4 ;
-	dstrect2.y = yScore + 60;
-
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
-	SDL_SetRenderTarget(renderer, texture);
-	SDL_RenderFillRect(renderer, &dstrect2);
-
-	//on affiche une ligne de séparation
-	//if (player2){
-	//	SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
-	//	SDL_RenderDrawLine(renderer,3*sizeTetris.w/2, 60,
-	//			3*sizeTetris.w/2,250);
-	//}
-
-	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect2);
-	SDL_SetRenderTarget(renderer, NULL);
-	SDL_RenderCopy(renderer, texture, &dstrect2, &dstrect2);
-
-	TTF_CloseFont(police);
-	FREE_SURFACE(text_surface);
-	FREE_TEXTURE(text_texture);
-	police = nullptr;
-
-}
