@@ -148,6 +148,10 @@ Player::Player(SDL_Renderer * renderer, SDL_Texture *texture,
 
 }
 
+Player::~Player(){
+	for (auto el : liste)
+		delete el;
+}
 void Player::printScoreText(int xScore, int yScore){
 		//affchage de "score"
 	TTF_Font *police = TTF_OpenFont("src/RetroGaming.ttf", 65);
@@ -394,7 +398,7 @@ void Player::printMatrice(){
 	}
 }
 
-void Player::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2){
+void Player::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player1){
 	//player2 = true -> ajouter une ligne à l'IA
 	for(int i=0 ; i< nbLineToAdd ;i++){
 		SDL_SetRenderDrawColor(renderer,100,100,100,255);
@@ -428,7 +432,7 @@ void Player::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool p
 				line.y= (BLOCSY-1)*factor+ locTetris.y + 5;
 				line.h= factor - 10;
 				line.w= factor - 10;
-				if (player2) line.x= locTetris.x + j*factor + 5;
+				if (!player1) line.x= locTetris.x + j*factor + 5;
 
 				SDL_RenderFillRect(renderer, &line);
 				SDL_SetRenderTarget(renderer, NULL);
@@ -436,11 +440,10 @@ void Player::addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool p
 			}
 		}
 		piece->up();
-
 		//A laisser ?
 		piece->mvDstToSrc(*piece);
 
-		if(!player2){
+		if(player1){
 			ghost->up();
 			ghost->DownGhost(matGame,piece);
 			ghost->verif(piece);
