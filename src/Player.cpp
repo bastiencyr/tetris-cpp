@@ -158,7 +158,7 @@ void Player::printScoreText(bool multiplayer, bool playerIA){
 	if(!police){
 		std::cout << TTF_GetError()<< std::endl;
 	}
-
+	int sizeBloc = locTetris.w / BLOCSX;
 	SDL_Color textColor = {255, 255, 255};
 	SDL_Surface * text_surface = TTF_RenderText_Blended(police, "Score", textColor);
 	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
@@ -173,7 +173,7 @@ void Player::printScoreText(bool multiplayer, bool playerIA){
 		locScoreTxt.x = locTetris.w + 2*locTetris.w/4 - scoreW/2;
 	}
 	else
-		locScoreTxt.x = locTetris.w - scoreW - locTetris.w/20;
+		locScoreTxt.x = locTetris.w - scoreW - sizeBloc;
 	
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_RenderCopy(renderer, text_texture, NULL, &locScoreTxt);
@@ -194,7 +194,7 @@ void Player::printScore(bool multiplayer, bool playerIA){
 	SDL_Color textColor = {255, 255, 255};
 	std::string scoreStr = std::to_string ( score );
 	char * scoreStrArr = &scoreStr[0];
-
+	
 	//print score
 	SDL_Surface *text_surface = TTF_RenderText_Solid(police, scoreStrArr, textColor);
 	SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
@@ -230,14 +230,83 @@ void Player::printScore(bool multiplayer, bool playerIA){
 
 }
 
+void Player::printLevelText(bool multiplayer, bool playerIA){
+		//affchage de "score"
+	TTF_Font *police = TTF_OpenFont("src/RetroGaming.ttf", 65);
+	if(!police){
+		std::cout << TTF_GetError()<< std::endl;
+	}
+	int sizeBloc = locTetris.w / BLOCSX;
+	SDL_Color textColor = {255, 255, 255};
+	SDL_Surface * text_surface = TTF_RenderText_Blended(police, "Level", textColor);
+	SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+
+	float f1 = (2.*(float)locTetris.w/6.)/(float)text_surface->w;
+	int f = (int) 1/f1;
+	int scoreW = text_surface->w/f, scoreH = text_surface->h/f;
+	locLevelTxt = {0,0, scoreW, scoreH };
+	locLevelTxt.y = locTetris.w/20;
+	
+	if (!multiplayer and !playerIA)
+		locLevelTxt.x = 2*locTetris.w + sizeBloc ;
+	
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_RenderCopy(renderer, text_texture, NULL, &locLevelTxt);
+	SDL_SetRenderTarget(renderer, NULL);
+	SDL_RenderCopy(renderer, texture, &locLevelTxt, &locLevelTxt);
+	
+	FREE_SURFACE(text_surface);
+	FREE_TEXTURE(text_texture);
+	TTF_CloseFont(police);
+}
+
+
+void Player::printLevel(bool multiplayer, bool playerIA){
+	
+	TTF_Font * police = TTF_OpenFont("src/RetroGaming.ttf", 65);
+	if(!police){
+		std::cout << TTF_GetError()<< std::endl;
+	}
+	SDL_Color textColor = {255, 255, 255};
+	std::string levelStr = std::to_string ( difficulte_i );
+	char * levelStrArr = &levelStr[0];
+	
+	//print score
+	SDL_Surface *text_surface = TTF_RenderText_Solid(police, levelStrArr, textColor);
+	SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+	
+	SDL_Rect dstrect2 = {0,0, text_surface->w/2, text_surface->h/2 };
+	
+	if (!multiplayer and !playerIA)
+		dstrect2.x = locLevelTxt.x + locLevelTxt.w/2 - text_surface->w/4;
+	
+	dstrect2.y = locLevelTxt.y + locLevelTxt.h + locTetris.w/20;
+	
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_RenderFillRect(renderer, &locLevelInt); //on efface ce quil y avait avant
+	locLevelInt = dstrect2;
+	
+	
+	SDL_RenderCopy(renderer, text_texture, NULL, &dstrect2);
+	SDL_SetRenderTarget(renderer, NULL);
+	SDL_RenderCopy(renderer, texture, &dstrect2, &dstrect2);
+	
+	TTF_CloseFont(police);
+	FREE_SURFACE(text_surface);
+	FREE_TEXTURE(text_texture);
+	police = nullptr;
+	
+}
+
 void Player::printSeparation(){
 	//on affiche une ligne de séparation
-	std::cout << locScoreTxt.x << ":" << locScoreTxt.y << ":" << locScoreTxt.w << ":" << locScoreTxt.h << std::endl;
 	SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_RenderDrawLine(renderer, 3*locTetris.w/2, 
 			locScoreTxt.y + locScoreTxt.h + locTetris.w/20,
-			 3*locTetris.w/2, 
+			3*locTetris.w/2, 
 			locScoreTxt.y + locScoreTxt.h + locScoreInt.h + locTetris.w/20);
 	SDL_RenderPresent(renderer);
 }
@@ -246,19 +315,19 @@ ReturnCodeMenu Player::nouvPiece(Piece * & oldp, Piece *& newp) {
 	ReturnCodeMenu gameState = ReturnCodeMenu::INIT ;
 	oldp = newp;
 	oldp->update();
-
+	
 	int randn = rand() % 7;
 	newp = liste[randn];
 	newp->update();
 	newp->printNextPiece2(renderer, blank, texture);
-
+	
 	if(!oldp->isLegalPosition(oldp, matGame).NO_ERROR) {
 		gameState = ReturnCodeMenu::GAME_OVER ;
 		std::cout<< "Game Over" << std::endl << "Score : " << score << std::endl;
 	}
 	else
 		oldp->draw(renderer,blank,texture);
-
+	
 	return gameState;
 }
 
@@ -271,6 +340,11 @@ void Player::restart(){
 	}
 	SDL_SetRenderTarget(renderer, texture);
 	SDL_RenderCopy(renderer, blank, &locTetris, &locTetris);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	
+	difficulte_i = 0;
+	SDL_RenderFillRect(renderer, &locLevelInt); //on efface  lancien score
+	printLevel(false);
 }
 
 void Player::updateLevel(int& ScoreOld){

@@ -641,6 +641,7 @@ void Jeu::parametresgraph(SDL_Renderer* renderer, Tetris & tetris) {
 		SDL_RenderPresent(renderer);
 		SDL_SetRenderTarget(renderer, graphmenu);
 	}
+	FREE_TEXTURE(blankmenu);
 	FREE_TEXTURE(graphmenu);
 }
 
