@@ -68,13 +68,9 @@ public:
 	}
 
 	Piece ** getListe(){ return liste;}
-<<<<<<< HEAD
 
-=======
-	
 	SDL_Rect& getLocScoreInt(){ return locScoreInt;};
-	
->>>>>>> ebcacd382656e1447bfa8274f081895cacfd2aef
+
 public:
 	bool matGame[BLOCSX][BLOCSY];
 
