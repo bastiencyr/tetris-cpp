@@ -129,7 +129,7 @@ public:
 	Piece ** getListe(){ return liste;}
 	SDL_Rect& getLocScoreInt(){ return locScoreInt;};
 	SDL_Rect& getLocLevelInt(){ return locLevelInt;};
-	
+
 public:
 	bool matGame[BLOCSX][BLOCSY];
 
@@ -140,7 +140,7 @@ private:
 	SDL_Rect locScoreTxt; //position de "score"
 	SDL_Rect locLevelTxt; //position de "score"
 	SDL_Rect locLevelInt; //position de "score"
-	
+
 	int w,h;
 	int score;
 	int difficulte_i;

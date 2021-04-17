@@ -60,9 +60,18 @@ public :
 	SDL_Texture* get_menu() {return menu;};
 	int getvolume() {return volume;};
 
+
+	/*************************************************************************/
+	//MAIN TETRIS FUNCTIONS
+	/**
+	 * @brief This function is the main game loop.
+	 */
 	ReturnCodeMenu loop(Mix_Music* music, bool multiplayer);
 
     void init(Mix_Music* music, bool multiplayer = false);
+	/**
+	 * @brief This function initializes a list of the seven tetraminos.
+	 */
 	void ListePieceInit(Piece * Liste[7]);
     void keyboard(const Uint8* keys);
 
@@ -71,11 +80,32 @@ public :
 	bool printGenericMenu(SDL_Texture * text_texture, int xShift,
 		int sizeBetweenText, bool retour, int numItem,...);
 	ReturnCodeMenu printMenu();
+	/**
+	 * @brief This function handles the up and down movements when navigating
+	 * menus.
+	 * @param retour 0 if there is no return button, 1 if there is
+	 * @param cadre the rectangle around the current button
+	 * @param vol if this is the audio menu
+	 */
 	void UpDownCasesLoopMenu(int retour, int way, int & choiceMenu ,
 		int numberChoice, int sizeBetweenText, int xShift,SDL_Rect & cadre, bool vol = false) ;
+	/**
+	 * @brief This function completes the print generic menu and creates buttons
+	 * on the left and/or right to the middle column
+	 * @param indice The index of the button around which to creates the buttons
+	 */
 	void addmenuoptions(SDL_Texture * menu, int xShift, int sizeBetweenText,
 			int numberChoice, int indice, int numItem,const char * str1, const char*str2);
+	/**
+	 * @brief This function also completes the print generic menu when a
+	 * pull-down menu is needed.
+	 */
 	void minimenu(SDL_Texture * menu, SDL_Rect * cadre);
+
+	/**
+	 * @brief This function is used by minimenu to draw which of the modes
+	 * is currently selected
+	 */
 	void DrawSelected();
 	ReturnCodeMenu endGameMenu(Mix_Music* music, bool multiplayer, bool win);
 

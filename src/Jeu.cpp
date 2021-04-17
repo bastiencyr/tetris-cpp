@@ -67,7 +67,6 @@ void Jeu::startTetris(int h,int w, SDL_Rect sizeTetris, bool multiplayer){
 	{
 		printf("%s", Mix_GetError());
 	 }
-	//Mix_VolumeMusic(MIX_MAX_VOLUME / 2); //Mettre le volume à la moitié
 	this->music = Mix_LoadMUS("sfx/tetris.mp3");
 
 	if (music == nullptr)
