@@ -46,7 +46,10 @@ public:
 #ifndef _RETURN_CODE_HPP_
 #define _RETURN_CODE_HPP_
 
-
+/**
+ * This enum class is useful to navigate between menu. For example, if the 
+ * pause menu is called, it can returned RESTART to the calling function.
+ */
 enum class ReturnCodeMenu { 
 	QUIT_MENU,
 	QUIT_GAME,

@@ -32,8 +32,6 @@ sudo apt install libsdl2-2.0-0 libsdl2-image-2.0-0 libsdl2-mixer-2.0-0 libsdl2-t
 
 Pour compiler ce projet, il suffit de lancer la commande make dans le dossier principale. Entrez alors la commande ./bin/tetris pour lancer le tetris. 
 
-
-
 # Screenshots
 
 ![](.ressources/2021-04-17-12-05-31-image.png)

@@ -208,6 +208,19 @@ public :
 	 */
 	virtual Error isLegalRotateRight(bool mat[BLOCSX][BLOCSY]);
 
+	/**
+	 * @brief This function check is the piece this can move one case bellow 
+	 * and draw it if it is legal. It updates the matrice too.
+	 * 
+	 * @param mat is the user matrice that represents a player tetris game. 
+	 * @param cont bool returned by the function.
+	 * @param renderer the main renderer of the game.
+	 * @param blank is the background of a the tetris 
+	 * @param texture the main texture.
+	 * @return cont = false if the piece is OVER_Y or COLLISION_PIECE and 
+	 * cont either.
+	 */
+	
 	bool onDown(bool mat[BLOCSX][BLOCSY], bool cont, SDL_Renderer* renderer,SDL_Texture* blank,
 	SDL_Texture* texture);
 
