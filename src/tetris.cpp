@@ -36,7 +36,7 @@ Tetris::Tetris(int w, int h, SDL_Rect locTetris, SDL_Renderer* &renderer, bool m
 	else {
 		this->options = 0;
 	}
-	
+
 	timer=0;
 	this->renderer = renderer;
 	quitgame = true;
@@ -148,7 +148,6 @@ void Tetris::init(Mix_Music* music, bool multiplayer){
 }
 
 ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
-
 
 	auto ghostVerifDraw = [&] (Piece *ghost, Piece *piece, bool matGame[BLOCSX][BLOCSY], bool gen =false)
 	{
