@@ -36,11 +36,11 @@ Pour compiler ce projet, il suffit de lancer la commande make dans le dossier pr
 
 # Screenshots
 
-![](/home/bastien/Documents/TPS/2020-2021/2.%20semestre%202/Programmation%20avancée/Tetris/.ressources/2021-04-17-12-05-31-image.png)
+![](.ressources/2021-04-17-12-05-31-image.png)
 
-![](/home/bastien/Documents/TPS/2020-2021/2.%20semestre%202/Programmation%20avancée/Tetris/.ressources/2021-04-17-12-06-14-image.png)
+![](.ressources/2021-04-17-12-06-14-image.png)
 
-![](/home/bastien/Documents/TPS/2020-2021/2.%20semestre%202/Programmation%20avancée/Tetris/.ressources/2021-04-17-12-09-21-image.png)
+![](.ressources/2021-04-17-12-09-21-image.png)
 
 TODO :
 
