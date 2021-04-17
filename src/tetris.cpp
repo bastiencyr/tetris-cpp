@@ -187,6 +187,8 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		player1.printSeparation();
 	}
 	else{
+		player1.printLevelText(multiplayer);
+		player1.printLevel(multiplayer);
 		player1.printScoreText(multiplayer);
 		player1.printScore(multiplayer);
 	}
@@ -387,6 +389,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		if (!multiplayer and d>0){
 			player1.updateLevel(ScoreOld);
 			player1.printScore(multiplayer);
+			player1.printLevel(multiplayer);
 		}
 		
 		//update score
@@ -394,7 +397,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 			int dia = player2.tetrisLinesUpdate();
 			if(dia>=1){
 				if(dia==4) player1.addLineToPlayer(dia, piece, ghost, true);
-				else player1.addLineToPlayer(dia, piece, ghost, true);				
+				else player1.addLineToPlayer(dia-1, piece, ghost, true);				
 				player2.updateLevel(scoreOldIA);
 				player2.printScore(multiplayer, true);
 			}
@@ -425,6 +428,7 @@ ReturnCodeMenu Tetris::loop(Mix_Music* music, bool multiplayer){
 		SDL_SetRenderTarget(renderer, texture);
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderFillRect(renderer, &player1.getLocScoreInt()); //on efface 
+		SDL_RenderFillRect(renderer, &player1.getLocLevelInt()); //on efface 
 		SDL_RenderFillRect(renderer, &player2.getLocScoreInt()); //on efface 
 		SDL_SetRenderTarget(renderer, NULL);
 		SDL_RenderPresent(renderer);

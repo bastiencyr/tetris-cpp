@@ -5,7 +5,6 @@
  */
 #include "../include/Error.hpp"
 class Piece;
-class MatGame;
 #define BLOCSX 10
 #define BLOCSY 20
 
@@ -28,6 +27,8 @@ public:
 	void addLineToPlayer(int nbLineToAdd, Piece *piece, Piece *ghost, bool player2=false);
 	void printScore(bool multiplayer, bool playerIA=false);
 	void printScoreText(bool multiplayer, bool playerIA = false);
+	void printLevel(bool multiplayer, bool playerIA=false);
+	void printLevelText(bool multiplayer, bool playerIA = false);
 	void updateLevel(int& ScoreOld);
 	void printSeparation();
 	void restart();
@@ -52,6 +53,7 @@ public:
 	Piece ** getListe(){ return liste;}
 	
 	SDL_Rect& getLocScoreInt(){ return locScoreInt;};
+	SDL_Rect& getLocLevelInt(){ return locLevelInt;};
 	
 public:
 	bool matGame[BLOCSX][BLOCSY];
@@ -61,6 +63,9 @@ private:
 	SDL_Rect locHelp; //position du help en bas a droite
 	SDL_Rect locScoreInt; //position du score
 	SDL_Rect locScoreTxt; //position de "score"
+	SDL_Rect locLevelTxt; //position de "score"
+	SDL_Rect locLevelInt; //position de "score"
+	
 	int w,h;
 	int score;
 	int difficulte_i;
